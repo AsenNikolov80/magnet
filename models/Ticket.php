@@ -10,8 +10,9 @@ use Yii;
  * @property string $id
  * @property string $text
  * @property string $id_user
+ * @property string $price
  *
- * @property Users $idUser
+ * @property User $idUser
  */
 class Ticket extends \yii\db\ActiveRecord
 {
@@ -29,10 +30,10 @@ class Ticket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['text', 'id_user'], 'required'],
+            [['text', 'id_user', 'price'], 'required'],
             [['id_user'], 'integer'],
-            [['text'], 'string', 'max' => 20000],
-            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['id_user' => 'id']],
+            [['text'], 'string', 'max' => 500],
+            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
         ];
     }
 
@@ -43,16 +44,17 @@ class Ticket extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'text' => 'Text',
-            'id_user' => 'Id User',
+            'text' => 'Текст на обявата',
+            'id_user' => 'Потребител',
+            'price' => 'Цена',
         ];
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return User
      */
     public function getIdUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'id_user']);
+        return $this->hasOne(User::className(), ['id' => 'id_user'])->one();
     }
 }

@@ -36,6 +36,8 @@ class SiteController extends Controller
                             'welcome',
                             'profile',
                             'ads',
+                            'view-profile',
+                            'edit-ads',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -52,6 +54,7 @@ class SiteController extends Controller
                             'about',
                             'contact',
                             'ads',
+                            'view-profile',
                         ],
                         'roles' => ['?'],
                         'allow' => true,
@@ -244,6 +247,22 @@ class SiteController extends Controller
     public function actionAds()
     {
         return $this->render('ads', []);
+    }
+
+    public function actionViewProfile()
+    {
+        $companyId = intval($_GET['id']);
+        $company = User::findOne($companyId);
+        if (!$company)
+            Yii::$app->session->setFlash('error', 'Няма такъв профил!');
+        return $this->render('view-profile', ['company' => $company]);
+    }
+
+    public function actionEditAds()
+    {
+        $user = $this->getCurrentUser();
+        $tickets = $user->getTickets();
+        return $this->render('edit-ads', ['tickets' => $tickets]);
     }
 
     private function getListOfRegionsCities()

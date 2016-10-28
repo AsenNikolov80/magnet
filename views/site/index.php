@@ -24,7 +24,7 @@ $this->title = 'My Yii Application';
             <a href="<?= Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) ?>"
                class="item row col-sm-4">
                 <div class="col-xs-6">
-                    <img src="../web/profile_images/<?= $company->picture ?>">
+                    <img src="../profile_images/<?= $company->picture ?>">
                 </div>
                 <div class="col-xs-6">
                     <div><?= $company->name ?></div>

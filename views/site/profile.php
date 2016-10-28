@@ -38,6 +38,12 @@ use yii\helpers\Html;
             <img src="../images/girl.png"/>
         <?php } ?>
         <h3>Профилна информация</h3>
+        <?php
+        if (Yii::$app->user->isUserCompany()) { ?>
+            <a title="Оттук може да управлявате обявите си" href="<?=Yii::$app->urlManager->createUrl('site/edit-ads')?>" class="btn btn-primary">
+                Въведи / промени обяви
+            </a>
+        <?php } ?>
     </div>
     <div class="col-sm-10">
         <?= $form->field($user, 'username')->textInput() ?>

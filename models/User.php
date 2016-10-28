@@ -23,6 +23,7 @@ use yii\db\Query;
  * @property string $paid_until
  * @property string $name
  * @property string $sex
+ * @property string $map_link
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -52,7 +53,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
             [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'sex'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name', 'sex'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
-            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'sex'], 'safe'],
+            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'sex', 'map_link'], 'safe'],
         ];
     }
 
@@ -158,5 +159,10 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return (new Query())->select('name')
             ->from(City::tableName())
             ->where(['id' => $this->city_id])->scalar();
+    }
+
+    public function getTickets()
+    {
+        return Ticket::findAll(['id_user' => Yii::$app->user->id]);
     }
 }
