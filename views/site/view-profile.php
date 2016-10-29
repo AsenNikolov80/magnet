@@ -1,5 +1,5 @@
 <style>
-    .ad-container{
+    .ad-container {
         margin: 15px;
         box-shadow: 0 2px 5px black;
         padding: 5px;
@@ -51,13 +51,27 @@
 </div>
 <script>
     function renderMap() {
-        $('#map-holder').empty();
-        var w = parseInt($('#map-holder').width());
-        var iframe = $('<iframe>');
-        iframe.prop('width', w * 0.7);
-        iframe.prop('height', w * 0.4);
-        iframe.prop('src', '<?=$company->map_link?>');
-        iframe.appendTo($('#map-holder'));
+        var mapLink = '<?=$company->map_link?>';
+        if (mapLink.length > 0) {
+            $('#map-holder').empty();
+            var wIndex = 0.75;
+            var hIndex = 0.45;
+            if ($(window).width() < 769) {
+                wIndex = 1;
+                hIndex = 0.7;
+            }
+            var w = parseInt($('#map-holder').width());
+            var iframe = $('<iframe>');
+            iframe.prop('width', w * wIndex);
+            iframe.prop('height', w * hIndex);
+            iframe.prop('src', mapLink);
+            iframe.appendTo($('#map-holder'));
+        } else {
+            $('#map-holder').text('Не е намерен валиден адрес за обекта!').css({
+                'background-color': 'orange',
+                'padding': '5px'
+            });
+        }
     }
     $(function () {
         renderMap();

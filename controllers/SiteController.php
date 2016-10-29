@@ -8,6 +8,7 @@ use app\models\User;
 use Yii;
 use yii\db\Query;
 use yii\filters\AccessControl;
+use yii\log\Logger;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
@@ -15,8 +16,6 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
-
-    public static $genders = ['мъж', 'жена'];
 
     /**
      * @inheritdoc
@@ -88,13 +87,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $companies = [];
-        if (Yii::$app->user->isGuest) {
-            $ads = Ticket::find()->all();
-            $companies = User::findAll(['active' => 1, 'type' => User::TYPE_COMPANY]);
-            return $this->render('index', ['ads' => $ads, 'companies' => $companies]);
-        }
-        return $this->render('index', ['companies' => $companies]);
+        $ads = Ticket::find()->all();
+        $companies = User::findAll(['active' => 1, 'type' => User::TYPE_COMPANY]);
+        return $this->render('index', ['ads' => $ads, 'companies' => $companies]);
     }
 
     /**
@@ -169,12 +164,21 @@ class SiteController extends Controller
         $user->type = $type;
         if (!empty(Yii::$app->request->post('User'))) {
             $user->setAttributes(Yii::$app->request->post('User'));
-            if ($user->save()) {
+            try {
+                $emailExists = User::findOne(['email' => $user->email]);
+                if (!empty($emailExists)) {
+                    $user->addError('email','Имейлът вече съществува!');
+                    throw new \Exception('email already exists', Logger::LEVEL_ERROR);
+                }
+                $user->save();
                 $user->password = Yii::$app->getSecurity()->generatePasswordHash($user->password);
                 $user->save(false);
                 Yii::$app->session->setFlash('success', 'Успешно се регистрирахте в системата!');
                 return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
-            } else Yii::$app->session->setFlash('error', 'Нещо се обърка, опитайте отново!');
+            } catch (\Exception $e) {
+                Yii::$app->log->getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
+                Yii::$app->session->setFlash('error', 'Нещо се обърка, опитайте отново!');
+            }
         }
 
         return $this->render('register', [
@@ -203,6 +207,7 @@ class SiteController extends Controller
     {
         /* @var $user User */
         $user = $this->getCurrentUser();
+        $user->setScenario(User::SCENARIO_REGISTER_COMPANY);
         if (!empty(Yii::$app->request->post('User'))) {
             $oldPicture = $user->picture;
             $user->setAttributes(Yii::$app->request->post('User'));
@@ -228,10 +233,6 @@ class SiteController extends Controller
         /* @var $selectedCommunityId */
         /* @var $selectedRegionId */
         extract($this->getRegionCommunityByCityId($user->city_id));
-        $genders = [];
-        foreach (self::$genders as $gender) {
-            $genders[$gender] = $gender;
-        }
         return $this->render('profile', [
             'user' => $user,
             'regions' => $regions,
@@ -240,13 +241,14 @@ class SiteController extends Controller
             'cityRelations' => $cityRelations,
             'selectedRegionId' => $selectedRegionId,
             'selectedCommunityId' => $selectedCommunityId,
-            'genders' => $genders
         ]);
     }
 
     public function actionAds()
     {
-        return $this->render('ads', []);
+        $ads = Ticket::find()->all();
+        $companies = User::findAll(['active' => 1, 'type' => User::TYPE_COMPANY]);
+        return $this->render('ads', ['ads' => $ads, 'companies' => $companies]);
     }
 
     public function actionViewProfile()
@@ -264,7 +266,7 @@ class SiteController extends Controller
         $user = $this->getCurrentUser();
         if (!empty($_POST['text'])) {
             $texts = array_filter(Yii::$app->request->post('text'));
-            $prices = array_filter(Yii::$app->request->post('price'));
+            $prices = Yii::$app->request->post('price');
             $updatedKeys = [];
             foreach ($texts as $i => $text) {
                 $ticket = Ticket::findOne($i);

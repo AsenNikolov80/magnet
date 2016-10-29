@@ -22,7 +22,6 @@ use yii\db\Query;
  * @property string $last_name
  * @property string $paid_until
  * @property string $name
- * @property string $sex
  * @property string $map_link
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
@@ -49,11 +48,11 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['address', 'picture', 'email', 'first_name', 'last_name', 'paid_until', 'name', 'sex'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
+            [['address', 'picture', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
-            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'sex'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
-            [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name', 'sex'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
-            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'sex', 'map_link'], 'safe'],
+            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
+            [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
+            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link'], 'safe'],
         ];
     }
 
@@ -72,7 +71,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'first_name' => 'Първо име',
             'last_name' => 'Фамилия',
             'picture' => 'Снимка',
-            'sex' => 'Пол',
         ];
     }
 

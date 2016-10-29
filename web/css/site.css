@@ -103,6 +103,7 @@ img{
 }
 .shadow-box{
     box-shadow: 0 5px 20px black;
+    padding: 15px;
     /*background-color: #dddddd;*/
 }
 .container{

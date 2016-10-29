@@ -65,7 +65,6 @@ use yii\helpers\Html;
             </div>
         </div>
         <?php
-        echo $form->field($user, 'sex')->radioList(\app\controllers\SiteController::$genders);
         ActiveForm::end();
     } else {
         ?>

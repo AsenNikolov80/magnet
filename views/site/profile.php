@@ -3,9 +3,6 @@
         background-color: #e0e0e0;
     }
 
-    #user-sex > label {
-        margin: 0 10px;
-    }
 </style>
 <?php
 /**
@@ -31,12 +28,6 @@ use yii\helpers\Html;
         ],
     ]); ?>
     <div class="col-sm-2">
-        <?php
-        if ($user->sex == \app\controllers\SiteController::$genders[0]) { ?>
-            <img src="../images/boy.png"/>
-        <?php } elseif ($user->sex == \app\controllers\SiteController::$genders[1]) { ?>
-            <img src="../images/girl.png"/>
-        <?php } ?>
         <h3>Профилна информация</h3>
         <?php
         if (Yii::$app->user->isUserCompany()) { ?>
@@ -77,7 +68,6 @@ use yii\helpers\Html;
                 <?= Html::submitButton('Редактирай', ['class' => 'btn btn-primary', 'name' => 'create-button']) ?>
             </div>
         </div>
-        <?= $form->field($user, 'sex')->radioList($genders) ?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
