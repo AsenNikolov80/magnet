@@ -81,11 +81,11 @@ CREATE TABLE `tickets` (
   PRIMARY KEY (`id`),
   KEY `id_user` (`id_user`),
   CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tickets` */
 
-insert  into `tickets`(`id`,`text`,`id_user`,`price`) values (36,'Ултра яка промоция',3,'3.40'),(37,'Втора добра промоция',3,'2.00');
+insert  into `tickets`(`id`,`text`,`id_user`,`price`) values (39,'Понеделник и петък - дамско подстригване',7,'5.50'),(40,'Всеки последен петък от месеца 10% отстъпка от всички услуги',7,'0.00');
 
 /*Table structure for table `users` */
 
@@ -112,11 +112,11 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   KEY `city_id` (`city_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`username`,`password`,`address`,`city_id`,`picture`,`type`,`active`,`email`,`first_name`,`last_name`,`paid_until`,`name`,`sex`,`map_link`) values (1,'admin','$2y$13$YvET/L.tyx2AI5z8zKkQhO4022YYPyz/qFExz6fnHyegYSHU8JrrC','Баба Мота 6',5815,NULL,2,1,'test@test.bg','Шеф','Голем','0000-00-00',NULL,'мъж','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(2,'user','$2y$13$jNsGXbfIPCsM0wPfOQ/.geb6rws1GN1EfFiD.Wtdb/zOATmLIcIVK','',4824,NULL,0,0,'arso@abv.bg','Юзер','Прост','0000-00-00',NULL,'жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(3,'some','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Някъде там 12',5946,'14183855_10154938949870839_1456825375149936836_n.jpg',1,1,'some@some.bg','Първи',' Търговец','0000-00-00','Тестова фирма','жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC');
+insert  into `users`(`id`,`username`,`password`,`address`,`city_id`,`picture`,`type`,`active`,`email`,`first_name`,`last_name`,`paid_until`,`name`,`sex`,`map_link`) values (1,'admin','$2y$13$YvET/L.tyx2AI5z8zKkQhO4022YYPyz/qFExz6fnHyegYSHU8JrrC','Баба Мота 6',5815,NULL,2,1,'test@test.bg','Шеф','Голем','0000-00-00',NULL,'мъж','http://www.bgmaps.com/link/map/7102B91A389CE50DF27B434D5A28F2A6'),(2,'user','$2y$13$jNsGXbfIPCsM0wPfOQ/.geb6rws1GN1EfFiD.Wtdb/zOATmLIcIVK','',4824,NULL,0,0,'arso@abv.bg','Юзер','Прост','0000-00-00',NULL,'жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(3,'some','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Негованка 40',5946,'14183855_10154938949870839_1456825375149936836_n.jpg',1,1,'some@some.bg','Първи',' Търговец','0000-00-00','Тестова фирма','жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(7,'some1','$2y$13$sgov03TgVk2KIFCfRgoenONava9upls8B5UJ64guic2ojz7zSjM4O','Ален Мак 13',4824,'Free-nature-wallpaper-autumn-leaves-and-straight-street-500x312.jpg',1,1,'arso1@abv.bg','Втори','Търговец','0000-00-00','Тестова фирма 2','мъж','http://www.bgmaps.com/link/map/7102B91A389CE50DF27B434D5A28F2A6');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -163,4 +163,12 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     {
         return Ticket::findAll(['id_user' => $this->id]);
     }
+
+    public static function getUser($userId){
+        $user = User::findOne($userId);
+        if (!$user) {
+            Yii::$app->session->setFlash('error', 'Няма такъв потребител!');
+        }
+        return $user;
+    }
 }

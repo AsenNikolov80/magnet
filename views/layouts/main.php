@@ -45,6 +45,10 @@ AppAsset::register($this);
             ['label' => 'Регистрация', 'url' => ['/site/register']]
 
             ) : ['label' => 'Профил', 'url' => ['/site/profile']],
+            Yii::$app->user->isUserAdmin() ? (
+            ['label' => 'Преглед профили', 'url' => ['/admin/profiles']]
+
+            ) : '',
             Yii::$app->user->isGuest ? (
             ['label' => 'Вход', 'url' => ['/site/login']]
             ) : (

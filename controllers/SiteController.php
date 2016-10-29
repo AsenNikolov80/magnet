@@ -164,10 +164,13 @@ class SiteController extends Controller
         $user->type = $type;
         if (!empty(Yii::$app->request->post('User'))) {
             $user->setAttributes(Yii::$app->request->post('User'));
+            if ($user->scenario == User::SCENARIO_REGISTER_COMPANY) {
+                $user->paid_until = date('Y-m-d', time() + 1209600);
+            }
             try {
                 $emailExists = User::findOne(['email' => $user->email]);
                 if (!empty($emailExists)) {
-                    $user->addError('email','Имейлът вече съществува!');
+                    $user->addError('email', 'Имейлът вече съществува!');
                     throw new \Exception('email already exists', Logger::LEVEL_ERROR);
                 }
                 $user->save();
@@ -280,7 +283,7 @@ class SiteController extends Controller
             if (empty($updatedKeys)) {
                 Ticket::deleteAll(['id_user' => Yii::$app->user->id]);
             } else {
-                $toBeDeleted = Ticket::find()->where(['NOT IN', 'id', $updatedKeys])->all();
+                $toBeDeleted = Ticket::find()->where(['NOT IN', 'id', $updatedKeys])->andWhere(['id_user' => Yii::$app->user->id])->all();
                 foreach ($toBeDeleted as $item) {
                     $item->delete();
                 }
