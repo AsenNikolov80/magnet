@@ -1,3 +1,10 @@
+<style>
+    .ad-container{
+        margin: 15px;
+        box-shadow: 0 2px 5px black;
+        padding: 5px;
+    }
+</style>
 <?php
 /**
  * Created by PhpStorm.
@@ -16,7 +23,22 @@
             <img src="../profile_images/<?= $company->picture ?>">
         </div>
         <div class="col-sm-7">
-            <?= $company->name ?>
+            <h2><?= $company->name ?></h2>
+            <div>
+                Актуални оферти:
+                <div class="row" style="margin: 15px; padding: 5px">
+                    <div class="col-sm-10 text-center">Продукт/услуга</div>
+                    <div class="col-sm-2 text-center">Цена</div>
+                </div>
+                <?php
+                /* @var $ticket \app\models\Ticket */
+                foreach ($tickets as $ticket) { ?>
+                    <div class="row ad-container">
+                        <div class="col-sm-10 text-center"><strong><?= $ticket->text ?></strong></div>
+                        <div class="col-sm-2 text-center"><strong><?= $ticket->price ?></strong></div>
+                    </div>
+                <?php } ?>
+            </div>
         </div>
         <div class=col-sm-12>
             <hr style="border-color: #ccc"/>

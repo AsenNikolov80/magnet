@@ -252,17 +252,39 @@ class SiteController extends Controller
     public function actionViewProfile()
     {
         $companyId = intval($_GET['id']);
+        /* @var $company User */
         $company = User::findOne($companyId);
         if (!$company)
             Yii::$app->session->setFlash('error', 'Няма такъв профил!');
-        return $this->render('view-profile', ['company' => $company]);
+        return $this->render('view-profile', ['company' => $company, 'tickets' => $company->getTickets()]);
     }
 
     public function actionEditAds()
     {
         $user = $this->getCurrentUser();
-        $tickets = $user->getTickets();
-        return $this->render('edit-ads', ['tickets' => $tickets]);
+        if (!empty($_POST['text'])) {
+            $texts = array_filter(Yii::$app->request->post('text'));
+            $prices = array_filter(Yii::$app->request->post('price'));
+            $updatedKeys = [];
+            foreach ($texts as $i => $text) {
+                $ticket = Ticket::findOne($i);
+                if (!$ticket) $ticket = new Ticket();
+                $ticket->id_user = Yii::$app->user->id;
+                $ticket->price = $prices[$i];
+                $ticket->text = $text;
+                $ticket->save();
+                $updatedKeys[] = $ticket->id;
+            }
+            if (empty($updatedKeys)) {
+                Ticket::deleteAll(['id_user' => Yii::$app->user->id]);
+            } else {
+                $toBeDeleted = Ticket::find()->where(['NOT IN', 'id', $updatedKeys])->all();
+                foreach ($toBeDeleted as $item) {
+                    $item->delete();
+                }
+            }
+        }
+        return $this->render('edit-ads', ['tickets' => $user->getTickets()]);
     }
 
     private function getListOfRegionsCities()

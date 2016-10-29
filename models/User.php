@@ -163,6 +163,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
 
     public function getTickets()
     {
-        return Ticket::findAll(['id_user' => Yii::$app->user->id]);
+        return Ticket::findAll(['id_user' => $this->id]);
     }
 }

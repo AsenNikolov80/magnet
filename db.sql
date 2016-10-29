@@ -81,9 +81,11 @@ CREATE TABLE `tickets` (
   PRIMARY KEY (`id`),
   KEY `id_user` (`id_user`),
   CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tickets` */
+
+insert  into `tickets`(`id`,`text`,`id_user`,`price`) values (36,'Ултра яка промоция',3,'3.40'),(37,'Втора добра промоция',3,'2.00');
 
 /*Table structure for table `users` */
 
@@ -114,7 +116,7 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`username`,`password`,`address`,`city_id`,`picture`,`type`,`active`,`email`,`first_name`,`last_name`,`paid_until`,`name`,`sex`,`map_link`) values (1,'admin','$2y$13$YvET/L.tyx2AI5z8zKkQhO4022YYPyz/qFExz6fnHyegYSHU8JrrC','Баба Мота 6',5815,NULL,2,1,'test@test.bg','Шеф','Голем','0000-00-00',NULL,'мъж','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(2,'user','$2y$13$jNsGXbfIPCsM0wPfOQ/.geb6rws1GN1EfFiD.Wtdb/zOATmLIcIVK','',4824,NULL,0,0,'arso@abv.bg','Юзер','Прост','0000-00-00',NULL,'жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(3,'some','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Някъде там 12',5946,'IQCertificate-page-001.jpg',1,1,'some@some.bg','Първи',' Търговец','0000-00-00','Тестова фирма','жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC');
+insert  into `users`(`id`,`username`,`password`,`address`,`city_id`,`picture`,`type`,`active`,`email`,`first_name`,`last_name`,`paid_until`,`name`,`sex`,`map_link`) values (1,'admin','$2y$13$YvET/L.tyx2AI5z8zKkQhO4022YYPyz/qFExz6fnHyegYSHU8JrrC','Баба Мота 6',5815,NULL,2,1,'test@test.bg','Шеф','Голем','0000-00-00',NULL,'мъж','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(2,'user','$2y$13$jNsGXbfIPCsM0wPfOQ/.geb6rws1GN1EfFiD.Wtdb/zOATmLIcIVK','',4824,NULL,0,0,'arso@abv.bg','Юзер','Прост','0000-00-00',NULL,'жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC'),(3,'some','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Някъде там 12',5946,'14183855_10154938949870839_1456825375149936836_n.jpg',1,1,'some@some.bg','Първи',' Търговец','0000-00-00','Тестова фирма','жена','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
