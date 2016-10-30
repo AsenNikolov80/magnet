@@ -30,6 +30,7 @@ class AdminController extends Controller
                         'actions' => [
                             'profiles',
                             'delete-user',
+                            'edit-user',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -80,6 +81,25 @@ class AdminController extends Controller
             $user->delete();
             return $this->redirect(Yii::$app->urlManager->createUrl('admin/profiles'));
         }
+        return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
+    }
+
+    public function actionEditUser()
+    {
+        $request = Yii::$app->request;
+        if ($request->isGet) {
+            $userId = $request->get('userId');
+            $user = User::getUser($userId);
+            return $this->renderPartial('edit-user', ['user' => $user]);
+        } elseif ($request->isPost) {
+            $userId = (int)$_POST['User']['id'];
+            $user = User::findOne($userId);
+            /* @var $user User */
+            $user->setAttributes($request->post('User'));
+            $user->save();
+            return $this->redirect(Yii::$app->urlManager->createUrl('admin/profiles'));
+        }
+        return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
     }
 
     private function getListOfRegionsCities()

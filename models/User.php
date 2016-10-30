@@ -34,6 +34,15 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     const TYPE_COMPANY = 1;
     const TYPE_ADMIN = 2;
 
+    public $cityName;
+
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+        $this->cityName = $this->getCityName();
+    }
+
+
     /**
      * @inheritdoc
      */
@@ -164,7 +173,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return Ticket::findAll(['id_user' => $this->id]);
     }
 
-    public static function getUser($userId){
+    public static function getUser($userId)
+    {
         $user = User::findOne($userId);
         if (!$user) {
             Yii::$app->session->setFlash('error', 'Няма такъв потребител!');

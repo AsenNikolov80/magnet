@@ -18,9 +18,15 @@
     <?php
     \app\components\Components::printFlashMessages();
     if ($company) {
+        if (strlen($company->picture) > 0) {
+            $src = Yii::$app->homeUrl . 'profile_images/' . $company->picture;
+        } else {
+            // default image
+            $src = Yii::$app->homeUrl . 'images/noimage.png';
+        }
         ?>
         <div class="col-sm-5">
-            <img src="../profile_images/<?= $company->picture ?>">
+            <img src="<?= $src ?>">
         </div>
         <div class="col-sm-7">
             <h2><?= $company->name ?></h2>

@@ -1,6 +1,19 @@
 <style>
-    .edit, .remove{
+    .edit, .remove {
         cursor: pointer;
+    }
+
+    .green {
+        background-color: green;
+        color: white;
+    }
+
+    .red {
+        background-color: red;
+        color: white;
+    }
+    #listCompanies th, #listCompanies td{
+        text-align: center;
     }
 </style>
 <?php
@@ -16,7 +29,7 @@ $newUser = new User();
 ?>
 Оттук може да администрирате профилите на предлагащите услуги
 <div class="row">
-    <table id="listCompanies">
+    <table id="listCompanies" style="display: none">
         <thead>
         <tr>
             <th><?= $newUser->getAttributeLabel('username') ?></th>
@@ -37,11 +50,11 @@ $newUser = new User();
                 <td><?= $user->email ?></td>
                 <td><?= $user->name ?></td>
                 <td><?= $user->address ?></td>
-                <td><?= $user->active == 1 ? 'да' : 'не' ?></td>
+                <td class="<?= $user->active == 1 ? 'green' : 'red' ?>"><?= $user->active == 1 ? 'да' : 'не' ?></td>
                 <td><?= Yii::$app->formatter->asDate($user->paid_until) ?></td>
                 <td>
-                    <i class="fa fa-edit fa-2x edit" data-id="<?=$user->id?>"></i>
-                    <i class="fa fa-close fa-2x remove" data-id="<?=$user->id?>"></i>
+                    <i class="fa fa-edit fa-2x edit" data-id="<?= $user->id ?>"></i>
+                    <i class="fa fa-close fa-2x remove" data-id="<?= $user->id ?>"></i>
                 </td>
             </tr>
         <?php } ?>
@@ -73,6 +86,7 @@ $newUser = new User();
                 }
             }
         });
+        $('#listCompanies').show();
         $('#dialogDelete').dialog({
             autoOpen: false,
             resizable: false,
@@ -125,28 +139,28 @@ $newUser = new User();
             width: "auto",
             position: {my: "left top", at: "left+25% top+10%", of: window},
             modal: true,
-            buttons: {
-                "Да, изтрий!": function () {
-                    var url = '<?=Yii::$app->urlManager->createUrl('admin/edit-user')?>';
-                    var userId = $('.ui-dialog input[name="userId"').val();
-                    $.ajax({
-                        url: url,
-                        type: "POST",
-                        data: {userId: userId}
-                    });
+            buttons: [{
+                text: 'Промени!',
+                click: function () {
+                    $('#edit-user').submit();
                     $(this).dialog("close");
                 },
-                "Отказ": function () {
+            }, {
+                text: 'Отказ',
+                click: function () {
                     $(this).dialog("close");
-                }
-            }
+                },
+            }]
         });
 
         $('.edit').click(function () {
             var id = $(this).data('id');
-            $('#dialogDelete').load('<?=Yii::$app->urlManager->createUrl('admin/edit-user')?>' + '?userId=' + id, function () {
-                $('#dialogDelete').dialog('open');
+            $('#dialogEdit').load('<?=Yii::$app->urlManager->createUrl('admin/edit-user')?>' + '?userId=' + id, function () {
+                $('#dialogEdit').dialog('open');
+                $('.ui-dialog-buttonset>button').addClass('btn btn-default');
+                $('.ui-dialog-buttonset>button:first-of-type').addClass('btn-primary');
             });
         });
+
     })
 </script>
