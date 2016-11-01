@@ -49,6 +49,9 @@ AppAsset::register($this);
             ['label' => 'Преглед профили', 'url' => ['/admin/profiles']]
 
             ) : '',
+            Yii::$app->user->isUser() ? (
+            ['label' => 'Избрани обяви', 'url' => ['/site/selected-ads']]
+            ) : '',
             Yii::$app->user->isGuest ? (
             ['label' => 'Вход', 'url' => ['/site/login']]
             ) : (

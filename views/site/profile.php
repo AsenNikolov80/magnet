@@ -30,7 +30,7 @@ use yii\helpers\Html;
     <div class="col-sm-2">
         <h3>Профилна информация</h3>
         <?php
-        if (Yii::$app->user->isUserCompany()) { ?>
+        if (Yii::$app->user->isUserCompany() && Yii::$app->user->isUserActive()) { ?>
             <a title="Оттук може да управлявате обявите си" href="<?=Yii::$app->urlManager->createUrl('site/edit-ads')?>" class="btn btn-primary">
                 Въведи / промени обяви
             </a>
@@ -48,7 +48,8 @@ use yii\helpers\Html;
             echo $form->field($user, 'picture')->fileInput(); ?>
             <div class="col-sm-4">Профилна снимка</div>
             <div class="col-sm-8">
-                <img width="300px" src="../profile_images/<?= $user->picture ?>" alt="profile image"/></div>
+                <a href="../profile_images/<?= $user->picture ?>" target="_blank"><img width="300px" src="../profile_images/<?= $user->picture ?>" alt="profile image"/></a>
+            </div>
         <?php } ?>
         <div class="form-group row" style="margin: 10px 0">
             <label class="col-sm-4 control-label"> Област</label>

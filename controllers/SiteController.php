@@ -37,10 +37,16 @@ class SiteController extends Controller
                             'ads',
                             'view-profile',
                             'edit-ads',
+                            'selected-ads',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
+                            if (($action->id == 'edit-ads' && Yii::$app->user->isUserCompany() && !Yii::$app->user->isUserActive())
+                                || $action->id == 'selected-ads' && !Yii::$app->user->isUser()
+                            ) {
+                                return $this->redirect(Yii::$app->urlManager->createAbsoluteUrl(['site/index']));
+                            }
                             return true;
 //                            return $this->redirect(yii::$app->urlManager->createAbsoluteUrl(['site/index']));
                         }
@@ -236,6 +242,13 @@ class SiteController extends Controller
         /* @var $selectedCommunityId */
         /* @var $selectedRegionId */
         extract($this->getRegionCommunityByCityId($user->city_id));
+        if (!Yii::$app->user->isUserActive()) {
+            Yii::$app->session->setFlash('error', 'Профилът Ви не е активен към момента, не можете да публикувате и/или променяте обяви!');
+            if ($user->active == 0)
+                Yii::$app->session->setFlash('errorAttribute', 'Профилът Ви не е одобрен от администратор');
+            if ($user->paid_until < date('Y-m-d'))
+                Yii::$app->session->setFlash('errorAttribute', 'Не сте извършили плащане, за да може да ползвате нашите услуги');
+        }
         return $this->render('profile', [
             'user' => $user,
             'regions' => $regions,
@@ -250,7 +263,9 @@ class SiteController extends Controller
     public function actionAds()
     {
         $ads = Ticket::find()->all();
-        $companies = User::findAll(['active' => 1, 'type' => User::TYPE_COMPANY]);
+        $companies = User::find()->where(['active' => 1])
+            ->andWhere(['type' => User::TYPE_COMPANY])
+            ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')])->all();
         return $this->render('ads', ['ads' => $ads, 'companies' => $companies]);
     }
 
@@ -290,6 +305,11 @@ class SiteController extends Controller
             }
         }
         return $this->render('edit-ads', ['tickets' => $user->getTickets()]);
+    }
+
+    public function actionSelectedAds()
+    {
+        return $this->render('selected-ads', []);
     }
 
     private function getListOfRegionsCities()

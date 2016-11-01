@@ -31,6 +31,7 @@ use yii\bootstrap\Html;
     <?= $form->field($user, 'username') ?>
     <?= $form->field($user, 'email') ?>
     <?= $form->field($user, 'address') ?>
+    <?= $form->field($user, 'map_link') ?>
     <?= $form->field($user, 'paid_until')->input('text', ['value' => Yii::$app->formatter->asDate($user->paid_until)]) ?>
     <?= $form->field($user, 'active')->radioList([0 => 'Не', 1 => 'Да']) ?>
     <?php

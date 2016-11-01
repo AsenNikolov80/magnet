@@ -29,6 +29,18 @@ class CUser extends \yii\web\User
         return $this->getUserType() == 0;
     }
 
+    public function isUserActive()
+    {
+        if (!$this->isUserCompany()) {
+            return true;
+        } else {
+            $data = (new Query())->select('active, paid_until')
+                ->from(User::tableName())
+                ->where(['id' => \Yii::$app->user->id])->one();
+            return $data['active'] == 1 && $data['paid_until'] >= date('Y-m-d');
+        }
+    }
+
     private function getUserType()
     {
         $type = (new Query())->select('type')
