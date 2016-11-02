@@ -216,7 +216,10 @@ class SiteController extends Controller
     {
         /* @var $user User */
         $user = $this->getCurrentUser();
-        $user->setScenario(User::SCENARIO_REGISTER_COMPANY);
+        if (Yii::$app->user->isUserCompany())
+            $user->setScenario(User::SCENARIO_REGISTER_COMPANY);
+        if (Yii::$app->user->isUser())
+            $user->setScenario(User::SCENARIO_REGISTER_USER);
         if (!empty(Yii::$app->request->post('User'))) {
             $oldPicture = $user->picture;
             $user->setAttributes(Yii::$app->request->post('User'));
@@ -309,6 +312,9 @@ class SiteController extends Controller
 
     public function actionSelectedAds()
     {
+        $user = $this->getCurrentUser();
+        if ($user->selected_ads == 1)
+            $ads = Ticket::findAll([])
         return $this->render('selected-ads', []);
     }
 

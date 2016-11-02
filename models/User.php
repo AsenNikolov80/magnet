@@ -23,6 +23,8 @@ use yii\db\Query;
  * @property string $paid_until
  * @property string $name
  * @property string $map_link
+ * @property integer $subscribed
+ * @property integer $selected_ads
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -61,7 +63,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
             [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
-            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link'], 'safe'],
+            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link', 'subscribed', 'selected_ads'], 'safe'],
         ];
     }
 
@@ -80,6 +82,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'first_name' => 'Първо име',
             'last_name' => 'Фамилия',
             'picture' => 'Снимка',
+            'subscribed' => '',
+            'selected_ads' => '',
         ];
     }
 
