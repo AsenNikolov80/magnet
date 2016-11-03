@@ -265,11 +265,10 @@ class SiteController extends Controller
 
     public function actionAds()
     {
-        $ads = Ticket::find()->all();
         $companies = User::find()->where(['active' => 1])
             ->andWhere(['type' => User::TYPE_COMPANY])
             ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')])->all();
-        return $this->render('ads', ['ads' => $ads, 'companies' => $companies]);
+        return $this->render('ads', ['companies' => $companies]);
     }
 
     public function actionViewProfile()
@@ -313,9 +312,15 @@ class SiteController extends Controller
     public function actionSelectedAds()
     {
         $user = $this->getCurrentUser();
+        $users = [];
         if ($user->selected_ads == 1)
-            $ads = Ticket::findAll([])
-        return $this->render('selected-ads', []);
+            $users = (new Query())->select('u.*')
+                ->from(Ticket::tableName() . ' t')
+                ->innerJoin(User::tableName() . ' u', 't.id_user=u.id')
+                ->where(['u.city_id' => $user->city_id])
+                ->andWhere(['u.active' => 1])
+                ->all();
+        return $this->render('selected-ads', ['users' => $users]);
     }
 
     private function getListOfRegionsCities()
