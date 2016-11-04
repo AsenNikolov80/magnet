@@ -118,7 +118,6 @@ use yii\helpers\Html;
     var companyRegionId = '<?=$selectedRegionId?>';
 
     $(function () {
-        console.log(companyCityId, companyCommunityId, companyRegionId);
         $('#region option[value="' + companyRegionId + '"]').prop('selected', true);
         $('#region').trigger('change');
 

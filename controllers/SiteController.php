@@ -265,10 +265,26 @@ class SiteController extends Controller
 
     public function actionAds()
     {
-        $companies = User::find()->where(['active' => 1])
+        $q = User::find()->where(['active' => 1])
             ->andWhere(['type' => User::TYPE_COMPANY])
-            ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')])->all();
-        return $this->render('ads', ['companies' => $companies]);
+            ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')]);
+        $postName = Yii::$app->request->post('name');
+        $city = Yii::$app->request->post('city');
+        if ($postName) {
+            $q->andWhere(['LIKE', 'name', $postName]);
+        }
+        if ($city) {
+            $q->andWhere(['city_id' => $city]);
+        }
+        $companies = $q->all();
+        list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
+        return $this->render('ads', [
+            'companies' => $companies,
+            'regions' => $regions,
+            'cities' => $cities,
+            'communities' => $communities,
+            'cityRelations' => $cityRelations
+        ]);
     }
 
     public function actionViewProfile()
@@ -313,13 +329,17 @@ class SiteController extends Controller
     {
         $user = $this->getCurrentUser();
         $users = [];
-        if ($user->selected_ads == 1)
-            $users = (new Query())->select('u.*')
+        if ($user->selected_ads == 1) {
+            $usersIds = (new Query())->select('u.id')
                 ->from(Ticket::tableName() . ' t')
                 ->innerJoin(User::tableName() . ' u', 't.id_user=u.id')
                 ->where(['u.city_id' => $user->city_id])
                 ->andWhere(['u.active' => 1])
-                ->all();
+                ->column();
+            foreach ($usersIds as $userId) {
+                $users[] = User::findOne($userId);
+            }
+        }
         return $this->render('selected-ads', ['users' => $users]);
     }
 

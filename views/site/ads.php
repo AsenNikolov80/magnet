@@ -15,19 +15,50 @@
     }
 </style>
 <?php
+use yii\bootstrap\Html;
 
 /* @var $this yii\web\View */
 
 $this->title = 'БГ ПРОМО';
 ?>
-<div class="col-sm-12">
+<div class="row">
     <?php
     \app\components\Components::printFlashMessages();
     ?>
+    <div class="col-xs-12 row">
+        <div class="col-sm-4">
+
+            <h3>Покажи обекти по име:</h3>
+            <?= Html::beginForm();
+            echo Html::textInput('name', '', ['class' => 'form-control', 'style' => 'width:30%', 'required' => true]) . '<br/>';
+            echo Html::submitButton('Търси', ['class' => 'btn btn-info']);
+            echo Html::endForm(); ?>
+        </div>
+        <div class="col-sm-8">
+            <h3>Покажи обекти по населено място:</h3>
+            <?= Html::beginForm(); ?>
+            <div class="col-sm-4">
+                <?= Html::dropDownList('region', '', $regions, ['id' => 'region', 'class' => 'form-control']) ?>
+            </div>
+            <div class="col-sm-4">
+                <?= Html::dropDownList('community', '', $communities, ['id' => 'community', 'class' => 'form-control']) ?>
+            </div>
+            <div class="col-sm-4">
+                <?= Html::dropDownList('city', '', $cities, ['id' => 'city', 'class' => 'form-control']) ?>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <?= Html::submitButton('Търси', ['class' => 'btn btn-info']); ?>
+            <?= Html::endForm(); ?>
+        </div>
+    </div>
     <h2>Списък промоционални обекти</h2>
     <div id="company-list" class="row">
         <?php
         /* @var $company \app\models\User */
+        if(empty($companies))
+            echo '<h3>Няма намерени обекти засега!</h3>';
         foreach ($companies as $company) {
             if (strlen($company->picture) > 0) {
                 $src = Yii::$app->homeUrl . 'profile_images/' . $company->picture;
@@ -45,6 +76,7 @@ $this->title = 'БГ ПРОМО';
                     <div class="col-xs-6">
                         <div><?= $company->name ?></div>
                         <div><?= $company->email ?></div>
+                        <div><?= $company->getCityName() ?></div>
                     </div>
                 </a>
             </div>
@@ -52,7 +84,12 @@ $this->title = 'БГ ПРОМО';
     </div>
 </div>
 <script>
-    function resetHeight(){
+    'use strict';
+    var cityRelations = <?=json_encode($cityRelations)?>;
+    var cities = <?=json_encode($cities)?>;
+    var communities = <?=json_encode($communities)?>;
+
+    function resetHeight() {
         var links = $('a.item');
         var h = links.first().height();
         var l = links.length;
@@ -66,5 +103,8 @@ $this->title = 'БГ ПРОМО';
     $(function () {
         resetHeight();
         $(window).resize(resetHeight);
+
+        $('#region').trigger('change');
+        $('#community').trigger('change');
     })
 </script>

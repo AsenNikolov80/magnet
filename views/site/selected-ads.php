@@ -26,22 +26,23 @@
     <?php
     /* @var $user \app\models\User */
     foreach ($users as $user) {
-        if (strlen($user['picture']) > 0) {
-            $src = Yii::$app->homeUrl . 'profile_images/' . $user['picture'];
+        if (strlen($user->picture) > 0) {
+            $src = Yii::$app->homeUrl . 'profile_images/' . $user->picture;
         } else {
             // default image
             $src = Yii::$app->homeUrl . 'images/noimage.png';
         }
         ?>
         <div class="col-sm-4">
-            <a href="<?= Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $user['id']]) ?>"
+            <a href="<?= Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $user->id]) ?>"
                class="item">
                 <div class="col-xs-6">
                     <img src="<?= $src ?>">
                 </div>
                 <div class="col-xs-6">
-                    <div><?= $user['name'] ?></div>
-                    <div><?= $user['email'] ?></div>
+                    <div><?= $user->name ?></div>
+                    <div><?= $user->email ?></div>
+                    <div><?= $user->getCityName() ?></div>
                 </div>
             </a>
         </div>
