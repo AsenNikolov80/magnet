@@ -49,7 +49,7 @@ AppAsset::register($this);
             ['label' => 'Преглед профили', 'url' => ['/admin/profiles']]
 
             ) : '',
-            Yii::$app->user->isUser() ? (
+            !Yii::$app->user->isGuest && Yii::$app->user->isUser() ? (
             ['label' => 'Избрани обяви', 'url' => ['/site/selected-ads']]
             ) : '',
             Yii::$app->user->isGuest ? (
