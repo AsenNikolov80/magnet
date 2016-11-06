@@ -25,6 +25,7 @@ use yii\db\Query;
  * @property string $map_link
  * @property integer $subscribed
  * @property integer $selected_ads
+ * @property string $last_updated
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -63,7 +64,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
             [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
-            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link', 'subscribed', 'selected_ads'], 'safe'],
+            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link', 'subscribed', 'selected_ads', 'last_updated'], 'safe'],
         ];
     }
 
@@ -84,6 +85,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'picture' => 'Снимка',
             'subscribed' => '',
             'selected_ads' => '',
+            'last_updated' => 'Последна промяна',
         ];
     }
 
@@ -174,7 +176,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
 
     public function getTickets()
     {
-        return Ticket::findAll(['id_user' => $this->id]);
+        if (Yii::$app->user->isUserCompany())
+            return Ticket::findAll(['id_user' => $this->id]);
+        return [];
     }
 
     public static function getUser($userId)

@@ -109,3 +109,6 @@ img{
 .container{
     width: 95%;
 }
+hr{
+    border-color: #aaaaaa;
+}

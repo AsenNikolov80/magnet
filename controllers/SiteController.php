@@ -239,6 +239,7 @@ class SiteController extends Controller
                 } else $user->picture = $oldPicture;
             } else
                 $user->picture = $oldPicture;
+            $user->last_updated = date('Y-m-d H:i:s');
             $user->save();
         }
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
@@ -267,7 +268,8 @@ class SiteController extends Controller
     {
         $q = User::find()->where(['active' => 1])
             ->andWhere(['type' => User::TYPE_COMPANY])
-            ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')]);
+            ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')])
+            ->orderBy('last_updated DESC');
         $postName = Yii::$app->request->post('name');
         $city = Yii::$app->request->post('city');
         if ($postName) {
@@ -336,9 +338,8 @@ class SiteController extends Controller
                 ->where(['u.city_id' => $user->city_id])
                 ->andWhere(['u.active' => 1])
                 ->column();
-            foreach ($usersIds as $userId) {
-                $users[] = User::findOne($userId);
-            }
+            $users[] = User::find()->where(['IN', 'id', $usersIds])->all();
+            $users = $users[0];
         }
         return $this->render('selected-ads', ['users' => $users]);
     }

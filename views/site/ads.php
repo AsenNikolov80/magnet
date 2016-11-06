@@ -53,11 +53,14 @@ $this->title = 'БГ ПРОМО';
             <?= Html::endForm(); ?>
         </div>
     </div>
+    <div class="col-xs-12">
+        <hr/>
+    </div>
     <h2>Списък промоционални обекти</h2>
     <div id="company-list" class="row">
         <?php
         /* @var $company \app\models\User */
-        if(empty($companies))
+        if (empty($companies))
             echo '<h3>Няма намерени обекти засега!</h3>';
         foreach ($companies as $company) {
             if (strlen($company->picture) > 0) {
