@@ -285,7 +285,9 @@ class SiteController extends Controller
             'regions' => $regions,
             'cities' => $cities,
             'communities' => $communities,
-            'cityRelations' => $cityRelations
+            'cityRelations' => $cityRelations,
+            'city' => $city,
+            'postName' => $postName,
         ]);
     }
 
@@ -331,6 +333,7 @@ class SiteController extends Controller
     {
         $user = $this->getCurrentUser();
         $users = [];
+        $cityName = '';
         if ($user->selected_ads == 1) {
             $usersIds = (new Query())->select('u.id')
                 ->from(Ticket::tableName() . ' t')
@@ -340,8 +343,11 @@ class SiteController extends Controller
                 ->column();
             $users[] = User::find()->where(['IN', 'id', $usersIds])->all();
             $users = $users[0];
+            $cityName = $user->getCityName();
+        } else {
+            Yii::$app->session->setFlash('error', 'Не сте заявили достъп до подбрани за Вас обяви от предпочетено населено място! Може да направите това от Вашия профил.');
         }
-        return $this->render('selected-ads', ['users' => $users]);
+        return $this->render('selected-ads', ['users' => $users, 'cityName' => $cityName]);
     }
 
     private function getListOfRegionsCities()

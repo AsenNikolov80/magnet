@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "cities".
@@ -61,5 +62,10 @@ class City extends \yii\db\ActiveRecord
     public function getUsers()
     {
         return $this->hasMany(Users::className(), ['city_id' => 'id']);
+    }
+
+    public static function getCityName($cityId)
+    {
+        return (new Query())->select('name')->from(self::tableName())->where(['id' => $cityId])->scalar();
     }
 }

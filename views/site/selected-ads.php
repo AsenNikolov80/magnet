@@ -22,7 +22,13 @@
  * Time: 22:17
  */
 ?>
+<?php
+\app\components\Components::printFlashMessages();
+?>
 <div class="row">
+    <h2>
+        Подбрани обяви от предпочетено от Вас населено място: <strong><?= $cityName ?></strong>
+    </h2>
     <?php
     /* @var $user \app\models\User */
     foreach ($users as $user) {

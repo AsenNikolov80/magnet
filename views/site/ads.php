@@ -57,6 +57,14 @@ $this->title = 'БГ ПРОМО';
         <hr/>
     </div>
     <h2>Списък промоционални обекти</h2>
+    <?php
+    if ($city) {
+        echo '<h4>Обекти, намиращи се в населено място: <strong>' . \app\models\City::getCityName($city) . '</strong></h4>';
+    }
+    if ($postName) {
+        echo '<h4>Обекти, съдържащи в името си: <strong>' . $postName . '</strong></h4>';
+    }
+    ?>
     <div id="company-list" class="row">
         <?php
         /* @var $company \app\models\User */
