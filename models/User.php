@@ -5,6 +5,7 @@ namespace app\models;
 use yii\db\ActiveRecord;
 use Yii;
 use yii\db\Query;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "users".
@@ -188,5 +189,25 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             Yii::$app->session->setFlash('error', 'Няма такъв потребител!');
         }
         return $user;
+    }
+
+    /**
+     * @param $cityId integer
+     * @param $company User
+     */
+    public static function sendEmailToUsersByCityId($cityId, $company)
+    {
+        $targetUsers = User::find()->where(['city_id' => $cityId])
+            ->andWhere(['type' => User::TYPE_USER])
+            ->andWhere(['subscribed' => 1])->all();
+        foreach ($targetUsers as $targetUser) {
+            /* @var $targetUser User */
+            $to = $targetUser->email;
+            $subject = 'Уведомление за новорегистрирана и интересна за Вас компания';
+            $msg = 'Нова компания "' . $company->name . '" от предпочитаното от Вас населено място <strong>'
+                . $company->getCityName() . '</strong> беше регистрирана при нас! Може да разгледате профила
+                <a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $company->id]) . '">оттук!</a>';
+            mail($to, $subject, $msg);
+        }
     }
 }
