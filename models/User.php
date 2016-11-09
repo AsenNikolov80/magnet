@@ -207,7 +207,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             $msg = 'Нова компания "' . $company->name . '" от предпочитаното от Вас населено място <strong>'
                 . $company->getCityName() . '</strong> беше регистрирана при нас! Може да разгледате профила
                 <a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $company->id]) . '">оттук!</a>';
-            mail($to, $subject, $msg);
+            $headers = "Content-Type: text/html;\r\n charset=utf-8";
+            mail($to, $subject, $msg, $headers);
         }
     }
 }

@@ -182,10 +182,10 @@ class SiteController extends Controller
                 $user->save();
                 $user->password = Yii::$app->getSecurity()->generatePasswordHash($user->password);
                 $user->save(false);
-                Yii::$app->session->setFlash('success', 'Успешно се регистрирахте в системата!');
                 if ($user->scenario == User::SCENARIO_REGISTER_COMPANY) {
                     User::sendEmailToUsersByCityId($user->city_id, $user);
                 }
+                Yii::$app->session->setFlash('success', 'Успешно се регистрирахте в системата!');
                 return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
             } catch (\Exception $e) {
                 Yii::$app->log->getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
