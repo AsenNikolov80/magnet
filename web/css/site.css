@@ -89,26 +89,41 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
-.collapse.navbar-collapse li.active{
+
+.collapse.navbar-collapse li.active {
     border-bottom: 3px solid white;
 }
-.collapse.navbar-collapse li:hover{
+
+.collapse.navbar-collapse li:hover {
     border-bottom: 3px solid #bce8f1;
 }
-nav.navbar-inverse{
+
+nav.navbar-inverse {
     background-color: #333;
 }
-img{
+
+img {
     max-width: 100%;
 }
-.shadow-box{
+
+.shadow-box {
     box-shadow: 0 5px 20px black;
     padding: 15px;
     /*background-color: #dddddd;*/
 }
-.container{
+
+.container {
     width: 95%;
 }
-hr{
+
+hr {
     border-color: #aaaaaa;
+}
+
+textarea, input {
+    padding: 5px;
+}
+
+textarea {
+    resize: vertical;
 }

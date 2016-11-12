@@ -42,13 +42,12 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            if (($action->id == 'edit-ads' && Yii::$app->user->isUserCompany() && !Yii::$app->user->isUserActive())
+                            if (($action->id == 'edit-ads' && !Yii::$app->user->isUserCompany())
                                 || $action->id == 'selected-ads' && !Yii::$app->user->isUser()
                             ) {
                                 return $this->redirect(Yii::$app->urlManager->createAbsoluteUrl(['site/index']));
                             }
                             return true;
-//                            return $this->redirect(yii::$app->urlManager->createAbsoluteUrl(['site/index']));
                         }
                     ],
                     [
@@ -235,7 +234,8 @@ class SiteController extends Controller
                 ) {
                     if ($oldPicture) {
                         $path = Yii::$app->basePath . '/web/profile_images/' . $oldPicture;
-                        unlink($path);
+                        if (file_exists($path))
+                            unlink($path);
                     }
                     $t = move_uploaded_file($_FILES['User']['tmp_name']['picture'], 'profile_images/' . $_FILES['User']['name']['picture']);
                     $user->picture = $_FILES['User']['name']['picture'];
@@ -250,7 +250,6 @@ class SiteController extends Controller
         /* @var $selectedRegionId */
         extract($this->getRegionCommunityByCityId($user->city_id));
         if (!Yii::$app->user->isUserActive()) {
-            Yii::$app->session->setFlash('error', 'Профилът Ви не е активен към момента, не можете да публикувате и/или променяте обяви!');
             if ($user->active == 0)
                 Yii::$app->session->setFlash('errorAttribute', 'Профилът Ви не е одобрен от администратор');
             if ($user->paid_until < date('Y-m-d'))
@@ -301,7 +300,8 @@ class SiteController extends Controller
         $company = User::findOne($companyId);
         if (!$company)
             Yii::$app->session->setFlash('error', 'Няма такъв профил!');
-        return $this->render('view-profile', ['company' => $company, 'tickets' => $company->getTickets()]);
+        list($tickets, $freeTextTickets) = $company->getTickets();
+        return $this->render('view-profile', ['company' => $company, 'tickets' => $tickets, 'freeTextTickets' => $freeTextTickets]);
     }
 
     public function actionEditAds()
@@ -309,16 +309,31 @@ class SiteController extends Controller
         $user = $this->getCurrentUser();
         if (!empty($_POST['text'])) {
             $texts = array_filter(Yii::$app->request->post('text'));
-            $prices = Yii::$app->request->post('price');
+            $texts['free'] = array_filter($texts['free']);
+            $prices = array_filter(Yii::$app->request->post('price'));
             $updatedKeys = [];
             foreach ($texts as $i => $text) {
-                $ticket = Ticket::findOne($i);
-                if (!$ticket) $ticket = new Ticket();
-                $ticket->id_user = Yii::$app->user->id;
-                $ticket->price = $prices[$i];
-                $ticket->text = $text;
-                $ticket->save();
-                $updatedKeys[] = $ticket->id;
+                if ($i === 'free') {
+                    // free text ads
+                    foreach ($text as $key => $item) {
+                        $ticket = Ticket::find()->where(['id' => $key])->andWhere(['type' => Ticket::TYPE_FREE])->one();
+                        if (!$ticket) $ticket = new Ticket();
+                        $ticket->id_user = Yii::$app->user->id;
+                        $ticket->text = $item;
+                        $ticket->type = Ticket::TYPE_FREE;
+                        $ticket->save();
+                        $updatedKeys[] = $ticket->id;
+                    }
+                } else {
+                    $ticket = Ticket::find()->where(['id' => $i])->andWhere(['type' => Ticket::TYPE_PRICE])->one();
+                    if (!$ticket) $ticket = new Ticket();
+                    $ticket->id_user = Yii::$app->user->id;
+                    $ticket->price = $prices[$i];
+                    $ticket->text = $text;
+                    $ticket->type = Ticket::TYPE_PRICE;
+                    $ticket->save();
+                    $updatedKeys[] = $ticket->id;
+                }
             }
             if (empty($updatedKeys)) {
                 Ticket::deleteAll(['id_user' => Yii::$app->user->id]);
@@ -329,27 +344,23 @@ class SiteController extends Controller
                 }
             }
         }
-        return $this->render('edit-ads', ['tickets' => $user->getTickets()]);
+        list($tickets, $freeTextTickets) = $user->getTickets();
+        return $this->render('edit-ads', ['tickets' => $tickets, 'freeTextTickets' => $freeTextTickets]);
     }
 
     public function actionSelectedAds()
     {
         $user = $this->getCurrentUser();
         $users = [];
-        $cityName = '';
-        if ($user->selected_ads == 1) {
-            $usersIds = (new Query())->select('u.id')
-                ->from(Ticket::tableName() . ' t')
-                ->innerJoin(User::tableName() . ' u', 't.id_user=u.id')
-                ->where(['u.city_id' => $user->city_id])
-                ->andWhere(['u.active' => 1])
-                ->column();
-            $users[] = User::find()->where(['IN', 'id', $usersIds])->all();
-            $users = $users[0];
-            $cityName = $user->getCityName();
-        } else {
-            Yii::$app->session->setFlash('error', 'Не сте заявили достъп до подбрани за Вас обяви от предпочетено населено място! Може да направите това от Вашия профил.');
-        }
+        $usersIds = (new Query())->select('u.id')
+            ->from(Ticket::tableName() . ' t')
+            ->innerJoin(User::tableName() . ' u', 't.id_user=u.id')
+            ->where(['u.city_id' => $user->city_id])
+            ->andWhere(['u.active' => 1])
+            ->column();
+        $users[] = User::find()->where(['IN', 'id', $usersIds])->all();
+        $users = $users[0];
+        $cityName = $user->getCityName();
         return $this->render('selected-ads', ['users' => $users, 'cityName' => $cityName]);
     }
 

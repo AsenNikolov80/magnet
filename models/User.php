@@ -25,8 +25,11 @@ use yii\helpers\Html;
  * @property string $name
  * @property string $map_link
  * @property integer $subscribed
- * @property integer $selected_ads
  * @property string $last_updated
+ * @property string $place_name
+ * @property string $phone
+ * @property string $work_time
+ * @property string $description
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -63,9 +66,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['address', 'picture', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
-            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
+            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'place_name'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
-            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link', 'subscribed', 'selected_ads', 'last_updated'], 'safe'],
+            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link', 'subscribed', 'last_updated', 'place_name', 'phone', 'work_time', 'description'], 'safe'],
         ];
     }
 
@@ -85,8 +88,12 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'last_name' => 'Фамилия',
             'picture' => 'Снимка',
             'subscribed' => '',
-            'selected_ads' => '',
             'last_updated' => 'Последна промяна',
+            'map_link' => 'Линк към карта',
+            'place_name' => 'Име на обекта',
+            'phone' => 'Телефон',
+            'work_time' => 'Работно време',
+            'description' => 'Описание'
         ];
     }
 
@@ -177,8 +184,11 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
 
     public function getTickets()
     {
-        if (Yii::$app->user->isUserCompany())
-            return Ticket::findAll(['id_user' => $this->id]);
+        if (Yii::$app->user->isUserCompany()) {
+            $tickets = Ticket::find()->where(['id_user' => $this->id])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
+            $freeTextTickets = Ticket::find()->where(['id_user' => $this->id])->andWhere(['type' => Ticket::TYPE_FREE])->all();
+            return [$tickets, $freeTextTickets];
+        }
         return [];
     }
 

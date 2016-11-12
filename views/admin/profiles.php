@@ -12,7 +12,8 @@
         background-color: red;
         color: white;
     }
-    #listCompanies th, #listCompanies td{
+
+    #listCompanies th, #listCompanies td {
         text-align: center;
     }
 </style>
@@ -136,14 +137,20 @@ $newUser = new User();
                 effect: "explode",
                 duration: 1000
             },
-            width: "auto",
+            width: 600,
             position: {my: "left top", at: "left+25% top+10%", of: window},
             modal: true,
             buttons: [{
                 text: 'Промени!',
                 click: function () {
-                    $('#edit-user').submit();
-                    $(this).dialog("close");
+                    if ($('#user-map_link').val().length > 0) {
+                        $('#edit-user').submit();
+                        $(this).dialog("close");
+                    }else{
+                        $('#warn').remove();
+                        $('#user-map_link').parent().parent().css('border','2px dashed lightcoral');
+                        $('#edit-user').append('<span id="warn" style="color: red;font-size: 1.5em">Линк към карта е задължителен</span>')
+                    }
                 },
             }, {
                 text: 'Отказ',

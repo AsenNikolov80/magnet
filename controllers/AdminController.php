@@ -74,7 +74,7 @@ class AdminController extends Controller
         if ($request->isGet) {
             $userId = $request->get('userId');
             $user = User::getUser($userId);
-            return $this->renderPartial('delete-user', ['user' => $user]);
+            return $this->renderPartial('_delete-user', ['user' => $user]);
         } elseif ($request->isAjax) {
             $userId = $request->post('userId');
             $user = User::getUser($userId);
@@ -90,7 +90,7 @@ class AdminController extends Controller
         if ($request->isGet) {
             $userId = $request->get('userId');
             $user = User::getUser($userId);
-            return $this->renderPartial('edit-user', ['user' => $user]);
+            return $this->renderPartial('_edit-user', ['user' => $user]);
         } elseif ($request->isPost) {
             $userId = (int)$_POST['User']['id'];
             $user = User::findOne($userId);

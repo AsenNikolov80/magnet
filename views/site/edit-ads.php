@@ -1,9 +1,9 @@
 <style>
     label {
-        margin: 10px;
+        margin: 4px;
     }
 
-    .addRow {
+    .addRow, .addRowFree {
         background-color: green;
         color: white;
         border-radius: 50%;
@@ -11,7 +11,7 @@
         cursor: pointer;
     }
 
-    .removeRow {
+    .removeRow, .removeRowFree {
         background-color: red;
         color: white;
         border-radius: 50%;
@@ -21,8 +21,12 @@
 
     textarea {
         vertical-align: middle;
-        resize: vertical;
         height: 70px;
+        margin: 5px;
+    }
+
+    input[type="text"] {
+        max-width: 60px;
     }
 </style>
 <?php
@@ -51,17 +55,29 @@ $newTicket = new Ticket();
         <i class="fa fa-minus removeRow"></i>
     </label>
 </div>
-<div class="col-sm-12">
-    <?php
-    $form = ActiveForm::begin([
-        'id' => 'ads-form',
-        'options' => ['class' => 'form-horizontal'],
-        'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-sm-9\">{input}</div>\n<div class=\"col-sm-12\">{error}</div>",
-            'labelOptions' => ['class' => 'col-sm-3 control-label', 'style' => 'color: black !important'],
-        ],
-    ]); ?>
-    <div id="content">
+
+<div class="newAdsFree" style="display: none">
+    <label><?= $newTicket->getAttributeLabel('text') ?>
+        <?= Html::textarea('text[free][]') ?>
+    </label>
+    <label>
+        <i class="fa fa-plus addRowFree"></i>
+        <i class="fa fa-minus removeRowFree"></i>
+    </label>
+</div>
+<div class="row"">
+<?php
+$form = ActiveForm::begin([
+    'id' => 'ads-form',
+    'options' => ['class' => 'form-horizontal'],
+    'fieldConfig' => [
+        'template' => "{label}\n<div class=\"col-sm-9\">{input}</div>\n<div class=\"col-sm-12\">{error}</div>",
+        'labelOptions' => ['class' => 'col-sm-3 control-label', 'style' => 'color: black !important'],
+    ],
+]); ?>
+<div id="content" class="row">
+    <div class="col-sm-6">
+        <h4>Ценови промоции</h4>
         <?php
         if (!empty($tickets)) {
             /* @var $ticket \app\models\Ticket */
@@ -71,7 +87,7 @@ $newTicket = new Ticket();
                         <?= Html::textarea('text[' . $ticket->id . ']', $ticket->text) ?>
                     </label>
                     <label><?= $newTicket->getAttributeLabel('price') ?>
-                        <?= Html::textInput('price[' . $ticket->id . ']', $ticket->price) ?>
+                        <?= Html::textInput('price[' . $ticket->id . ']', $ticket->price, ['required' => true]) ?>
                     </label>
                     <label><i class="fa fa-minus removeRow"></i></label>
                 </div>
@@ -81,32 +97,60 @@ $newTicket = new Ticket();
             <div>Нямате обяви до момента!</div>
         <?php } ?>
     </div>
-    <div class="col-sm-12">
-        <hr/>
-        <button class="btn btn-primary">Запази</button>
+    <div class="col-sm-6" style="border-left: 1px solid #ccc">
+        <h4>Друг вид промоции</h4>
+        <?php
+        foreach ($freeTextTickets as $freeTextTicket) { ?>
+            <div class="adsListFree">
+                <label><?= $newTicket->getAttributeLabel('text') ?>
+                    <?= Html::textarea('text[free][' . $freeTextTicket->id . ']', $freeTextTicket->text) ?>
+                </label>
+                <label><i class="fa fa-minus removeRowFree"></i></label>
+            </div>
+        <?php } ?>
     </div>
-    <?php ActiveForm::end();
-    ?>
+</div>
+<div class="col-sm-12">
+    <hr/>
+    <button class="btn btn-primary">Запази</button>
+</div>
+<?php ActiveForm::end();
+?>
 </div>
 <script>
     'use strict';
     var newAdDiv = $('.newAds').first().clone();
+    var newAdDivFree = $('.newAdsFree').first().clone();
     function addRow() {
         $('.addRow').hide();
         $('.removeRow').show();
         newAdDiv.show();
         newAdDiv.find('.addRow').show();
         newAdDiv.find('.removeRow').hide();
-        $('#ads-form #content').append(newAdDiv[0].outerHTML);
+        $('#ads-form #content>div.col-sm-6:first-child').append(newAdDiv[0].outerHTML);
+    }
+    function addRowFree() {
+        $('.addRowFree').hide();
+        $('.removeRowFree').show();
+        newAdDivFree.show();
+        newAdDivFree.find('.addRowFree').show();
+        newAdDivFree.find('.removeRowFree').hide();
+        $('#ads-form #content>div.col-sm-6:nth-child(2)').append(newAdDivFree[0].outerHTML);
     }
 
     function removeRow() {
         $(this).parent().parent().remove();
     }
+    function removeRowFree() {
+        $(this).parent().parent().remove();
+    }
 
     $(function () {
         addRow();
+        addRowFree();
         $(document).on('click', '.addRow', addRow);
         $(document).on('click', '.removeRow', removeRow);
+        $(document).on('click', '.addRowFree', addRowFree);
+        $(document).on('click', '.removeRowFree', removeRowFree);
     });
 </script>

@@ -26,14 +26,18 @@
         }
         ?>
         <div class="col-sm-5">
-            <img src="<?= $src ?>">
+            <a href="<?= $src ?>" target="_blank"><img src="<?= $src ?>"></a>
+            <div>
+                <h4>
+                    <?= $company->getCityName() . ', ' . $company->address ?>
+                </h4>
+            </div>
         </div>
         <div class="col-sm-7">
             <h2><?= $company->name ?></h2>
             <div>
-                Актуални оферти:
                 <div class="row" style="margin: 15px; padding: 5px">
-                    <div class="col-sm-10 text-center">Продукт/услуга</div>
+                    <div class="col-sm-10 text-center">Продукт / услуга</div>
                     <div class="col-sm-2 text-center">Цена</div>
                 </div>
                 <?php
@@ -44,9 +48,19 @@
                         <div class="col-sm-2 text-center"><strong><?= $ticket->price ?></strong></div>
                     </div>
                 <?php } ?>
+                <div class="text-center">
+                    <hr/>
+                    Друг вид промоции
+                </div>
+                <?php
+                foreach ($freeTextTickets as $ticket) { ?>
+                    <div class="row ad-container">
+                        <div class="col-sm-12 text-center"><strong><?= $ticket->text ?></strong></div>
+                    </div>
+                <?php } ?>
             </div>
         </div>
-        <div class=col-sm-12>
+        <div class="col-sm-12">
             <hr style="border-color: #ccc"/>
         </div>
         <div class="col-sm-12 text-center" id="map-holder">

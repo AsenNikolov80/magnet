@@ -4,6 +4,9 @@
         display: inline-block;
         border: 1px solid #aaaaaa;
         box-shadow: 2px 2px 10px black;
+        border-radius: 10px;
+        padding: 5px;
+        background-color: #ccc;
     }
 
     .col-sm-4 > a {
@@ -85,7 +88,7 @@ $this->title = 'БГ ПРОМО';
                         <img src="<?= $src ?>">
                     </div>
                     <div class="col-xs-6">
-                        <div><?= $company->name ?></div>
+                        <div><?= $company->place_name ?></div>
                         <div><?= $company->email ?></div>
                         <div><?= $company->getCityName() ?></div>
                     </div>

@@ -9,6 +9,20 @@
         width: 15px;
         height: 15px;
     }
+
+    input[type="file"] {
+        background-color: green;
+        display: none;
+    }
+
+    #fileChoose {
+        background-color: green;
+        color: white;
+        display: none;
+        cursor: pointer;
+        padding: 4px 9px;
+        border-radius: 5px;
+    }
 </style>
 <?php
 /**
@@ -36,7 +50,7 @@ use yii\helpers\Html;
     <div class="col-sm-2">
         <h3>Профилна информация</h3>
         <?php
-        if (Yii::$app->user->isUserCompany() && Yii::$app->user->isUserActive()) { ?>
+        if (Yii::$app->user->isUserCompany()) { ?>
             <a title="Оттук може да управлявате обявите си"
                href="<?= Yii::$app->urlManager->createUrl('site/edit-ads') ?>" class="btn btn-primary">
                 Въведи / промени обяви
@@ -52,12 +66,20 @@ use yii\helpers\Html;
         <?= (Yii::$app->user->isUserCompany()) ? $form->field($user, 'name')->textInput() : '' ?>
         <?php
         if (Yii::$app->user->isUserCompany()) {
-            echo $form->field($user, 'picture')->fileInput(); ?>
-            <div class="col-sm-4">Профилна снимка</div>
+            echo $form->field($user, 'place_name')->textInput();
+            echo $form->field($user, 'phone')->textInput();
+            echo $form->field($user, 'work_time')->textInput();
+            echo $form->field($user, 'description')->textarea(['style' => 'height: 150px;resize: vertical']); ?>
+            <div style="position: relative">
+                <?php
+                echo $form->field($user, 'picture')->fileInput(['style' => 'display:none']); ?>
+                <div id="fileChoose">Избери файл</div>
+            </div>
+            <label class="col-sm-4 control-label">Профилна снимка</label>
             <div class="col-sm-8">
-                <a href="../profile_images/<?= $user->picture ?>" target="_blank"><img width="300px"
-                                                                                       src="../profile_images/<?= $user->picture ?>"
-                                                                                       alt="profile image"/></a>
+                <a href="../profile_images/<?= $user->picture ?>" target="_blank">
+                    <img width="300px" src="../profile_images/<?= $user->picture ?>" alt="profile image"/>
+                </a>
             </div>
         <?php } ?>
 
@@ -83,23 +105,21 @@ use yii\helpers\Html;
             </div>
         </div>
         <?= $form->field($user, 'city_id')->dropDownList($cities, ['id' => 'city']) ?>
-        <div class="form-group row">
-            <div class="col-sm-8 pull-right">
-                <label>
-                    <?= Html::activeCheckbox($user, 'subscribed', ['class' => 'checkboxInput']) ?>
-                   * Абонирам се за имейл бюлетин, така ще получавам най-новите обяви от населеното място, което
-                    предпочитам
-                </label>
+        <?php
+        if (Yii::$app->user->isUser()) {
+            ?>
+            <div class="form-group row">
+                <div class="col-sm-8 pull-right">
+                    <label>
+                        <?= Html::activeCheckbox($user, 'subscribed', ['class' => 'checkboxInput']) ?>
+                        * Абонирам се за имейл бюлетин, така ще получавам най-новите обяви от населеното място, което
+                        предпочитам
+                    </label>
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-8 pull-right">
-                <label>
-                    <?= Html::activeCheckbox($user, 'selected_ads', ['class' => 'checkboxInput']) ?>
-                   * Искам да получавам достъп до списък с обяви, от избраното от мен населено място
-                </label>
-            </div>
-        </div>
+            <?php
+        }
+        ?>
         <div class="form-group row">
             <div class="col-sm-8 pull-right">
                 <?= Html::submitButton('Редактирай', ['class' => 'btn btn-primary', 'name' => 'create-button']) ?>
@@ -125,5 +145,10 @@ use yii\helpers\Html;
         $('#community').trigger('change');
 
         $('#city option[value="' + companyCityId + '"]').prop('selected', true);
+        $('#fileChoose').appendTo($('div.field-user-picture .col-sm-8')).css('display', 'inline-block');
+
+        $('#fileChoose').click(function () {
+            $('input[type="file"]').trigger('click');
+        })
     });
 </script>

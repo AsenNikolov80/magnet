@@ -11,11 +11,15 @@ use Yii;
  * @property string $text
  * @property string $id_user
  * @property string $price
+ * @property string $type
  *
  * @property User $idUser
  */
 class Ticket extends \yii\db\ActiveRecord
 {
+    const TYPE_PRICE = 'price';
+    const TYPE_FREE = 'free';
+
     /**
      * @inheritdoc
      */
@@ -30,10 +34,11 @@ class Ticket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['text', 'id_user', 'price'], 'required'],
+            [['text', 'id_user'], 'required'],
             [['id_user'], 'integer'],
             [['text'], 'string', 'max' => 500],
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
+            [['price', 'type'], 'safe'],
         ];
     }
 
@@ -44,7 +49,7 @@ class Ticket extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'text' => 'Текст на обявата',
+            'text' => 'Промоция',
             'id_user' => 'Потребител',
             'price' => 'Цена',
         ];
