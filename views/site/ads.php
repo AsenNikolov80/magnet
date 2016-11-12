@@ -74,6 +74,7 @@ $this->title = 'БГ ПРОМО';
         if (empty($companies))
             echo '<h3>Няма намерени обекти засега!</h3>';
         foreach ($companies as $company) {
+            $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]);
             if (strlen($company->picture) > 0) {
                 $src = Yii::$app->homeUrl . 'profile_images/' . $company->picture;
             } else {
@@ -82,17 +83,18 @@ $this->title = 'БГ ПРОМО';
             }
             ?>
             <div class="col-sm-4">
-                <a href="<?= Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) ?>"
-                   class="item">
+                <div class="item">
                     <div class="col-xs-6">
-                        <img src="<?= $src ?>">
+                        <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>"></a>
                     </div>
                     <div class="col-xs-6">
-                        <div><?= $company->place_name ?></div>
-                        <div><?= $company->email ?></div>
-                        <div><?= $company->getCityName() ?></div>
+                        <div><h3><a href="<?= $profileUrl ?>" title="виж профил"><?= $company->place_name ?></a></h3></div>
+                        <div>категория: <?= $company->getCategoryName() ?></div>
+                        <div>емайл: <?= $company->email ?></div>
+                        <div>телефон: <?= $company->phone ?></div>
+                        <div>нас. място: <?= $company->getCityName() ?></div>
                     </div>
-                </a>
+                </div>
             </div>
         <?php } ?>
     </div>
@@ -104,7 +106,7 @@ $this->title = 'БГ ПРОМО';
     var communities = <?=json_encode($communities)?>;
 
     function resetHeight() {
-        var links = $('a.item');
+        var links = $('.item');
         var h = links.first().height();
         var l = links.length;
         for (var i = 0; i < l; i++) {
@@ -112,7 +114,7 @@ $this->title = 'БГ ПРОМО';
             if (currentH > h)
                 h = links[i].offsetHeight;
         }
-        $('a.item').height(h);
+        $('.item').height(h);
     }
     $(function () {
         resetHeight();

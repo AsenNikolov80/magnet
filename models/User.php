@@ -30,6 +30,7 @@ use yii\helpers\Html;
  * @property string $phone
  * @property string $work_time
  * @property string $description
+ * @property integer $cat_id
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -66,9 +67,31 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['address', 'picture', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
-            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'place_name'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
+            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'place_name', 'cat_id'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
-            [['email', 'password', 'city_id', 'picture', 'type', 'active', 'username', 'address', 'first_name', 'last_name', 'paid_until', 'map_link', 'subscribed', 'last_updated', 'place_name', 'phone', 'work_time', 'description'], 'safe'],
+            [
+                [
+                    'email',
+                    'password',
+                    'city_id',
+                    'picture',
+                    'type',
+                    'active',
+                    'username',
+                    'address',
+                    'first_name',
+                    'last_name',
+                    'paid_until',
+                    'map_link',
+                    'subscribed',
+                    'last_updated',
+                    'place_name',
+                    'phone',
+                    'work_time',
+                    'description'
+                    , 'cat_id'
+                ], 'safe'
+            ]
         ];
     }
 
@@ -177,9 +200,12 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
 
     public function getCityName()
     {
-        return (new Query())->select('name')
-            ->from(City::tableName())
-            ->where(['id' => $this->city_id])->scalar();
+        return (new Query())->select('name')->from(City::tableName())->where(['id' => $this->city_id])->scalar();
+    }
+
+    public function getCategoryName()
+    {
+        return (new Query())->select('name')->from('categories')->where(['id' => $this->cat_id])->scalar();
     }
 
     public function getTickets()

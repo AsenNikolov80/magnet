@@ -1,8 +1,12 @@
 <style>
     .ad-container {
-        margin: 15px;
         box-shadow: 0 2px 5px black;
         padding: 5px;
+    }
+    .priceHolder{
+        background-color: #ff5653;
+        color: white;
+        font-size: 1.3em;
     }
 </style>
 <?php
@@ -35,30 +39,30 @@
         </div>
         <div class="col-sm-7">
             <h2><?= $company->name ?></h2>
-            <div>
-                <div class="row" style="margin: 15px; padding: 5px">
-                    <div class="col-sm-10 text-center">Продукт / услуга</div>
-                    <div class="col-sm-2 text-center">Цена</div>
-                </div>
-                <?php
-                /* @var $ticket \app\models\Ticket */
-                foreach ($tickets as $ticket) { ?>
-                    <div class="row ad-container">
-                        <div class="col-sm-10 text-center"><strong><?= $ticket->text ?></strong></div>
-                        <div class="col-sm-2 text-center"><strong><?= $ticket->price ?></strong></div>
-                    </div>
-                <?php } ?>
-                <div class="text-center">
-                    <hr/>
-                    Друг вид промоции
-                </div>
-                <?php
-                foreach ($freeTextTickets as $ticket) { ?>
-                    <div class="row ad-container">
-                        <div class="col-sm-12 text-center"><strong><?= $ticket->text ?></strong></div>
-                    </div>
-                <?php } ?>
+            <div class="row" style="margin-bottom: 15px;">
+                <div class="col-sm-9 text-center">Продукт / услуга</div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-2 text-center">Цена</div>
             </div>
+            <?php
+            /* @var $ticket \app\models\Ticket */
+            foreach ($tickets as $ticket) { ?>
+                <div class="row" style="margin: 10px 0">
+                    <div class="ad-container col-sm-9 text-center"><strong><?= $ticket->text ?></strong></div>
+                    <div class="col-sm-1"></div>
+                    <div class="ad-container col-sm-2 text-center priceHolder"><strong style="text-shadow: 0 2px 5px black"><?= $ticket->price ?></strong></div>
+                </div>
+            <?php } ?>
+            <div class="text-center">
+                <hr/>
+                Друг вид промоции
+            </div>
+            <?php
+            foreach ($freeTextTickets as $ticket) { ?>
+                <div class="row ad-container" style="text-align: justify">
+                    <div class="col-sm-12"><strong><?= $ticket->text ?></strong></div>
+                </div>
+            <?php } ?>
         </div>
         <div class="col-sm-12">
             <hr style="border-color: #ccc"/>
