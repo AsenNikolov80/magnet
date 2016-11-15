@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\City;
+use app\models\Settings;
 use app\models\Ticket;
 use app\models\User;
 use Yii;
@@ -31,6 +32,7 @@ class AdminController extends Controller
                             'profiles',
                             'delete-user',
                             'edit-user',
+                            'invoice-data',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -96,10 +98,24 @@ class AdminController extends Controller
             $user = User::findOne($userId);
             /* @var $user User */
             $user->setAttributes($request->post('User'));
+            if ($user->active == 1) {
+                User::sendEmailToUsersByCompany($user);
+            }
             $user->save();
             return $this->redirect(Yii::$app->urlManager->createUrl('admin/profiles'));
         }
         return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
+    }
+
+    public function actionInvoiceData()
+    {
+        if (isset($_POST['updateCompany']) && !empty($_POST['Company'])) {
+            $companyData = $_POST['Company'];
+            foreach ($companyData as $name => $value) {
+                Settings::set($name, $value);
+            }
+        }
+        return $this->render('invoice-data');
     }
 
     private function getListOfRegionsCities()

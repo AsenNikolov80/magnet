@@ -37,6 +37,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Начало', 'url' => ['/site/index']],
+            ['label' => 'Тест ПДФ', 'url' => ['/site/pdf']],
             ['label' => 'Обяви', 'url' => ['/site/ads']],
 
             ['label' => 'За нас', 'url' => ['/site/about']],
@@ -47,6 +48,10 @@ AppAsset::register($this);
             ) : ['label' => 'Профил', 'url' => ['/site/profile']],
             Yii::$app->user->isUserAdmin() ? (
             ['label' => 'Преглед профили', 'url' => ['/admin/profiles']]
+
+            ) : '',
+            Yii::$app->user->isUserAdmin() ? (
+            ['label' => 'Данни за фактура', 'url' => ['/admin/invoice-data']]
 
             ) : '',
             !Yii::$app->user->isGuest && Yii::$app->user->isUser() ? (

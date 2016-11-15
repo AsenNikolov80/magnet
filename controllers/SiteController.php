@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\City;
+use app\models\InvoiceData;
 use app\models\Ticket;
 use app\models\User;
 use Yii;
@@ -13,6 +14,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use TCPDF;
 
 class SiteController extends Controller
 {
@@ -38,6 +40,8 @@ class SiteController extends Controller
                             'view-profile',
                             'edit-ads',
                             'selected-ads',
+                            'pdf',
+                            'create-invoice',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -59,6 +63,7 @@ class SiteController extends Controller
                             'contact',
                             'ads',
                             'view-profile',
+                            'pds',
                         ],
                         'roles' => ['?'],
                         'allow' => true,
@@ -181,9 +186,6 @@ class SiteController extends Controller
                 $user->save();
                 $user->password = Yii::$app->getSecurity()->generatePasswordHash($user->password);
                 $user->save(false);
-                if ($user->scenario == User::SCENARIO_REGISTER_COMPANY) {
-                    User::sendEmailToUsersByCityId($user->city_id, $user);
-                }
                 Yii::$app->session->setFlash('success', 'Успешно се регистрирахте в системата!');
                 return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
             } catch (\Exception $e) {
@@ -343,6 +345,7 @@ class SiteController extends Controller
                     $item->delete();
                 }
             }
+            User::sendEmailToUsersByCompany($user, false);
         }
         list($tickets, $freeTextTickets) = $user->getTickets();
         return $this->render('edit-ads', ['tickets' => $tickets, 'freeTextTickets' => $freeTextTickets]);
@@ -362,6 +365,28 @@ class SiteController extends Controller
         $users = $users[0];
         $cityName = $user->getCityName();
         return $this->render('selected-ads', ['users' => $users, 'cityName' => $cityName]);
+    }
+
+    public function actionPdf()
+    {
+        return $this->render('invoice');
+    }
+
+    public function actionCreateInvoice()
+    {
+        $model = new InvoiceData();
+        $model->date = date('d.m.Y');
+        $pdf = new TCPDF('P');
+        $pdf->setPrintHeader(false);
+        $pdf->SetMargins(15, 10, 15);
+        $pdf->setCellHeightRatio(1);
+        $pdf->SetFontSize(14);
+        $pdf->AddPage();
+        $pdf->writeHTML($this->renderPartial('_proforma', ['model' => $model]));
+        $pdf->setPrintFooter();
+//        $pdf->lastPage();
+        $pdf->Output();
+        $pdf->get();
     }
 
     private function getListOfRegionsCities()

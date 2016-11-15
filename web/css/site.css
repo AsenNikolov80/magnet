@@ -101,13 +101,15 @@ a.desc:after {
 nav.navbar-inverse {
     background-color: #003975;
 }
-.navbar-inverse .navbar-nav > li{
+
+.navbar-inverse .navbar-nav > li {
     /*border: 0;*/
     /*border-color: whitesmoke;*/
     /*border-left-width: 1px;*/
     /*border-right-width: 1px;*/
     /*border-style: solid;*/
 }
+
 .navbar-inverse .navbar-nav > li > a {
     color: white;
 }
@@ -140,4 +142,12 @@ textarea, input {
 
 textarea {
     resize: vertical;
+}
+
+ul.navbar-nav.navbar-right.nav {
+    font-size: 0.9em;
+}
+
+ul.navbar-nav.navbar-right.nav li > a {
+    padding: 15px 10px;
 }

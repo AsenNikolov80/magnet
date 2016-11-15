@@ -210,7 +210,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
 
     public function getTickets()
     {
-        if (Yii::$app->user->isUserCompany()) {
+        if ($this->type == User::TYPE_COMPANY) {
             $tickets = Ticket::find()->where(['id_user' => $this->id])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
             $freeTextTickets = Ticket::find()->where(['id_user' => $this->id])->andWhere(['type' => Ticket::TYPE_FREE])->all();
             return [$tickets, $freeTextTickets];
@@ -228,23 +228,32 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * @param $cityId integer
      * @param $company User
      */
-    public static function sendEmailToUsersByCityId($cityId, $company)
+    public static function sendEmailToUsersByCompany($company, $register = true)
     {
-        $targetUsers = User::find()->where(['city_id' => $cityId])
-            ->andWhere(['type' => User::TYPE_USER])
-            ->andWhere(['subscribed' => 1])->all();
-        foreach ($targetUsers as $targetUser) {
-            /* @var $targetUser User */
-            $to = $targetUser->email;
-            $subject = 'Уведомление за новорегистрирана и интересна за Вас компания';
-            $msg = 'Нова компания "' . $company->name . '" от предпочитаното от Вас населено място <strong>'
-                . $company->getCityName() . '</strong> беше регистрирана при нас! Може да разгледате профила
-                <a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $company->id]) . '">оттук!</a>';
-            $headers = "Content-Type: text/html;\r\n charset=utf-8";
-            mail($to, $subject, $msg, $headers);
+        if ($company->active == 1) {
+            $targetUsers = User::find()->where(['city_id' => $company->city_id])
+                ->andWhere(['type' => User::TYPE_USER])
+                ->andWhere(['subscribed' => 1])->all();
+            $to = '';
+            $subject = '';
+            $msg = '';
+            foreach ($targetUsers as $targetUser) {
+                /* @var $targetUser User */
+                $link = '<a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $company->id]) . '">от тук!</a>';
+                if ($register === true) {
+                    $subject = 'Уведомление за новорегистрирана и интересна за Вас компания';
+                    $msg = 'Уважаеми/а г-н/г-жа '.$targetUser->first_name.' '.$targetUser->last_name.',<br/> Нова компания "' . $company->name . '" от предпочитаното от Вас населено място <strong>'
+                        . $company->getCityName() . '</strong> беше регистрирана при нас! Може да разгледате профила ' . $link;
+                } else {
+                    $subject = 'Уведомление за промяна в списък на промоционални оферти на интересна за Вас компания';
+                    $msg = 'Уважаеми/а г-н/г-жа '.$targetUser->first_name.' '.$targetUser->last_name.',<br/> Обект: ' . $company->place_name . ' от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
+                }
+                $to = $targetUser->email;
+                $headers = "Content-Type: text/html;\r\n charset=utf-8";
+                mail($to, $subject, $msg, $headers);
+            }
         }
     }
 }
