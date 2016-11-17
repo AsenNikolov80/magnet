@@ -15,6 +15,13 @@ class InvoiceData extends Model
     public $senderData = [];
     public $number = 15;
     public $date;
+    public $rec_name;
+    public $rec_address;
+    public $rec_country;
+    public $rec_bulstat;
+    public $rec_dds;
+    public $rec_mol;
+
     public function __construct(array $config = [])
     {
         parent::__construct($config);
@@ -24,4 +31,14 @@ class InvoiceData extends Model
         }
     }
 
+    public function getRecipientData()
+    {
+        $user = User::findOne(\Yii::$app->user->id);
+        $this->rec_name = $user->name;
+        $this->rec_address = $user->address;
+        $this->rec_bulstat = $user->bulstat;
+        $this->rec_country = "България";
+        $this->rec_dds = $user->dds;
+        $this->rec_mol = $user->mol;
+    }
 }

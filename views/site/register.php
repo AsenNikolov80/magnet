@@ -50,12 +50,15 @@ use yii\helpers\Html;
         </div>
         <?php
         echo $form->field($user, 'city_id')->dropDownList($cities, ['style' => '', 'id' => 'city']);
-        echo $form->field($user, 'email')->textInput(['type'=>'email']);
+        echo $form->field($user, 'email')->textInput(['type' => 'email']);
         echo $form->field($user, 'first_name');
         echo $form->field($user, 'last_name');
         echo $form->field($user, 'address');
         if ($user->type == 1) {
             echo $form->field($user, 'name');
+            echo $form->field($user, 'bulstat');
+            echo $form->field($user, 'dds');
+            echo $form->field($user, 'mol');
         }
         echo $form->field($user, 'type')->hiddenInput()->label(false);
         ?>

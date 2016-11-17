@@ -55,6 +55,11 @@ use yii\helpers\Html;
                href="<?= Yii::$app->urlManager->createUrl('site/edit-ads') ?>" class="btn btn-primary">
                 Въведи / промени обяви
             </a>
+            <br/>
+            <br/>
+            <a target="_blank" class="btn btn-info" href="<?= Yii::$app->urlManager->createUrl('site/create-invoice') ?>">
+                Създай проформа фактура за плащане
+            </a>
         <?php } ?>
     </div>
     <div class="col-sm-10">
@@ -63,9 +68,12 @@ use yii\helpers\Html;
         <?= $form->field($user, 'last_name')->textInput() ?>
         <?= $form->field($user, 'email')->textInput() ?>
         <?= $form->field($user, 'address')->textInput() ?>
-        <?= (Yii::$app->user->isUserCompany()) ? $form->field($user, 'name')->textInput() : '' ?>
         <?php
         if (Yii::$app->user->isUserCompany()) {
+            echo $form->field($user, 'name')->textInput();
+            echo $form->field($user, 'bulstat')->textInput();
+            echo $form->field($user, 'dds')->textInput();
+            echo $form->field($user, 'mol')->textInput();
             echo $form->field($user, 'place_name')->textInput();
             echo $form->field($user, 'phone')->textInput();
             echo $form->field($user, 'work_time')->textInput();
