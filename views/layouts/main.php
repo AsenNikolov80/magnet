@@ -54,6 +54,10 @@ AppAsset::register($this);
             ['label' => 'Данни за фактура', 'url' => ['/admin/invoice-data']]
 
             ) : '',
+            Yii::$app->user->isUserAdmin() ? (
+            ['label' => 'Подадени проформи', 'url' => ['/admin/proformi']]
+
+            ) : '',
             !Yii::$app->user->isGuest && Yii::$app->user->isUser() ? (
             ['label' => 'Избрани обяви', 'url' => ['/site/selected-ads']]
             ) : '',

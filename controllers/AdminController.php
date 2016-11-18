@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\City;
+use app\models\Proforma;
 use app\models\Settings;
 use app\models\Ticket;
 use app\models\User;
@@ -33,6 +34,7 @@ class AdminController extends Controller
                             'delete-user',
                             'edit-user',
                             'invoice-data',
+                            'proformi',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -116,6 +118,12 @@ class AdminController extends Controller
             }
         }
         return $this->render('invoice-data');
+    }
+
+    public function actionProformi()
+    {
+        $proformi = Proforma::findAll(['paid' => 0]);
+        return $this->render('proformi', ['proformi' => $proformi]);
     }
 
     private function getListOfRegionsCities()

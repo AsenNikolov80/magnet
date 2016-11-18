@@ -13,7 +13,7 @@ use yii\base\Model;
 class InvoiceData extends Model
 {
     public $senderData = [];
-    public $number = 15;
+    public $number;
     public $date;
     public $rec_name;
     public $rec_address;
