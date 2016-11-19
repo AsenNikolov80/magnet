@@ -23,19 +23,24 @@
             </thead>
             <tbody>
             <?php
-             /* @var $proforma \app\models\Proforma*/
+            /* @var $proforma \app\models\Proforma */
             foreach ($proformi as $proforma) {
                 $user = $proforma->getUser();
                 ?>
                 <tr>
-                    <td><?=$proforma->id?></td>
-                    <td><?=$user->name?></td>
-                    <td><?=$user->place_name?></td>
-                    <td><?=$user->address?></td>
-                    <td><?=$user->mol?></td>
-                    <td><?=$user->username?></td>
-                    <td><a class="btn btn-info">Преглед фактура!</a></td>
-                    <td><button class="btn btn-warning">Издай фактура!</button></td>
+                    <td><?= $proforma->id ?></td>
+                    <td><?= $user->name ?></td>
+                    <td><?= $user->place_name ?></td>
+                    <td><?= $user->address ?></td>
+                    <td><?= $user->mol ?></td>
+                    <td><?= $user->username ?></td>
+                    <td><a target="_blank" class="btn btn-info"
+                           href="<?= Yii::$app->urlManager->createUrl(['admin/preview', 'id' => $proforma->id]) ?>">Преглед
+                            проформа-фактура!</a></td>
+                    <td>
+                        <a target="_blank" href="<?= Yii::$app->urlManager->createUrl(['admin/create-invoice', 'id' => $proforma->id]) ?>"
+                           class="btn btn-warning">Издай фактура!</a>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -43,7 +48,7 @@
     </div>
 </div>
 <script>
-    $(function(){
+    $(function () {
         $('#listProformi').dataTable({
             "language": {
                 "search": "Търси:",

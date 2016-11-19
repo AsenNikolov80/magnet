@@ -42,7 +42,6 @@ class SiteController extends Controller
                             'view-profile',
                             'edit-ads',
                             'selected-ads',
-                            'pdf',
                             'create-invoice',
                         ],
                         'allow' => true,
@@ -369,10 +368,6 @@ class SiteController extends Controller
         return $this->render('selected-ads', ['users' => $users, 'cityName' => $cityName]);
     }
 
-    public function actionPdf()
-    {
-        return $this->render('invoice');
-    }
 
     public function actionCreateInvoice()
     {
@@ -380,21 +375,15 @@ class SiteController extends Controller
         $model = new InvoiceData();
         $model->getRecipientData();
         $model->date = date('d.m.Y');
-        $pdf = new TCPDF('P');
-        $pdf->setPrintHeader(false);
-        $pdf->SetMargins(10, 10, 10);
-        $pdf->setCellHeightRatio(1);
-        $pdf->SetFontSize(14);
-        $pdf->AddPage();
+
         $items = [];
         $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+2 days'));
         $items[0]['price'] = 25;
         $items[0]['q'] = 1;
 
-        $pdf->setPrintFooter(false);
-        $pdf->setFooterMargin(1);
-        $fileName = 'proforma.pdf';
+        $fileName = Proforma::FILE_NAME;
         $fileHandler = new FileComponent();
+        $pdf = $fileHandler->preparePdfData();
         $path = $fileHandler->filePathProforma;
         if (!file_exists($path)) {
             mkdir($path);
@@ -413,7 +402,7 @@ class SiteController extends Controller
             $proforma->save();
         }
         $model->number = $proforma->id;
-        $pdf->writeHTML($this->renderPartial('_proforma', ['model' => $model, 'items' => $items]));
+        $pdf->writeHTML($this->renderPartial('_proforma', ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_PROFORMA]));
 //        $pdf->lastPage();
         $pdf->Output($path . $fileName, 'F');
         $pdf->get();

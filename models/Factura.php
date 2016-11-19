@@ -11,7 +11,7 @@ use Yii;
  * @property string $user_id
  * @property string $path
  *
- * @property Users $user
+ * @property User $user
  */
 class Factura extends \yii\db\ActiveRecord
 {
@@ -32,7 +32,7 @@ class Factura extends \yii\db\ActiveRecord
             [['user_id', 'path'], 'required'],
             [['user_id'], 'integer'],
             [['path'], 'string', 'max' => 500],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -49,10 +49,10 @@ class Factura extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return User
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id'])->one();
     }
 }

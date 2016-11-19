@@ -31,9 +31,11 @@ class InvoiceData extends Model
         }
     }
 
-    public function getRecipientData()
+    public function getRecipientData($userId = false)
     {
-        $user = User::findOne(\Yii::$app->user->id);
+        if (!$userId)
+            $user = User::findOne(\Yii::$app->user->id);
+        else $user = User::findOne($userId);
         $this->rec_name = $user->name;
         $this->rec_address = $user->address;
         $this->rec_bulstat = $user->bulstat;

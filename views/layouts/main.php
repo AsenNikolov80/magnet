@@ -37,7 +37,6 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Начало', 'url' => ['/site/index']],
-            ['label' => 'Тест ПДФ', 'url' => ['/site/pdf']],
             ['label' => 'Обяви', 'url' => ['/site/ads']],
 
             ['label' => 'За нас', 'url' => ['/site/about']],

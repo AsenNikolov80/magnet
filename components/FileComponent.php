@@ -13,6 +13,11 @@ use Yii;
 
 class FileComponent
 {
+    const TYPE_FACTURA = 'ФАКТУРА';
+    const TYPE_PROFORMA = 'ПРОФОРМА ФАКТУРА';
+    const TYPE_ORIGINAL = 'О Р И Г И Н А Л';
+    const TYPE_DUBLICATE = 'К О П И Е';
+
     public $filePathProforma;
     public $filePathFactura;
 
@@ -25,6 +30,31 @@ class FileComponent
         $this->filePathFactura = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web'
             . DIRECTORY_SEPARATOR . 'facturi'
             . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @return Proforma
+     */
+    public function getProforma($id)
+    {
+        return Proforma::findOne($id);
+    }
+
+    /**
+     * @return \TCPDF
+     */
+    public function preparePdfData()
+    {
+        /* @var $pdf \TCPDF*/
+        $pdf = new \TCPDF('P');
+        $pdf->setPrintHeader(false);
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->setCellHeightRatio(1);
+        $pdf->SetFontSize(14);
+        $pdf->AddPage();
+        $pdf->setPrintFooter(false);
+        $pdf->setFooterMargin(1);
+        return $pdf;
     }
 
     /**

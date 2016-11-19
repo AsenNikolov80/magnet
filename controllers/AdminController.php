@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\FileComponent;
 use app\models\City;
+use app\models\InvoiceData;
 use app\models\Proforma;
 use app\models\Settings;
 use app\models\Ticket;
@@ -35,6 +37,8 @@ class AdminController extends Controller
                             'edit-user',
                             'invoice-data',
                             'proformi',
+                            'preview',
+                            'create-invoice',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -124,6 +128,58 @@ class AdminController extends Controller
     {
         $proformi = Proforma::findAll(['paid' => 0]);
         return $this->render('proformi', ['proformi' => $proformi]);
+    }
+
+    public function actionPreview()
+    {
+        $file = new FileComponent();
+        $proforma = Proforma::findOne(intval($_GET['id']));
+        if ($proforma) {
+            $user = $proforma->getUser();
+            $path = $file->filePathProforma . '../' . $user->username . DIRECTORY_SEPARATOR . Proforma::FILE_NAME;
+            $pdf = file_get_contents($path);
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
+            echo $pdf;
+        }
+    }
+
+    public function actionCreateInvoice()
+    {
+        $proforma = Proforma::findOne(intval($_GET['id']));
+        if ($proforma) {
+            $company = $proforma->getUser();
+            $file = new FileComponent();
+            $pdf = $file->preparePdfData();
+            $model = new InvoiceData();
+            $model->getRecipientData($company->id);
+            $timestamp = strtotime($proforma->date);
+            $model->date = $timestamp;
+            $model->date = date('d.m.Y', $model->date);
+            $model->number = $proforma->id;
+            $items = [];
+            $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+2 days', $timestamp));
+            $items[0]['price'] = 25;
+            $items[0]['q'] = 1;
+
+            $pdf->writeHTML($this->renderPartial('_factura',
+                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_ORIGINAL]));
+            $pdf->AddPage();
+            $origin = FileComponent::TYPE_ORIGINAL;
+            $pdf->writeHTML($this->renderPartial('_factura',
+                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE]));
+            $path = $file->filePathFactura . '../' . $company->username . DIRECTORY_SEPARATOR;
+            $fileName = 'factura_' . date('Y-m-d').'.pdf';
+            if (!file_exists($path)) {
+                mkdir($path);
+            }
+            if (!file_exists($path . $fileName)) {
+                $file = fopen($path . $fileName, 'w');
+                fclose($file);
+            }
+            $pdf->Output($path .$fileName, 'F');
+            $pdf->get();
+        }
     }
 
     private function getListOfRegionsCities()

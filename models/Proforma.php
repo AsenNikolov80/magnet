@@ -16,6 +16,9 @@ use Yii;
  */
 class Proforma extends \yii\db\ActiveRecord
 {
+
+    const FILE_NAME = 'proforma.pdf';
+
     /**
      * @inheritdoc
      */
