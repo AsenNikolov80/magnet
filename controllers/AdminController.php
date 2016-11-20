@@ -169,15 +169,15 @@ class AdminController extends Controller
             $pdf->writeHTML($this->renderPartial('_factura',
                 ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE]));
             $path = $file->filePathFactura . '../' . $company->username . DIRECTORY_SEPARATOR;
-            $fileName = 'factura_' . date('Y-m-d').'.pdf';
+            $fileName = 'factura_' . date('Y-m-d') . '.pdf';
             if (!file_exists($path)) {
-                mkdir($path);
+                mkdir($path, 0777, true);
             }
             if (!file_exists($path . $fileName)) {
                 $file = fopen($path . $fileName, 'w');
                 fclose($file);
             }
-            $pdf->Output($path .$fileName, 'F');
+            $pdf->Output($path . $fileName, 'F');
             $pdf->get();
         }
     }
