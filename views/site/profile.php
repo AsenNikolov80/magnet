@@ -34,6 +34,7 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 
+$file = new \app\components\FileComponent();
 /* @var $user \app\models\User */
 ?>
 <div class="row-fluid">
@@ -57,7 +58,8 @@ use yii\helpers\Html;
             </a>
             <br/>
             <br/>
-            <a target="_blank" class="btn btn-info" href="<?= Yii::$app->urlManager->createUrl('site/create-invoice') ?>">
+            <a target="_blank" class="btn btn-info"
+               href="<?= Yii::$app->urlManager->createUrl('site/create-invoice') ?>">
                 Създай проформа фактура за плащане
             </a>
         <?php } ?>
@@ -85,8 +87,8 @@ use yii\helpers\Html;
             </div>
             <label class="col-sm-4 control-label">Профилна снимка</label>
             <div class="col-sm-8">
-                <a href="../profile_images/<?= $user->picture ?>" target="_blank">
-                    <img width="300px" src="../profile_images/<?= $user->picture ?>" alt="profile image"/>
+                <a href="<?= $file->imagesPath . $user->picture ?>" target="_blank">
+                    <img width="300px" src="<?= $file->imagesPath . $user->picture ?>" alt="profile image"/>
                 </a>
             </div>
         <?php } ?>

@@ -102,9 +102,10 @@ class AdminController extends Controller
         } elseif ($request->isPost) {
             $userId = (int)$_POST['User']['id'];
             $user = User::findOne($userId);
+            $oldStatus = $user->active;
             /* @var $user User */
             $user->setAttributes($request->post('User'));
-            if ($user->active == 1) {
+            if ($user->active == 1 && $user->active != $oldStatus) {
                 User::sendEmailToUsersByCompany($user);
             }
             $user->save();
@@ -136,7 +137,7 @@ class AdminController extends Controller
         $proforma = Proforma::findOne(intval($_GET['id']));
         if ($proforma) {
             $user = $proforma->getUser();
-            $path = $file->filePathProforma . '../' . $user->username . DIRECTORY_SEPARATOR . Proforma::FILE_NAME;
+            $path = $file->filePathProforma . $user->username . DIRECTORY_SEPARATOR . Proforma::FILE_NAME;
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
@@ -158,8 +159,8 @@ class AdminController extends Controller
             $model->date = date('d.m.Y', $model->date);
             $model->number = $proforma->id;
             $items = [];
-            $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+2 days', $timestamp));
-            $items[0]['price'] = 25;
+            $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+7 days', $timestamp));
+            $items[0]['price'] = number_format($company->paid_amount / 1.2, 2);
             $items[0]['q'] = 1;
 
             $pdf->writeHTML($this->renderPartial('_factura',
@@ -168,7 +169,7 @@ class AdminController extends Controller
             $origin = FileComponent::TYPE_ORIGINAL;
             $pdf->writeHTML($this->renderPartial('_factura',
                 ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE]));
-            $path = $file->filePathFactura . '../' . $company->username . DIRECTORY_SEPARATOR;
+            $path = $file->filePathFactura . $company->username . DIRECTORY_SEPARATOR;
             $fileName = 'factura_' . date('Y-m-d') . '.pdf';
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
@@ -179,6 +180,10 @@ class AdminController extends Controller
             }
             $pdf->Output($path . $fileName, 'F');
             $pdf->get();
+            $newPaidDate = date('Y-m-d', strtotime('+1 years,+7 days', $timestamp));
+            $company->paid_until = $newPaidDate;
+            $company->active = 1;
+            $company->save();
         }
     }
 

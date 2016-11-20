@@ -8,6 +8,7 @@
 
 namespace app\components;
 
+use app\models\Proforma;
 use app\models\User;
 use Yii;
 
@@ -20,16 +21,18 @@ class FileComponent
 
     public $filePathProforma;
     public $filePathFactura;
+    public $imagesPath;
 
     public function __construct()
     {
         $currentUser = $this->getCurrentUser();
         $this->filePathProforma = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web'
             . DIRECTORY_SEPARATOR . 'proforma'
-            . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+            . DIRECTORY_SEPARATOR;
         $this->filePathFactura = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web'
             . DIRECTORY_SEPARATOR . 'facturi'
-            . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+            . DIRECTORY_SEPARATOR;
+        $this->imagesPath = Yii::$app->homeUrl . DIRECTORY_SEPARATOR . 'profile_images' . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -45,7 +48,7 @@ class FileComponent
      */
     public function preparePdfData()
     {
-        /* @var $pdf \TCPDF*/
+        /* @var $pdf \TCPDF */
         $pdf = new \TCPDF('P');
         $pdf->setPrintHeader(false);
         $pdf->SetMargins(10, 10, 10);

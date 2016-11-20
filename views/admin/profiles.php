@@ -65,6 +65,92 @@ $newUser = new User();
 <div id="dialogEdit"></div>
 <div id="dialogDelete"></div>
 <script>
+
+    function registerTableEvents() {
+        setTimeout(function () {
+            $('#dialogDelete').dialog({
+                autoOpen: false,
+                resizable: false,
+                show: {
+                    effect: "explode",
+                    duration: 1000
+                },
+                hide: {
+                    effect: "explode",
+                    duration: 1000
+                },
+                width: "auto",
+                position: {my: "left top", at: "left+25% top+10%", of: window},
+                modal: true,
+                buttons: {
+                    "Да, изтрий!": function () {
+                        var url = '<?=Yii::$app->urlManager->createUrl('admin/delete-user')?>';
+                        var userId = $('.ui-dialog input[name="userId"').val();
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data: {userId: userId}
+                        });
+                        $(this).dialog("close");
+                    },
+                    "Отказ": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $('.remove').click(function () {
+                var id = $(this).data('id');
+                $('#dialogDelete').load('<?=Yii::$app->urlManager->createUrl('admin/delete-user')?>' + '?userId=' + id, function () {
+                    $('#dialogDelete').dialog('open');
+                });
+            });
+
+            $('#dialogEdit').dialog({
+                autoOpen: false,
+                resizable: false,
+                show: {
+                    effect: "explode",
+                    duration: 1000
+                },
+                hide: {
+                    effect: "explode",
+                    duration: 1000
+                },
+                width: 600,
+                position: {my: "left top", at: "left+25% top+10%", of: window},
+                modal: true,
+                buttons: [{
+                    text: 'Промени!',
+                    click: function () {
+                        if ($('#user-map_link').val().length > 0) {
+                            $('#edit-user').submit();
+                            $(this).dialog("close");
+                        } else {
+                            $('#warn').remove();
+                            $('#user-map_link').parent().parent().css('border', '2px dashed lightcoral');
+                            $('#edit-user').append('<span id="warn" style="color: red;font-size: 1.5em">Линк към карта е задължителен</span>')
+                        }
+                    },
+                }, {
+                    text: 'Отказ',
+                    click: function () {
+                        $(this).dialog("close");
+                    },
+                }]
+            });
+
+            $('.edit').click(function () {
+                var id = $(this).data('id');
+                $('#dialogEdit').load('<?=Yii::$app->urlManager->createUrl('admin/edit-user')?>' + '?userId=' + id, function () {
+                    $('#dialogEdit').dialog('open');
+                    $('.ui-dialog-buttonset>button').addClass('btn btn-default');
+                    $('.ui-dialog-buttonset>button:first-of-type').addClass('btn-primary');
+                });
+            });
+        }, 500);
+    }
+
     $(function () {
         $('#listCompanies').dataTable({
             "language": {
@@ -88,86 +174,9 @@ $newUser = new User();
             }
         });
         $('#listCompanies').show();
-        $('#dialogDelete').dialog({
-            autoOpen: false,
-            resizable: false,
-            show: {
-                effect: "explode",
-                duration: 1000
-            },
-            hide: {
-                effect: "explode",
-                duration: 1000
-            },
-            width: "auto",
-            position: {my: "left top", at: "left+25% top+10%", of: window},
-            modal: true,
-            buttons: {
-                "Да, изтрий!": function () {
-                    var url = '<?=Yii::$app->urlManager->createUrl('admin/delete-user')?>';
-                    var userId = $('.ui-dialog input[name="userId"').val();
-                    $.ajax({
-                        url: url,
-                        type: "POST",
-                        data: {userId: userId}
-                    });
-                    $(this).dialog("close");
-                },
-                "Отказ": function () {
-                    $(this).dialog("close");
-                }
-            }
-        });
+        registerTableEvents();
 
-        $('.remove').click(function () {
-            var id = $(this).data('id');
-            $('#dialogDelete').load('<?=Yii::$app->urlManager->createUrl('admin/delete-user')?>' + '?userId=' + id, function () {
-                $('#dialogDelete').dialog('open');
-            });
-        });
-
-        $('#dialogEdit').dialog({
-            autoOpen: false,
-            resizable: false,
-            show: {
-                effect: "explode",
-                duration: 1000
-            },
-            hide: {
-                effect: "explode",
-                duration: 1000
-            },
-            width: 600,
-            position: {my: "left top", at: "left+25% top+10%", of: window},
-            modal: true,
-            buttons: [{
-                text: 'Промени!',
-                click: function () {
-                    if ($('#user-map_link').val().length > 0) {
-                        $('#edit-user').submit();
-                        $(this).dialog("close");
-                    }else{
-                        $('#warn').remove();
-                        $('#user-map_link').parent().parent().css('border','2px dashed lightcoral');
-                        $('#edit-user').append('<span id="warn" style="color: red;font-size: 1.5em">Линк към карта е задължителен</span>')
-                    }
-                },
-            }, {
-                text: 'Отказ',
-                click: function () {
-                    $(this).dialog("close");
-                },
-            }]
-        });
-
-        $('.edit').click(function () {
-            var id = $(this).data('id');
-            $('#dialogEdit').load('<?=Yii::$app->urlManager->createUrl('admin/edit-user')?>' + '?userId=' + id, function () {
-                $('#dialogEdit').dialog('open');
-                $('.ui-dialog-buttonset>button').addClass('btn btn-default');
-                $('.ui-dialog-buttonset>button:first-of-type').addClass('btn-primary');
-            });
-        });
-
+        $('#listCompanies').on('page.dt', registerTableEvents);
+        $('#listCompanies').on('search.dt', registerTableEvents);
     })
 </script>

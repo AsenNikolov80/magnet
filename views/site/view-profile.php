@@ -33,12 +33,12 @@
             <a href="<?= $src ?>" target="_blank"><img src="<?= $src ?>"></a>
             <div>
                 <h4>
-                    <?= $company->getCityName() . ', ' . $company->address ?>
+                    <?= $company->getCityName() . ', ' . $company->address.', търговец: '.$company->name ?>
                 </h4>
             </div>
         </div>
         <div class="col-sm-7">
-            <h2><?= $company->name ?></h2>
+            <h2><?= $company->place_name ?></h2>
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col-sm-9 text-center">Продукт / услуга</div>
                 <div class="col-sm-1"></div>
@@ -50,7 +50,7 @@
                 <div class="row" style="margin: 10px 0">
                     <div class="ad-container col-sm-9 text-center"><strong><?= $ticket->text ?></strong></div>
                     <div class="col-sm-1"></div>
-                    <div class="ad-container col-sm-2 text-center priceHolder"><strong style="text-shadow: 0 2px 5px black"><?= $ticket->price ?></strong></div>
+                    <div class="ad-container col-sm-2 text-center priceHolder"><strong style="text-shadow: 0 2px 5px black"><?= $ticket->price ?> лв.</strong></div>
                 </div>
             <?php } ?>
             <div class="text-center">

@@ -34,6 +34,7 @@ use yii\helpers\Html;
  * @property string $bulstat
  * @property string $dds
  * @property string $mol
+ * @property string $paid_amount
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -95,7 +96,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     'cat_id',
                     'bulstat',
                     'dds',
-                    'mol'
+                    'mol',
+                    'paid_amount',
                 ], 'safe'
             ]
         ];
@@ -126,6 +128,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'bulstat' => 'Булстат',
             'dds' => 'ИН по ЗДДС',
             'mol' => 'МОЛ',
+            'paid_amount' => 'Сума за плащане',
         ];
     }
 
@@ -260,6 +263,28 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     $msg = 'Уважаеми/а г-н/г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br/> Обект: ' . $company->place_name . ' от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
                 }
                 $to = $targetUser->email;
+                $headers = "Content-Type: text/html;\r\n charset=utf-8";
+                mail($to, $subject, $msg, $headers);
+            }
+        }
+    }
+
+    /**
+     * @param $company User
+     */
+    public static function sendEmailToAdminByCompany($company)
+    {
+        $to = '';
+        $subject = 'Нова компания се регистрира в сайта';
+        $msg = '';
+        $admins = User::findAll(['type' => self::TYPE_ADMIN]);
+        /* @var $admin User */
+        foreach ($admins as $admin) {
+            $to = $admin->email;
+            if ($to) {
+                $msg = 'Нова компания <strong>' . $company->name . '</strong> от населено място <strong>' . $company->getCityName()
+                    . '</strong> току-що се регистрира в системата! Може да разгледате профила от
+                    <a href="' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) . '"><strong>тук</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
                 mail($to, $subject, $msg, $headers);
             }

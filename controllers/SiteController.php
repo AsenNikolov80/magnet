@@ -188,6 +188,11 @@ class SiteController extends Controller
                 $user->password = Yii::$app->getSecurity()->generatePasswordHash($user->password);
                 $user->save(false);
                 Yii::$app->session->setFlash('success', 'Успешно се регистрирахте в системата!');
+                if ($user->scenario == User::SCENARIO_REGISTER_COMPANY) {
+                    $user->paid_amount = 30;
+                    $user->save();
+                    User::sendEmailToAdminByCompany($user);
+                }
                 return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
             } catch (\Exception $e) {
                 Yii::$app->log->getLogger()->log($e->getMessage(), Logger::LEVEL_ERROR);
@@ -377,8 +382,8 @@ class SiteController extends Controller
         $model->date = date('d.m.Y');
 
         $items = [];
-        $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+2 days'));
-        $items[0]['price'] = 25;
+        $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+7 days'));
+        $items[0]['price'] = number_format($currentUser->paid_amount / 1.2, 2);
         $items[0]['q'] = 1;
 
         $fileName = Proforma::FILE_NAME;
