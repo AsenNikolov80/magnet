@@ -37,9 +37,10 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Начало', 'url' => ['/site/index']],
-            ['label' => 'Обяви', 'url' => ['/site/ads']],
-
-            ['label' => 'За нас', 'url' => ['/site/about']],
+            !Yii::$app->user->isUserAdmin() ?
+                ['label' => 'Обяви', 'url' => ['/site/ads']] : '',
+            !Yii::$app->user->isUserAdmin() ?
+                ['label' => 'За нас', 'url' => ['/site/about']] : '',
             ['label' => 'Контакти', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
             ['label' => 'Регистрация', 'url' => ['/site/register']]
@@ -47,6 +48,10 @@ AppAsset::register($this);
             ) : ['label' => 'Профил', 'url' => ['/site/profile']],
             Yii::$app->user->isUserAdmin() ? (
             ['label' => 'Преглед профили', 'url' => ['/admin/profiles']]
+
+            ) : '',
+            Yii::$app->user->isUserAdmin() ? (
+            ['label' => 'Категории', 'url' => ['/admin/categories']]
 
             ) : '',
             Yii::$app->user->isUserAdmin() ? (

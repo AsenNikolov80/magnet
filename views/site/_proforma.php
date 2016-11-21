@@ -37,7 +37,7 @@
             <td class="center" colspan="5">
                 <?= $type ?>
             </td>
-            <td colspan="5" class="center"><?=$origin?></td>
+            <td colspan="5" class="center"><?= $origin ?></td>
         <?php } ?>
 
     </tr>
@@ -46,7 +46,7 @@
             <table>
                 <tr>
                     <td style="text-align: left;border: none;line-height: 45px">
-                        Номер: <?= $model->number ?>
+                        Номер: <?= printf("%0d", $model->number) ?>
                     </td>
                     <td style="text-align: right;border: none;line-height: 45px">Дата: <?= $model->date ?> &nbsp;&nbsp;&nbsp;</td>
                 </tr>

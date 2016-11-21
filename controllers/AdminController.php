@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\FileComponent;
+use app\models\Category;
 use app\models\City;
 use app\models\InvoiceData;
 use app\models\Proforma;
@@ -38,6 +39,7 @@ class AdminController extends Controller
                             'invoice-data',
                             'proformi',
                             'preview',
+                            'categories',
                             'create-invoice',
                         ],
                         'allow' => true,
@@ -185,6 +187,17 @@ class AdminController extends Controller
             $company->active = 1;
             $company->save();
         }
+    }
+
+    public function actionCategories()
+    {
+        if(!empty($_POST['Category'])){
+            $cat = new Category();
+            $cat->setAttributes($_POST['Category']);
+            $cat->save();
+        }
+        $categories = Category::find()->all();
+        return $this->render('categories', ['categories' => $categories]);
     }
 
     private function getListOfRegionsCities()
