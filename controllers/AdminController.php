@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\FileComponent;
 use app\models\Category;
 use app\models\City;
+use app\models\Factura;
 use app\models\InvoiceData;
 use app\models\Proforma;
 use app\models\Settings;
@@ -41,6 +42,10 @@ class AdminController extends Controller
                             'preview',
                             'categories',
                             'create-invoice',
+                            'invoices',
+                            'preview-invoice',
+                            'delete-invoice-modal',
+                            'delete-invoice',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -147,6 +152,20 @@ class AdminController extends Controller
         }
     }
 
+    public function actionPreviewInvoice()
+    {
+        $file = new FileComponent();
+        $factura = Factura::findOne(intval($_GET['id']));
+        if ($factura) {
+            $user = $factura->getUser();
+            $path = $file->filePathFactura . $user->username . DIRECTORY_SEPARATOR . $factura->path;
+            $pdf = file_get_contents($path);
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
+            echo $pdf;
+        }
+    }
+
     public function actionCreateInvoice()
     {
         $proforma = Proforma::findOne(intval($_GET['id']));
@@ -159,18 +178,12 @@ class AdminController extends Controller
             $timestamp = strtotime($proforma->date);
             $model->date = $timestamp;
             $model->date = date('d.m.Y', $model->date);
-            $model->number = $proforma->id;
+
             $items = [];
             $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+7 days', $timestamp));
             $items[0]['price'] = number_format($company->paid_amount / 1.2, 2);
             $items[0]['q'] = 1;
 
-            $pdf->writeHTML($this->renderPartial('_factura',
-                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_ORIGINAL]));
-            $pdf->AddPage();
-            $origin = FileComponent::TYPE_ORIGINAL;
-            $pdf->writeHTML($this->renderPartial('_factura',
-                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE]));
             $path = $file->filePathFactura . $company->username . DIRECTORY_SEPARATOR;
             $fileName = 'factura_' . date('Y-m-d') . '.pdf';
             if (!file_exists($path)) {
@@ -180,24 +193,66 @@ class AdminController extends Controller
                 $file = fopen($path . $fileName, 'w');
                 fclose($file);
             }
+
+            $factura = new Factura();
+            $factura->user_id = $company->id;
+            $factura->date = date('Y-m-d');
+            $factura->path = $fileName;
+            $factura->save();
+
+            $model->number = $factura->id;
+            $pdf->writeHTML($this->renderPartial('_factura',
+                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_ORIGINAL]));
+            $pdf->AddPage();
+            $pdf->writeHTML($this->renderPartial('_factura',
+                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE]));
+
             $pdf->Output($path . $fileName, 'F');
             $pdf->get();
+
             $newPaidDate = date('Y-m-d', strtotime('+1 years,+7 days', $timestamp));
             $company->paid_until = $newPaidDate;
             $company->active = 1;
             $company->save();
+            $proforma->paid = 1;
+            $proforma->save();
         }
     }
 
     public function actionCategories()
     {
-        if(!empty($_POST['Category'])){
+        if (!empty($_POST['Category'])) {
             $cat = new Category();
             $cat->setAttributes($_POST['Category']);
             $cat->save();
         }
         $categories = Category::find()->all();
         return $this->render('categories', ['categories' => $categories]);
+    }
+
+    public function actionInvoices()
+    {
+        $facturi = Factura::find()->all();
+        return $this->render('invoices', ['facturi' => $facturi]);
+    }
+
+    public function actionDeleteInvoiceModal()
+    {
+        $factura = Factura::findOne(intval($_GET['id']));
+        return $this->renderPartial('_delete-invoice-modal', ['factura' => $factura]);
+    }
+
+    public function actionDeleteInvoice()
+    {
+        if (Yii::$app->request->isAjax) {
+            $factura = Factura::findOne(intval($_POST['invoiceId']));
+            if ($factura) {
+                $factura->active = 0;
+                $factura->save();
+            }
+            return $this->redirect(Yii::$app->urlManager->createUrl('admin/invoices'));
+        }
+        return false;
     }
 
     private function getListOfRegionsCities()

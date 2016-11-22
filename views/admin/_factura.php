@@ -46,7 +46,7 @@
             <table>
                 <tr>
                     <td style="text-align: left;border: none;line-height: 45px">
-                        Номер: <?= printf("%'.10d", $model->number) ?>
+                        Номер: <?= $model->number > 99999 ? '0000' . $model->number : '00000' . $model->number ?>
                     </td>
                     <td style="text-align: right;border: none;line-height: 45px">Дата: <?= $model->date ?> &nbsp;&nbsp;&nbsp;</td>
                 </tr>

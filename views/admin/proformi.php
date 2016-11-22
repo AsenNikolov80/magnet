@@ -38,7 +38,8 @@
                            href="<?= Yii::$app->urlManager->createUrl(['admin/preview', 'id' => $proforma->id]) ?>">Преглед
                             проформа-фактура!</a></td>
                     <td>
-                        <a target="_blank" href="<?= Yii::$app->urlManager->createUrl(['admin/create-invoice', 'id' => $proforma->id]) ?>"
+                        <a onclick="hideTable()"
+                           href="<?= Yii::$app->urlManager->createUrl(['admin/create-invoice', 'id' => $proforma->id]) ?>"
                            class="btn btn-warning">Издай фактура!</a>
                     </td>
                 </tr>
@@ -48,6 +49,9 @@
     </div>
 </div>
 <script>
+    function hideTable() {
+        $('#listProformi').hide();
+    }
     $(function () {
         $('#listProformi').dataTable({
             "language": {

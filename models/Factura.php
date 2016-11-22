@@ -10,6 +10,8 @@ use Yii;
  * @property string $id
  * @property string $user_id
  * @property string $path
+ * @property string $date
+ * @property integer $active
  *
  * @property User $user
  */
@@ -30,8 +32,8 @@ class Factura extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'path'], 'required'],
-            [['user_id'], 'integer'],
-            [['path'], 'string', 'max' => 500],
+            [['user_id', 'active'], 'integer'],
+            [['path', 'date'], 'string', 'max' => 500],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }

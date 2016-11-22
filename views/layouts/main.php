@@ -41,13 +41,18 @@ AppAsset::register($this);
                 ['label' => 'Обяви', 'url' => ['/site/ads']] : '',
             !Yii::$app->user->isUserAdmin() ?
                 ['label' => 'За нас', 'url' => ['/site/about']] : '',
-            ['label' => 'Контакти', 'url' => ['/site/contact']],
+            !Yii::$app->user->isUserAdmin() ?
+                ['label' => 'Контакти', 'url' => ['/site/contact']] : '',
             Yii::$app->user->isGuest ? (
             ['label' => 'Регистрация', 'url' => ['/site/register']]
 
             ) : ['label' => 'Профил', 'url' => ['/site/profile']],
             Yii::$app->user->isUserAdmin() ? (
             ['label' => 'Преглед профили', 'url' => ['/admin/profiles']]
+
+            ) : '',
+            Yii::$app->user->isUserAdmin() ? (
+            ['label' => 'Преглед фактури', 'url' => ['/admin/invoices']]
 
             ) : '',
             Yii::$app->user->isUserAdmin() ? (
