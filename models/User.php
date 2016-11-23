@@ -15,7 +15,6 @@ use yii\helpers\Html;
  * @property string $password
  * @property string $address
  * @property integer $city_id
- * @property string $picture
  * @property integer $type
  * @property integer $active
  * @property string $email
@@ -26,10 +25,6 @@ use yii\helpers\Html;
  * @property string $map_link
  * @property integer $subscribed
  * @property string $last_updated
- * @property string $place_name
- * @property string $phone
- * @property string $work_time
- * @property string $description
  * @property integer $cat_id
  * @property string $bulstat
  * @property string $dds
@@ -78,7 +73,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     'email',
                     'password',
                     'city_id',
-                    'picture',
                     'type',
                     'active',
                     'username',
@@ -89,10 +83,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     'map_link',
                     'subscribed',
                     'last_updated',
-                    'place_name',
-                    'phone',
-                    'work_time',
-                    'description',
                     'cat_id',
                     'bulstat',
                     'dds',
@@ -117,14 +107,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'username' => 'Потребителско име',
             'first_name' => 'Първо име',
             'last_name' => 'Фамилия',
-            'picture' => 'Снимка',
             'subscribed' => '',
             'last_updated' => 'Последна промяна',
             'map_link' => 'Линк към карта',
-            'place_name' => 'Име на обекта',
-            'phone' => 'Телефон',
-            'work_time' => 'Работно време',
-            'description' => 'Описание',
             'bulstat' => 'Булстат',
             'dds' => 'ИН по ЗДДС',
             'mol' => 'МОЛ',
