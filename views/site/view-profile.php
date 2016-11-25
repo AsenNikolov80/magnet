@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="col-sm-7">
-            <h2><?= $company->place_name ?></h2>
+            <h2>Обект име</h2>
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col-sm-9 text-center">Продукт / услуга</div>
                 <div class="col-sm-1"></div>

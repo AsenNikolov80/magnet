@@ -62,6 +62,12 @@ $file = new \app\components\FileComponent();
                href="<?= Yii::$app->urlManager->createUrl('site/create-invoice') ?>">
                 Създай проформа фактура за плащане
             </a>
+            <br/>
+            <br/>
+            <a class="btn btn-info"
+               href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
+                Обекти
+            </a>
         <?php } ?>
     </div>
     <div class="col-sm-10">
@@ -75,22 +81,7 @@ $file = new \app\components\FileComponent();
             echo $form->field($user, 'name')->textInput();
             echo $form->field($user, 'bulstat')->textInput();
             echo $form->field($user, 'dds')->textInput();
-            echo $form->field($user, 'mol')->textInput();
-            echo $form->field($user, 'place_name')->textInput();
-            echo $form->field($user, 'phone')->textInput();
-            echo $form->field($user, 'work_time')->textInput();
-            echo $form->field($user, 'description')->textarea(['style' => 'height: 150px;resize: vertical']); ?>
-            <div style="position: relative">
-                <?php
-                echo $form->field($user, 'picture')->fileInput(['style' => 'display:none']); ?>
-                <div id="fileChoose">Избери файл</div>
-            </div>
-            <label class="col-sm-4 control-label">Профилна снимка</label>
-            <div class="col-sm-8">
-                <a href="<?= $file->imagesPath . $user->picture ?>" target="_blank">
-                    <img width="300px" src="<?= $file->imagesPath . $user->picture ?>" alt="profile image"/>
-                </a>
-            </div>
+            echo $form->field($user, 'mol')->textInput();?>
         <?php } ?>
 
         <div class="form-group row" style="margin: 10px 0">
@@ -104,7 +95,6 @@ $file = new \app\components\FileComponent();
             </div>
             <label class="col-sm-4 control-label"> Област</label>
             <div class="col-sm-8">
-
                 <?= Html::dropDownList('regionId', $selectedRegionId, $regions, ['class' => 'form-control', 'id' => 'region']) ?>
             </div>
         </div>
@@ -155,7 +145,7 @@ $file = new \app\components\FileComponent();
         $('#community').trigger('change');
 
         $('#city option[value="' + companyCityId + '"]').prop('selected', true);
-        $('#fileChoose').appendTo($('div.field-user-picture .col-sm-8')).css('display', 'inline-block');
+//        $('#fileChoose').appendTo($('div.field-user-picture .col-sm-8')).css('display', 'inline-block');
 
         $('#fileChoose').click(function () {
             $('input[type="file"]').trigger('click');

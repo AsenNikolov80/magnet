@@ -32,8 +32,8 @@
     <?php
     /* @var $user \app\models\User */
     foreach ($users as $user) {
-        if (strlen($user->picture) > 0) {
-            $src = Yii::$app->homeUrl . 'profile_images/' . $user->picture;
+        if (strlen($user->bulstat) > 0) {
+            $src = Yii::$app->homeUrl . 'profile_images/' . $user->bulstat;
         } else {
             // default image
             $src = Yii::$app->homeUrl . 'images/noimage.png';

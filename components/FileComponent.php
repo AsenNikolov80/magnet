@@ -22,17 +22,30 @@ class FileComponent
     public $filePathProforma;
     public $filePathFactura;
     public $imagesPath;
+    public $imagesPathForPictures;
 
     public function __construct()
     {
         $currentUser = $this->getCurrentUser();
-        $this->filePathProforma = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web'
+        $this->filePathProforma = getcwd()
             . DIRECTORY_SEPARATOR . 'proforma'
-            . DIRECTORY_SEPARATOR;
-        $this->filePathFactura = Yii::$app->basePath . DIRECTORY_SEPARATOR . 'web'
+            . DIRECTORY_SEPARATOR . $currentUser->username;
+        if (!is_dir($this->filePathProforma))
+            mkdir($this->filePathProforma, 0777, true);
+        $this->filePathFactura = getcwd()
             . DIRECTORY_SEPARATOR . 'facturi'
-            . DIRECTORY_SEPARATOR;
-        $this->imagesPath = Yii::$app->homeUrl . DIRECTORY_SEPARATOR . 'profile_images' . DIRECTORY_SEPARATOR;
+            . DIRECTORY_SEPARATOR . $currentUser->username;
+        if (!is_dir($this->filePathFactura))
+            mkdir($this->filePathFactura, 0777, true);
+
+        $this->imagesPath = getcwd() . DIRECTORY_SEPARATOR . 'place_images'
+            . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+        if (!is_dir($this->imagesPath))
+            mkdir($this->imagesPath, 0777, true);
+        $this->filePathFactura .= DIRECTORY_SEPARATOR;
+        $this->filePathProforma .= DIRECTORY_SEPARATOR;
+        $this->imagesPathForPictures = Yii::$app->getHomeUrl() . 'place_images'
+            . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -68,7 +81,7 @@ class FileComponent
         $user = User::findOne(Yii::$app->user->id);
         if (!$user) {
             Yii::$app->session->setFlash('error', 'Няма такъв потребител!');
-            return false;
+            throw new \Exception('Няма такъв потребител!');
         }
         return $user;
     }

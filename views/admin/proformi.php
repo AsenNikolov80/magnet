@@ -30,7 +30,6 @@
                 <tr>
                     <td><?= $proforma->id ?></td>
                     <td><?= $user->name ?></td>
-                    <td><?= $user->place_name ?></td>
                     <td><?= $user->address ?></td>
                     <td><?= $user->mol ?></td>
                     <td><?= $user->username ?></td>

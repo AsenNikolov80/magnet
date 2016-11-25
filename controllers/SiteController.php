@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\FileComponent;
 use app\models\City;
 use app\models\InvoiceData;
+use app\models\Place;
 use app\models\Proforma;
 use app\models\Ticket;
 use app\models\User;
@@ -38,11 +39,16 @@ class SiteController extends Controller
                             'contact',
                             'welcome',
                             'profile',
+                            'places',
                             'ads',
                             'view-profile',
                             'edit-ads',
                             'selected-ads',
                             'create-invoice',
+                            'add-place',
+                            'view-place',
+                            'delete-place',
+                            'delete-place-confirmed',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -413,6 +419,70 @@ class SiteController extends Controller
         $pdf->get();
     }
 
+    public function actionPlaces()
+    {
+        $user = User::getUser(Yii::$app->user->id);
+        $places = $user->getPlaces();
+        return $this->render('places', ['user' => $user, 'places' => $places]);
+    }
+
+    public function actionAddPlace()
+    {
+        if (!empty($_POST['Place'])) {
+            $place = new Place();
+            $place->setAttributes(Yii::$app->request->post('Place'));
+            $user = User::getUser(Yii::$app->user->id);
+            $place->user_id = $user->id;
+            if ($place->save()) {
+                $file = new FileComponent();
+                $path = $file->imagesPath;
+                move_uploaded_file($_FILES['Place']['tmp_name']['picture'],
+                    $path . $_FILES['Place']['name']['picture']);
+                $place->picture = $_FILES['Place']['name']['picture'];
+                $place->save();
+                Yii::$app->session->setFlash('success', 'Успешно добавихте обекта ' . $place->name);
+            }
+        }
+        list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
+        return $this->render('add-place', [
+            'place' => new Place(),
+            'regions' => $regions,
+            'cities' => $cities,
+            'communities' => $communities,
+            'cityRelations' => $cityRelations,
+        ]);
+    }
+
+    public function actionViewPlace()
+    {
+        $place = Place::findOne(Yii::$app->request->get('id'));
+        if ($this->isUserOwnedPlace($place)) {
+            return $this->render('view-place', ['place' => $place]);
+        }
+    }
+
+    public function actionDeletePlace()
+    {
+        $place = Place::findOne(Yii::$app->request->get('id'));
+        if ($this->isUserOwnedPlace($place)) {
+            return $this->renderPartial('_delete-place', ['place' => $place]);
+        }
+    }
+
+    public function actionDeletePlaceConfirmed()
+    {
+        if (Yii::$app->request->isAjax) {
+            $place = Place::findOne(Yii::$app->request->post('placeId'));
+            if ($this->isUserOwnedPlace($place)) {
+                $file = new FileComponent();
+                if ($place->picture)
+                    unlink($file->imagesPath . $place->picture);
+                $place->delete();
+            }
+            return $this->redirect(Yii::$app->urlManager->createUrl('site/places'));
+        }
+    }
+
     private function getListOfRegionsCities()
     {
         $regions = [];
@@ -462,5 +532,17 @@ class SiteController extends Controller
             $result = array_values($result);
         }
         return $result;
+    }
+
+    /**
+     * @param Place $place
+     */
+    private function isUserOwnedPlace(Place $place)
+    {
+        $user = $this->getCurrentUser();
+        if (!$place || !in_array($place, $user->getPlaces())) {
+            return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
+        }
+        return true;
     }
 }

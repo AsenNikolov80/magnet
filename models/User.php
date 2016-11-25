@@ -64,9 +64,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['address', 'picture', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
+            [['address', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
-            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'place_name', 'cat_id', 'bulstat', 'dds', 'mol'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
+            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'cat_id', 'bulstat', 'dds', 'mol'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
             [
                 [
@@ -245,7 +245,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                         . $company->getCityName() . '</strong> беше регистрирана при нас! Може да разгледате профила ' . $link;
                 } else {
                     $subject = 'Уведомление за промяна в списък на промоционални оферти на интересна за Вас компания';
-                    $msg = 'Уважаеми/а г-н/г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br/> Обект: ' . $company->place_name . ' от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
+                    $msg = 'Уважаеми/а г-н/г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br/>  от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
                 }
                 $to = $targetUser->email;
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
@@ -274,5 +274,10 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                 mail($to, $subject, $msg, $headers);
             }
         }
+    }
+
+    public function getPlaces()
+    {
+        return Place::findAll(['user_id' => $this->id]);
     }
 }

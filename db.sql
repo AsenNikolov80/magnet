@@ -108,9 +108,11 @@ CREATE TABLE `places` (
   KEY `city_id` (`city_id`),
   CONSTRAINT `places_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `places_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 /*Data for the table `places` */
+
+insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`) values (26,'тест',15,4824,'','fifi1.jpg','','','');
 
 /*Table structure for table `proformi` */
 

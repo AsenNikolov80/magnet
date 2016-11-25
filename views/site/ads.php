@@ -75,8 +75,8 @@ $this->title = 'БГ ПРОМО';
             echo '<h3>Няма намерени обекти засега!</h3>';
         foreach ($companies as $company) {
             $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]);
-            if (strlen($company->picture) > 0) {
-                $src = Yii::$app->homeUrl . 'profile_images/' . $company->picture;
+            if (strlen($company->bulstat) > 0) {
+                $src = Yii::$app->homeUrl . 'profile_images/' . $company->bulstat;
             } else {
                 // default image
                 $src = Yii::$app->homeUrl . 'images/noimage.png';
@@ -88,7 +88,13 @@ $this->title = 'БГ ПРОМО';
                         <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>"></a>
                     </div>
                     <div class="col-xs-6">
-                        <div><h3><a href="<?= $profileUrl ?>" title="виж профил"><?= $company->place_name ?></a></h3></div>
+                        <div>
+                            <h3>
+                                <a href="<?= $profileUrl ?>" title="виж профил">
+                                    Обект име
+                                </a>
+                            </h3>
+                        </div>
                         <div>категория: <?= $company->getCategoryName() ?></div>
                         <div>емайл: <?= $company->email ?></div>
                         <div>телефон: <?= $company->phone ?></div>
