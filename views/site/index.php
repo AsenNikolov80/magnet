@@ -30,6 +30,7 @@
 /* @var $this yii\web\View */
 
 $this->title = 'БГ ПРОМО';
+$this->params['breadcrumbs'][] = '';
 ?>
 <div class="col-sm-12">
     <?php

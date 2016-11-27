@@ -26,6 +26,9 @@ use yii\helpers\Html;
  */
 /* @var $place \app\models\Place */
 $file = new \app\components\FileComponent();
+$this->params['breadcrumbs'][] = ['label' => 'Преглед профил', 'url' => Yii::$app->urlManager->createUrl('site/profile')];
+$this->params['breadcrumbs'][] = ['label' => 'Списък обекти', 'url' => Yii::$app->urlManager->createUrl('site/places')];
+$this->params['breadcrumbs'][] = 'Преглед обект';
 ?>
 <div class="row">
     <div class="col-sm-12">

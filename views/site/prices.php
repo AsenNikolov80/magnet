@@ -5,6 +5,7 @@
  * Date: 27.11.2016 г.
  * Time: 13:33
  */
+$this->params['breadcrumbs'][] = 'Цени';
 ?>
 <div class="row">
     <div class="col-sm-12">

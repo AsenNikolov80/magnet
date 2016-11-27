@@ -40,6 +40,8 @@ use yii\widgets\ActiveForm;
 use app\models\Ticket;
 use yii\helpers\Html;
 
+$this->params['breadcrumbs'][] = ['label' => 'Преглед профил', 'url' => Yii::$app->urlManager->createUrl('site/profile')];
+$this->params['breadcrumbs'][] = 'Обяви';
 $newTicket = new Ticket();
 ?>
 <div class="newAds" style="display: none">
@@ -66,61 +68,65 @@ $newTicket = new Ticket();
 </div>
 <div class="row">
     <?php
-    $form = ActiveForm::begin([
-        'id' => 'ads-form',
-        'options' => ['class' => 'form-horizontal'],
-        'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-sm-9\">{input}</div>\n<div class=\"col-sm-12\">{error}</div>",
-            'labelOptions' => ['class' => 'col-sm-3 control-label', 'style' => 'color: black !important'],
-        ],
-    ]); ?>
-    <div class="col-sm-12">
-        <div>
-            <?= Html::dropDownList('placeId', $selectedPlace->id, $places) ?>
-            <h3>Списък промоции за обект: <?= $selectedPlace->name ?></h3>
-        </div>
-
-        <div id="content" class="row">
-            <div class="col-sm-6">
-                <h4>Ценови промоции</h4>
-                <?php
-                if (!empty($tickets)) {
-                    /* @var $ticket \app\models\Ticket */
-                    foreach ($tickets as $ticket) { ?>
-                        <div class="adsList">
-                            <label><?= $newTicket->getAttributeLabel('text') ?>
-                                <?= Html::textarea('text[' . $ticket->id . ']', $ticket->text) ?>
-                            </label>
-                            <label><?= $newTicket->getAttributeLabel('price') ?>
-                                <?= Html::textInput('price[' . $ticket->id . ']', $ticket->price, ['required' => true]) ?>
-                            </label>
-                            <label><i class="fa fa-minus removeRow"></i></label>
-                        </div>
-                        <?php
-                    }
-                } else { ?>
-                    <div>Нямате обяви до момента!</div>
-                <?php } ?>
-            </div>
-            <div class="col-sm-6" style="border-left: 1px solid #ccc">
-                <h4>Друг вид промоции</h4>
-                <?php
-                foreach ($freeTextTickets as $freeTextTicket) { ?>
-                    <div class="adsListFree">
-                        <label><?= $newTicket->getAttributeLabel('text') ?>
-                            <?= Html::textarea('text[free][' . $freeTextTicket->id . ']', $freeTextTicket->text) ?>
-                        </label>
-                        <label><i class="fa fa-minus removeRowFree"></i></label>
-                    </div>
-                <?php } ?>
-            </div>
-        </div>
+    if(!empty($places)) {
+        $form = ActiveForm::begin([
+            'id' => 'ads-form',
+            'options' => ['class' => 'form-horizontal'],
+            'fieldConfig' => [
+                'template' => "{label}\n<div class=\"col-sm-9\">{input}</div>\n<div class=\"col-sm-12\">{error}</div>",
+                'labelOptions' => ['class' => 'col-sm-3 control-label', 'style' => 'color: black !important'],
+            ],
+        ]); ?>
         <div class="col-sm-12">
-            <hr/>
-            <button class="btn btn-primary">Запази</button>
+            <div>
+                <?= Html::dropDownList('placeId', $selectedPlace->id, $places) ?>
+                <h3>Списък промоции за обект: <?= $selectedPlace->name ?></h3>
+            </div>
+
+            <div id="content" class="row">
+                <div class="col-sm-6">
+                    <h4>Ценови промоции</h4>
+                    <?php
+                    if (!empty($tickets)) {
+                        /* @var $ticket \app\models\Ticket */
+                        foreach ($tickets as $ticket) { ?>
+                            <div class="adsList">
+                                <label><?= $newTicket->getAttributeLabel('text') ?>
+                                    <?= Html::textarea('text[' . $ticket->id . ']', $ticket->text) ?>
+                                </label>
+                                <label><?= $newTicket->getAttributeLabel('price') ?>
+                                    <?= Html::textInput('price[' . $ticket->id . ']', $ticket->price, ['required' => true]) ?>
+                                </label>
+                                <label><i class="fa fa-minus removeRow"></i></label>
+                            </div>
+                            <?php
+                        }
+                    } else { ?>
+                        <div>Нямате обяви до момента!</div>
+                    <?php } ?>
+                </div>
+                <div class="col-sm-6" style="border-left: 1px solid #ccc">
+                    <h4>Друг вид промоции</h4>
+                    <?php
+                    foreach ($freeTextTickets as $freeTextTicket) { ?>
+                        <div class="adsListFree">
+                            <label><?= $newTicket->getAttributeLabel('text') ?>
+                                <?= Html::textarea('text[free][' . $freeTextTicket->id . ']', $freeTextTicket->text) ?>
+                            </label>
+                            <label><i class="fa fa-minus removeRowFree"></i></label>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <hr/>
+                <button class="btn btn-primary">Запази</button>
+            </div>
         </div>
-    </div>
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end();
+    }else{
+        echo '<h3>Нямате въведени обекти, трябва първо да създадете поне един обект, преди да обявите промоции за него!</h3>';
+    }?>
 </div>
 <script>
     'use strict';

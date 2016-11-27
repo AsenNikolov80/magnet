@@ -36,6 +36,7 @@ use yii\helpers\Html;
 
 $file = new \app\components\FileComponent();
 /* @var $user \app\models\User */
+$this->params['breadcrumbs'][] = 'Преглед профил';
 ?>
 <div class="row-fluid">
     <?php \app\components\Components::printFlashMessages() ?>

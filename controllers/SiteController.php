@@ -21,6 +21,7 @@ use TCPDF;
 
 class SiteController extends Controller
 {
+    const PAGE_SIZE = 12;
 
     /**
      * @inheritdoc
@@ -72,6 +73,7 @@ class SiteController extends Controller
                             'ads',
                             'view-profile',
                             'pds',
+                            'prices',
                         ],
                         'roles' => ['?'],
                         'allow' => true,
@@ -283,26 +285,31 @@ class SiteController extends Controller
 
     public function actionAds()
     {
-        $q = User::find()->where(['active' => 1])
-            ->andWhere(['type' => User::TYPE_COMPANY])
-            ->andWhere('paid_until>=:date', [':date' => date('Y-m-d')])
-            ->orderBy('last_updated DESC');
+        $req = Yii::$app->request;
+        $page = $req->get('page', 1);
         $postName = Yii::$app->request->post('name');
         $city = Yii::$app->request->post('city');
+        $params = [
+            ':type' => User::TYPE_COMPANY,
+            ':date' => date('Y-m-d')
+        ];
+
+        $q = Place::find()->alias('t')
+            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND u.paid_until>=:date', $params)
+            ->orderBy('t.last_updated DESC');
         if ($postName) {
-            $q->andWhere(['LIKE', 'name', $postName]);
+            $q->andWhere(['LIKE', 't.name', $postName]);
         }
         if ($city) {
-            $q->andWhere(['city_id' => $city]);
+            $q->andWhere(['t.city_id' => $city]);
         }
-        $companies = $q->all();
-        $places = [];
-        /* @var $company User */
-        foreach ($companies as $company) {
-            $placesPerCompany = $company->getPlaces();
-            $places = array_merge($places, $placesPerCompany);
-        }
+        $places = $q->limit(self::PAGE_SIZE)->offset(($page - 1) * self::PAGE_SIZE)->all();
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
+        $maxPages = (int)(new Query())->select('COUNT(p.id)')
+            ->from(User::tableName() . ' u')
+            ->innerJoin(Place::tableName() . ' p', 'p.user_id=u.id')
+            ->where(['u.active' => 1])->andWhere(['u.type' => User::TYPE_COMPANY])->scalar();
+        $maxPages = ceil($maxPages / self::PAGE_SIZE);
         return $this->render('ads', [
             'places' => $places,
             'regions' => $regions,
@@ -311,6 +318,8 @@ class SiteController extends Controller
             'cityRelations' => $cityRelations,
             'city' => $city,
             'postName' => $postName,
+            'page' => $page,
+            'maxPages' => $maxPages,
         ]);
     }
 
@@ -333,7 +342,8 @@ class SiteController extends Controller
         $user = $this->getCurrentUser();
         if (!empty($_POST['text'])) {
             $placeId = Yii::$app->request->post('placeId');
-            if ($this->isUserOwnedPlace(Place::findOne($placeId))) {
+            $targetPlace = Place::findOne($placeId);
+            if ($this->isUserOwnedPlace($targetPlace)) {
                 $texts = array_filter(Yii::$app->request->post('text'));
                 $texts['free'] = array_filter($texts['free']);
                 $prices = array_filter(Yii::$app->request->post('price'));
@@ -369,7 +379,9 @@ class SiteController extends Controller
                         $place->delete();
                     }
                 }
-//                User::sendEmailToUsersByCompany($user, false);
+                $targetPlace->last_updated = date('Y-m-d H:i:s');
+                $targetPlace->save();
+                User::sendEmailToUsersByCompany($user, false);
             }
         }
         $placesRaw = $user->getPlaces();
@@ -380,7 +392,9 @@ class SiteController extends Controller
         }
         $selectedPlaceId = Yii::$app->request->get('selectedPlace');
         if (empty($selectedPlaceId)) {
-            $selectedPlace = $placesRaw[0];
+            if (!empty($placesRaw[0]))
+                $selectedPlace = $placesRaw[0];
+            else $selectedPlace = 0;
         } else {
             $selectedPlace = Place::findOne($selectedPlaceId);
         }

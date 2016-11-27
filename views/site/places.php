@@ -16,6 +16,8 @@
  * Time: 19:21
  */
 $newPlace = new \app\models\Place();
+$this->params['breadcrumbs'][] = ['label' => 'Преглед профил', 'url' => Yii::$app->urlManager->createUrl('site/profile')];
+$this->params['breadcrumbs'][] = 'Списък обекти';
 ?>
 <div class="row">
     <div class="col-sm-12">

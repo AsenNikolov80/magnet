@@ -6,7 +6,7 @@
         box-shadow: 2px 2px 10px black;
         border-radius: 10px;
         padding: 5px;
-        background-color: #ccc;
+        background-color: #eee;
     }
 
     .col-sm-4 > a {
@@ -23,6 +23,7 @@ use yii\bootstrap\Html;
 /* @var $this yii\web\View */
 
 $this->title = 'БГ ПРОМО';
+$this->params['breadcrumbs'][] = 'Обекти';
 ?>
 <div class="row">
     <?php
@@ -30,7 +31,6 @@ $this->title = 'БГ ПРОМО';
     ?>
     <div class="col-xs-12 row">
         <div class="col-sm-4">
-
             <h3>Покажи обекти по име:</h3>
             <?= Html::beginForm();
             echo Html::textInput('name', '', ['class' => 'form-control', 'style' => 'width:30%', 'required' => true]) . '<br/>';
@@ -69,42 +69,59 @@ $this->title = 'БГ ПРОМО';
     }
     ?>
     <div id="company-list" class="row">
-        <?php
-        /* @var $place \app\models\Place */
-        if (empty($places))
-            echo '<h3>Няма намерени обекти засега!</h3>';
-        foreach ($places as $place) {
-            $company = $place->getUser();
-            $file = new \app\components\FileComponent($company);
-            $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $place->id]);
-            if (strlen($place->picture) > 0) {
-                $src = $file->imagesPathForPictures . $place->picture;
-            } else {
-                // default image
-                $src = Yii::$app->homeUrl . 'images/noimage.png';
-            }
-            ?>
-            <div class="col-sm-4">
-                <div class="item">
-                    <div class="col-xs-6">
-                        <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>" style="margin-top: 15px"></a>
-                    </div>
-                    <div class="col-xs-6">
-                        <div style="margin-top: -10px">
-                            <h3>
-                                <a href="<?= $profileUrl ?>" title="виж профил">
-                                    <?= $place->name ?>
-                                </a>
-                            </h3>
+        <div class="col-sm-12">
+            <?php
+            /* @var $place \app\models\Place */
+            if (empty($places))
+                echo '<h3>Няма намерени обекти засега!</h3>';
+            foreach ($places as $place) {
+                $company = $place->getUser();
+                $file = new \app\components\FileComponent($company);
+                $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $place->id]);
+                if (strlen($place->picture) > 0) {
+                    $src = $file->imagesPathForPictures . $place->picture;
+                } else {
+                    // default image
+                    $src = Yii::$app->homeUrl . 'images/noimage.png';
+                }
+                ?>
+                <div class="col-md-4 col-sm-6">
+                    <div class="item">
+                        <div class="col-xs-6">
+                            <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>"
+                                                                                 style="margin-top: 15px"></a>
                         </div>
-                        <div>Телефон: <?= $place->phone ?></div>
-                        <div>Раб. време: <?= $place->work_time ?></div>
-                        <div>Адрес: <?= $place->address ?></div>
-                        <div>Нас. място: <?= $place->getCity()->name ?></div>
+                        <div class="col-xs-6">
+                            <div style="margin-top: -10px">
+                                <h3>
+                                    <a href="<?= $profileUrl ?>" title="виж профил">
+                                        <?= $place->name ?>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div>Телефон: <?= $place->phone ?></div>
+                            <div>Раб. време: <?= $place->work_time ?></div>
+                            <div>Адрес: <?= $place->address ?></div>
+                            <div>Нас. място: <?= $place->getCity()->name ?></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php } ?>
+            <?php } ?>
+        </div>
+    </div>
+    <?php
+    $start = $page - 5;
+    $end = $page + 5;
+    if ($start < 1) $start = 1;
+    if ($end >= $maxPages) $end = $maxPages;
+    ?>
+    <div class="text-center">
+        <ul class="pagination">
+            <?php
+            for ($i = $start; $i <= $end; $i++) { ?>
+                <li class="<?= ($i == $page) ? 'active' : '' ?>"><a href="?page=<?= $i ?>"><?= $i ?></a></li>
+            <?php } ?>
+        </ul>
     </div>
 </div>
 <script>

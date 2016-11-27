@@ -17,6 +17,7 @@ use Yii;
  * @property string $work_time
  * @property string $description
  * @property string $map_link
+ * @property string $last_updated
  *
  * @property User $user
  * @property City $city
@@ -39,7 +40,7 @@ class Place extends \yii\db\ActiveRecord
         return [
             [['name', 'user_id', 'city_id'], 'required'],
             [['user_id', 'city_id'], 'integer'],
-            [['name', 'address', 'phone', 'work_time', 'map_link'], 'string', 'max' => 500],
+            [['name', 'address', 'phone', 'work_time', 'map_link', 'last_updated'], 'string', 'max' => 500],
             [['picture'], 'string', 'max' => 550],
             [['description'], 'string', 'max' => 2000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -64,6 +65,7 @@ class Place extends \yii\db\ActiveRecord
             'work_time' => 'Работно време',
             'description' => 'Описание',
             'map_link' => 'Линк към карта',
+            'last_updated' => 'Последна промяна',
         ];
     }
 

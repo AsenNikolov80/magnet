@@ -164,7 +164,6 @@ class AdminController extends Controller
             $user = $factura->getUser();
             $file = new FileComponent($user);
             $path = $file->filePathFactura . $factura->path;
-            var_dump($path);die;
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');

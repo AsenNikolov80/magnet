@@ -104,16 +104,17 @@ CREATE TABLE `places` (
   `work_time` varchar(50) DEFAULT NULL,
   `description` varchar(2000) DEFAULT NULL,
   `map_link` varchar(500) DEFAULT NULL,
+  `last_updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `city_id` (`city_id`),
   CONSTRAINT `places_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `places_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 
 /*Data for the table `places` */
 
-insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`,`map_link`) values (26,'тест',15,5093,'Милин камък 4','1415118876_3_559x-.jpg','09999999','09:00-22:00','тестово описание 12121','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D'),(27,'Нова база',15,4824,'Някой адрес','1392Manitou.JPG','08888888','08:00-20:00','тестово описание','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D'),(28,'Обект от some2',8,4824,'Някой адрес12','fifi1.jpg','088888883','08:00-20:00','',NULL),(29,'Нова база some2',8,4824,'','','','','',NULL);
+insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`,`map_link`,`last_updated`) values (26,'тест',15,5093,'Милин камък 4','1415118876_3_559x-.jpg','09999999','09:00-22:00','тестово описание 12121','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D','2016-11-27 20:57:44'),(27,'Нова база',15,4824,'Някой адрес','1392Manitou.JPG','08888888','08:00-20:00','тестово описание','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D','2016-11-27 20:40:40'),(30,'Нова база',8,4824,'','1415118876_3_559x-.jpg','','','',NULL,'2016-11-27 20:55:43');
 
 /*Table structure for table `proformi` */
 
@@ -127,11 +128,11 @@ CREATE TABLE `proformi` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `proformi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10002 DEFAULT CHARSET=utf8;
 
 /*Data for the table `proformi` */
 
-insert  into `proformi`(`id`,`user_id`,`date`,`paid`) values (10000,15,'2016-11-22',1);
+insert  into `proformi`(`id`,`user_id`,`date`,`paid`) values (10000,15,'2016-11-22',1),(10001,8,'2016-11-27',0);
 
 /*Table structure for table `regions` */
 
@@ -174,11 +175,11 @@ CREATE TABLE `tickets` (
   PRIMARY KEY (`id`),
   KEY `id_user` (`id_place`),
   CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`id_place`) REFERENCES `places` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tickets` */
 
-insert  into `tickets`(`id`,`text`,`id_place`,`price`,`type`) values (55,'мега',26,'4.00','price'),(61,'уни',26,'5.00','price'),(62,'ултра',26,'35.00','price'),(63,'свобода',26,'0.00','free'),(64,'втора свобода',26,'0.00','free'),(70,'Нова база',27,'5.00','price'),(71,'Ново за нова база',27,'4.60','price'),(72,'нова база свободен текст',27,'0.00','free'),(73,'нова база свободен текст222',27,'0.00','free'),(74,'Some2',28,'5.00','price'),(75,'Свободна обява some2',28,'0.00','free');
+insert  into `tickets`(`id`,`text`,`id_place`,`price`,`type`) values (55,'мега',26,'4.00','price'),(61,'уни',26,'5.00','price'),(62,'ултра',26,'35.00','price'),(63,'свобода',26,'0.00','free'),(64,'втора свобода',26,'0.00','free'),(70,'Нова база',27,'5.00','price'),(71,'Ново за нова база',27,'4.60','price'),(72,'нова база свободен текст',27,'0.00','free'),(73,'нова база свободен текст222',27,'0.00','free'),(76,'тест обява',30,'5.00','price'),(77,'свободна тест обява',30,'0.00','free');
 
 /*Table structure for table `users` */
 
