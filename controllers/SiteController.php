@@ -48,6 +48,7 @@ class SiteController extends Controller
                             'add-place',
                             'view-place',
                             'delete-place',
+                            'prices',
                             'delete-place-confirmed',
                         ],
                         'allow' => true,
@@ -532,6 +533,11 @@ class SiteController extends Controller
             }
             return $this->redirect(Yii::$app->urlManager->createUrl('site/places'));
         }
+    }
+
+    public function actionPrices()
+    {
+        return $this->render('prices');
     }
 
     private function getListOfRegionsCities()
