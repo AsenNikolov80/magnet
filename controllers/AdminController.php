@@ -148,7 +148,7 @@ class AdminController extends Controller
         if ($proforma) {
             $user = $proforma->getUser();
             $file = new FileComponent($user);
-            $path = $file->filePathProforma . $user->username . DIRECTORY_SEPARATOR . Proforma::FILE_NAME;
+            $path = $file->filePathProforma . Proforma::FILE_NAME;
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
@@ -164,7 +164,7 @@ class AdminController extends Controller
             $user = $factura->getUser();
             $file = new FileComponent($user);
             $path = $file->filePathFactura . $factura->path;
-
+            var_dump($path);die;
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
@@ -190,7 +190,7 @@ class AdminController extends Controller
             $items[0]['price'] = number_format($company->paid_amount / 1.2, 2);
             $items[0]['q'] = 1;
 
-            $path = $file->filePathFactura . $company->username . DIRECTORY_SEPARATOR;
+            $path = $file->filePathFactura;
             $fileName = 'factura_' . date('Y-m-d') . '.pdf';
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);

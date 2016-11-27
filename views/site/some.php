@@ -16,3 +16,5 @@
         $('#edit-user').append('<span id="warn" style="color: red;font-size: 1.5em">Линк към карта е задължителен</span>')
     }
 </script>
+
+ALTER TABLE proformi AUTO_INCREMENT=10000;

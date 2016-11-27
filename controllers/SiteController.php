@@ -420,7 +420,7 @@ class SiteController extends Controller
         $fileName = Proforma::FILE_NAME;
         $fileHandler = new FileComponent();
         $pdf = $fileHandler->preparePdfData();
-        $path = $fileHandler->filePathProforma . $currentUser->username . DIRECTORY_SEPARATOR;
+        $path = $fileHandler->filePathProforma;
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
