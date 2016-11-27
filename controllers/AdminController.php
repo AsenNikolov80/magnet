@@ -158,11 +158,13 @@ class AdminController extends Controller
 
     public function actionPreviewInvoice()
     {
-        $file = new FileComponent();
+
         $factura = Factura::findOne(intval($_GET['id']));
         if ($factura) {
             $user = $factura->getUser();
-            $path = $file->filePathFactura . $user->username . DIRECTORY_SEPARATOR . $factura->path;
+            $file = new FileComponent($user);
+            $path = $file->filePathFactura . $factura->path;
+
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
