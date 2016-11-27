@@ -70,13 +70,15 @@ $this->title = 'БГ ПРОМО';
     ?>
     <div id="company-list" class="row">
         <?php
-        /* @var $company \app\models\User */
-        if (empty($companies))
+        /* @var $place \app\models\Place */
+        if (empty($places))
             echo '<h3>Няма намерени обекти засега!</h3>';
-        foreach ($companies as $company) {
-            $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]);
-            if (strlen($company->bulstat) > 0) {
-                $src = Yii::$app->homeUrl . 'profile_images/' . $company->bulstat;
+        foreach ($places as $place) {
+            $company = $place->getUser();
+            $file = new \app\components\FileComponent($company);
+            $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $place->id]);
+            if (strlen($place->picture) > 0) {
+                $src = $file->imagesPathForPictures . $place->picture;
             } else {
                 // default image
                 $src = Yii::$app->homeUrl . 'images/noimage.png';
@@ -85,20 +87,20 @@ $this->title = 'БГ ПРОМО';
             <div class="col-sm-4">
                 <div class="item">
                     <div class="col-xs-6">
-                        <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>"></a>
+                        <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>" style="margin-top: 15px"></a>
                     </div>
                     <div class="col-xs-6">
-                        <div>
+                        <div style="margin-top: -10px">
                             <h3>
                                 <a href="<?= $profileUrl ?>" title="виж профил">
-                                    Обект име
+                                    <?= $place->name ?>
                                 </a>
                             </h3>
                         </div>
-                        <div>категория: <?= $company->getCategoryName() ?></div>
-                        <div>емайл: <?= $company->email ?></div>
-                        <div>телефон: <?= $company->phone ?></div>
-                        <div>нас. място: <?= $company->getCityName() ?></div>
+                        <div>Телефон: <?= $place->phone ?></div>
+                        <div>Раб. време: <?= $place->work_time ?></div>
+                        <div>Адрес: <?= $place->address ?></div>
+                        <div>Нас. място: <?= $place->getCity()->name ?></div>
                     </div>
                 </div>
             </div>

@@ -22,7 +22,6 @@ use yii\helpers\Html;
  * @property string $last_name
  * @property string $paid_until
  * @property string $name
- * @property string $map_link
  * @property integer $subscribed
  * @property string $last_updated
  * @property integer $cat_id
@@ -80,7 +79,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     'first_name',
                     'last_name',
                     'paid_until',
-                    'map_link',
                     'subscribed',
                     'last_updated',
                     'cat_id',
@@ -109,7 +107,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'last_name' => 'Фамилия',
             'subscribed' => '',
             'last_updated' => 'Последна промяна',
-            'map_link' => 'Линк към карта',
             'bulstat' => 'Булстат',
             'dds' => 'ИН по ЗДДС',
             'mol' => 'МОЛ',
@@ -205,12 +202,20 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return (new Query())->select('name')->from('categories')->where(['id' => $this->cat_id])->scalar();
     }
 
-    public function getTickets()
+    public function getTickets($selectedPlaceId = null)
     {
         if ($this->type == User::TYPE_COMPANY) {
-            $tickets = Ticket::find()->where(['id_user' => $this->id])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
-            $freeTextTickets = Ticket::find()->where(['id_user' => $this->id])->andWhere(['type' => Ticket::TYPE_FREE])->all();
-            return [$tickets, $freeTextTickets];
+            if (!$selectedPlaceId) {
+                $placedIds = (new Query())->select('id')->from(Place::tableName())
+                    ->where(['user_id' => $this->id])->column();
+                $tickets = Ticket::find()->where(['in', 'id_place', $placedIds])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
+                $freeTextTickets = Ticket::find()->where(['in', 'id_place', $placedIds])->andWhere(['type' => Ticket::TYPE_FREE])->all();
+                return [$tickets, $freeTextTickets];
+            } else {
+                $tickets = Ticket::find()->where(['id_place'=> $selectedPlaceId])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
+                $freeTextTickets = Ticket::find()->where(['id_place'=> $selectedPlaceId])->andWhere(['type' => Ticket::TYPE_FREE])->all();
+                return [$tickets, $freeTextTickets];
+            }
         }
         return [];
     }
@@ -249,7 +254,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                 }
                 $to = $targetUser->email;
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
-                mail($to, $subject, $msg, $headers);
+//                mail($to, $subject, $msg, $headers);
             }
         }
     }
@@ -271,7 +276,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     . '</strong> току-що се регистрира в системата! Може да разгледате профила от
                     <a href="' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) . '"><strong>тук</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
-                mail($to, $subject, $msg, $headers);
+//                mail($to, $subject, $msg, $headers);
             }
         }
     }
@@ -279,5 +284,10 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function getPlaces()
     {
         return Place::findAll(['user_id' => $this->id]);
+    }
+
+    public function getPlacesIds()
+    {
+        return (new Query())->select('id')->from(Place::tableName())->where(['user_id' => $this->id])->column();
     }
 }

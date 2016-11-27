@@ -23,29 +23,53 @@ class FileComponent
     public $filePathFactura;
     public $imagesPath;
     public $imagesPathForPictures;
+    public $allowedTypes;
 
-    public function __construct()
+    public function __construct($company = null)
     {
-        $currentUser = $this->getCurrentUser();
-        $this->filePathProforma = getcwd()
-            . DIRECTORY_SEPARATOR . 'proforma'
-            . DIRECTORY_SEPARATOR . $currentUser->username;
-        if (!is_dir($this->filePathProforma))
-            mkdir($this->filePathProforma, 0777, true);
-        $this->filePathFactura = getcwd()
-            . DIRECTORY_SEPARATOR . 'facturi'
-            . DIRECTORY_SEPARATOR . $currentUser->username;
-        if (!is_dir($this->filePathFactura))
-            mkdir($this->filePathFactura, 0777, true);
+        if (!$company) {
+            $currentUser = $this->getCurrentUser();
+            $this->filePathProforma = getcwd()
+                . DIRECTORY_SEPARATOR . 'proforma'
+                . DIRECTORY_SEPARATOR . $currentUser->username;
+            if (!is_dir($this->filePathProforma))
+                mkdir($this->filePathProforma, 0777, true);
+            $this->filePathFactura = getcwd()
+                . DIRECTORY_SEPARATOR . 'facturi'
+                . DIRECTORY_SEPARATOR . $currentUser->username;
+            if (!is_dir($this->filePathFactura))
+                mkdir($this->filePathFactura, 0777, true);
 
-        $this->imagesPath = getcwd() . DIRECTORY_SEPARATOR . 'place_images'
-            . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
-        if (!is_dir($this->imagesPath))
-            mkdir($this->imagesPath, 0777, true);
-        $this->filePathFactura .= DIRECTORY_SEPARATOR;
-        $this->filePathProforma .= DIRECTORY_SEPARATOR;
-        $this->imagesPathForPictures = Yii::$app->getHomeUrl() . 'place_images'
-            . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+            $this->imagesPath = getcwd() . DIRECTORY_SEPARATOR . 'place_images'
+                . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+            if (!is_dir($this->imagesPath))
+                mkdir($this->imagesPath, 0777, true);
+            $this->filePathFactura .= DIRECTORY_SEPARATOR;
+            $this->filePathProforma .= DIRECTORY_SEPARATOR;
+            $this->imagesPathForPictures = Yii::$app->getHomeUrl() . 'place_images'
+                . DIRECTORY_SEPARATOR . $currentUser->username . DIRECTORY_SEPARATOR;
+        } else {
+            $this->filePathProforma = getcwd()
+                . DIRECTORY_SEPARATOR . 'proforma'
+                . DIRECTORY_SEPARATOR . $company->username;
+            if (!is_dir($this->filePathProforma))
+                mkdir($this->filePathProforma, 0777, true);
+            $this->filePathFactura = getcwd()
+                . DIRECTORY_SEPARATOR . 'facturi'
+                . DIRECTORY_SEPARATOR . $company->username;
+            if (!is_dir($this->filePathFactura))
+                mkdir($this->filePathFactura, 0777, true);
+
+            $this->imagesPath = getcwd() . DIRECTORY_SEPARATOR . 'place_images'
+                . DIRECTORY_SEPARATOR . $company->username . DIRECTORY_SEPARATOR;
+            if (!is_dir($this->imagesPath))
+                mkdir($this->imagesPath, 0777, true);
+            $this->filePathFactura .= DIRECTORY_SEPARATOR;
+            $this->filePathProforma .= DIRECTORY_SEPARATOR;
+            $this->imagesPathForPictures = Yii::$app->getHomeUrl() . 'place_images'
+                . DIRECTORY_SEPARATOR . $company->username . DIRECTORY_SEPARATOR;
+        }
+        $this->allowedTypes = [IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_BMP, IMAGETYPE_GIF, IMAGETYPE_PSD];
     }
 
     /**
@@ -71,6 +95,18 @@ class FileComponent
         $pdf->setPrintFooter(false);
         $pdf->setFooterMargin(1);
         return $pdf;
+    }
+
+    public function saveNewImage($targetPath)
+    {
+        $info = getimagesize($_FILES['Place']['tmp_name']['picture']);
+        $fileType = $_FILES['Place']['type']['picture'];
+        if ($info && in_array($info[2], $this->allowedTypes)) {
+            move_uploaded_file($_FILES['Place']['tmp_name']['picture'],
+                $targetPath . $_FILES['Place']['name']['picture']);
+        } else {
+            unlink($_FILES['Place']['tmp_name']['picture']);
+        }
     }
 
     /**

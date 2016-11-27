@@ -1,5 +1,22 @@
+<style>
+    #fileChoose {
+        background-color: green;
+        color: white;
+        cursor: pointer;
+        padding: 8px 18px;
+        border-radius: 5px;
+        margin-top: 15px;
+    }
+
+    #region, #community {
+        width: 104%;
+        margin-left: -7px;
+    }
+
+</style>
 <?php
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
 /**
  * Created by PhpStorm.
@@ -28,24 +45,70 @@ $file = new \app\components\FileComponent();
         ])
         ?>
         <?= $form->field($place, 'name') ?>
-        <div class="form-group">
-            <div class="col-sm-4"></div>
+        <?= $form->field($place, 'address') ?>
+        <?= $form->field($place, 'phone') ?>
+        <?= $form->field($place, 'work_time') ?>
+        <?= $form->field($place, 'description') ?>
+        <div style="position: relative;margin-bottom: 20px;display: none" class="form-group row">
+            <label class="col-sm-3"> </label>
+            <div class="col-sm-9">
+                <?= $form->field($place, 'picture')->fileInput(['style' => 'display:none'])->label(false); ?>
+                <div style="text-align: left;padding-left: 0">
+                    <span id="fileChoose">Избери файл</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group picture">
+            <div class="col-sm-4 control-label">Снимка</div>
             <div class="col-sm-8">
                 <a href="<?= $file->imagesPathForPictures . $place->picture ?>" target="_blank">
                     <img width="300px" src="<?= $file->imagesPathForPictures . $place->picture ?>" alt="profile image"/>
                 </a>
+                <br/>
             </div>
         </div>
-
+        <div class="form-group row" style="margin: 10px 0">
+            <label class="col-sm-4 control-label"> Област</label>
+            <div class="col-sm-8">
+                <?= Html::dropDownList('regionId', $selectedRegionId, $regions, ['class' => 'form-control', 'id' => 'region']) ?>
+            </div>
+        </div>
+        <div class="form-group row" style="margin: 10px 0">
+            <label class="col-sm-4 control-label"> Община</label>
+            <div class="col-sm-8">
+                <?= Html::dropDownList('communityId', $selectedCommunityId, $communities, ['class' => 'form-control', 'id' => 'community']) ?>
+            </div>
+        </div>
+        <?= $form->field($place, 'city_id')->dropDownList($cities, ['id' => 'city']) ?>
         <div class="form-group">
             <div class="col-sm-4"></div>
             <div class="col-sm-8">
                 <input type="submit" value="Запази" class="btn btn-success">
             </div>
         </div>
+        <?php
+        ActiveForm::end();
+        ?>
     </div>
 </div>
-<?php
-ActiveForm::end();
-?>
-</div>
+<script>
+    'use strict';
+    var cityRelations = <?=json_encode($cityRelations)?>;
+    var cities = <?=json_encode($cities)?>;
+    var communities = <?=json_encode($communities)?>;
+    var companyCityId = '<?=$place->city_id?>';
+    var companyCommunityId = '<?=$selectedCommunityId?>';
+    var companyRegionId = '<?=$selectedRegionId?>';
+    $(function () {
+        $('#region option[value="' + companyRegionId + '"]').prop('selected', true);
+        $('#region').trigger('change');
+        $('#community option[value="' + companyCommunityId + '"]').prop('selected', true);
+        $('#community').trigger('change');
+        $('#city option[value="' + companyCityId + '"]').prop('selected', true);
+
+        $('#fileChoose').appendTo($('div.picture .col-sm-8')).css('display', 'inline-block');
+        $('#fileChoose').click(function () {
+            $('input[type="file"]').trigger('click');
+        })
+    })
+</script>

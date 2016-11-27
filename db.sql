@@ -103,16 +103,17 @@ CREATE TABLE `places` (
   `phone` varchar(50) DEFAULT NULL,
   `work_time` varchar(50) DEFAULT NULL,
   `description` varchar(2000) DEFAULT NULL,
+  `map_link` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `city_id` (`city_id`),
   CONSTRAINT `places_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `places_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 /*Data for the table `places` */
 
-insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`) values (26,'тест',15,4824,'','fifi1.jpg','','','');
+insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`,`map_link`) values (26,'тест',15,5093,'Милин камък 4','1415118876_3_559x-.jpg','09999999','09:00-22:00','тестово описание 12121','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D'),(27,'Нова база',15,4824,'Някой адрес','1392Manitou.JPG','08888888','08:00-20:00','тестово описание','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D'),(28,'Обект от some2',8,4824,'Някой адрес12','fifi1.jpg','088888883','08:00-20:00','',NULL),(29,'Нова база some2',8,4824,'','','','','',NULL);
 
 /*Table structure for table `proformi` */
 
@@ -167,17 +168,17 @@ DROP TABLE IF EXISTS `tickets`;
 CREATE TABLE `tickets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(500) NOT NULL,
-  `id_user` int(10) unsigned NOT NULL,
+  `id_place` int(10) unsigned NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
   `type` varchar(10) DEFAULT 'price',
   PRIMARY KEY (`id`),
-  KEY `id_user` (`id_user`),
-  CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
+  KEY `id_user` (`id_place`),
+  CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`id_place`) REFERENCES `places` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
 
 /*Data for the table `tickets` */
 
-insert  into `tickets`(`id`,`text`,`id_user`,`price`,`type`) values (55,'мега',3,'4.00','price'),(61,'уни',3,'5.00','price'),(62,'ултра',3,'35.00','price'),(63,'свобода',3,'0.00','free'),(64,'втора свобода',3,'0.00','free');
+insert  into `tickets`(`id`,`text`,`id_place`,`price`,`type`) values (55,'мега',26,'4.00','price'),(61,'уни',26,'5.00','price'),(62,'ултра',26,'35.00','price'),(63,'свобода',26,'0.00','free'),(64,'втора свобода',26,'0.00','free'),(70,'Нова база',27,'5.00','price'),(71,'Ново за нова база',27,'4.60','price'),(72,'нова база свободен текст',27,'0.00','free'),(73,'нова база свободен текст222',27,'0.00','free'),(74,'Some2',28,'5.00','price'),(75,'Свободна обява some2',28,'0.00','free');
 
 /*Table structure for table `users` */
 
@@ -196,7 +197,6 @@ CREATE TABLE `users` (
   `last_name` varchar(250) NOT NULL,
   `paid_until` date NOT NULL,
   `name` varchar(250) DEFAULT NULL,
-  `map_link` varchar(500) DEFAULT NULL,
   `subscribed` tinyint(1) DEFAULT '0',
   `last_updated` datetime DEFAULT NULL,
   `cat_id` smallint(5) unsigned DEFAULT NULL,
@@ -215,7 +215,7 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`username`,`password`,`address`,`city_id`,`type`,`active`,`email`,`first_name`,`last_name`,`paid_until`,`name`,`map_link`,`subscribed`,`last_updated`,`cat_id`,`bulstat`,`dds`,`mol`,`paid_amount`) values (1,'admin','$2y$13$YvET/L.tyx2AI5z8zKkQhO4022YYPyz/qFExz6fnHyegYSHU8JrrC','Баба Мота 6',5815,2,1,'test@test.bg','Шеф','Голем','0000-00-00',NULL,'http://www.bgmaps.com/link/map/7102B91A389CE50DF27B434D5A28F2A6',0,NULL,1,NULL,NULL,NULL,'30.00'),(2,'user','$2y$13$jNsGXbfIPCsM0wPfOQ/.geb6rws1GN1EfFiD.Wtdb/zOATmLIcIVK','',4824,0,0,'arso@abv.bg','Юзер','Прост','0000-00-00',NULL,'http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC',1,'2016-11-11 17:26:13',1,NULL,NULL,NULL,'30.00'),(3,'some','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Негованка 40',4824,1,1,'some@some.bg','Първи','Търговец','2017-11-29','Тестова фирма','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC',0,'2016-11-20 21:01:08',1,'15151515','BG1511515','Янко Генов','25.00'),(8,'some2','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,1,'2arso1@abv.bg','Трети','Търговец','2017-11-27','Тестова фирма 3','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC',0,'2016-11-19 19:06:23',1,'1111111','BG1111111','Янко Генов 2222','24.00'),(11,'some3','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,0,'arso1@abv.bg','Трети','Търговец','2016-11-12','Тестова фирма 3',NULL,0,'2016-11-06 15:52:47',1,NULL,NULL,NULL,'30.00'),(13,'some4','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,0,'ars@abv.bg','Трети','Търговец','2016-11-12','Тестова фирма 3',NULL,0,'2016-11-05 20:52:47',1,NULL,NULL,NULL,'30.00'),(14,'some5','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,0,'arso2@abv.bg','Трети','Търговец','2016-11-12','Тестова фирма 3','http://www.bgmaps.com/link/map/FED510ADB2725A3971F2DD5D6377C6C3',0,NULL,1,NULL,NULL,NULL,'30.00'),(15,'some1','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,1,'arso3@abv.bg','Трети','Търговец','2017-11-29','Тестова фирма 3','',0,'2016-11-23 21:35:54',1,'15151515','BG1511515','Янко Генов','30.00'),(18,'some6','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Негованка 40',4824,1,1,'some6@some.bg','Първи','Търговец','2016-11-25','Тестова фирма','http://www.bgmaps.com/link/map/4CACD9F9E657D20A668CAE1DB72931BC',0,'2016-11-12 16:15:49',1,NULL,NULL,NULL,'30.00'),(19,'some11','$2y$13$PXyfh6/s3e83seUyjZ6kb.9It4yWnTJA9Xk.oQ6bkNzH/v1nzjPEe','Някъде там',4824,1,0,'arso@abv.bgs','Втори','Търговец','2016-11-23','Тестов ЦПО за имейла!','',0,NULL,1,NULL,NULL,NULL,'30.00'),(20,'some112','$2y$13$ZHU/jL2kbTWVl3G8W4w/0u/ecgG3kL2eJndrhtAT85PWITQMW513O','Някъде там',4824,1,0,'arso@abv.xn--bgs-sgd','Втори','Търговец','2016-11-23','Тестов ЦПО за имейла!',NULL,0,NULL,1,NULL,NULL,NULL,'30.00'),(21,'some1123','$2y$13$8sQbkI2eypvszfNfqshvg.e5Ha0vF.liAjTOeJGH3HaJxDHRDdbYK','Някъде там',4824,1,0,'arso@abv.xn--x-1tb','Втори','Търговец','2016-11-23','Тестов ЦПО за имейла!',NULL,0,NULL,1,NULL,NULL,NULL,'30.00'),(22,'some13','$2y$13$2IkITtXJDw3fjf/ElumeHelJneQJfSf19xFfUiFybVQTMCiya3Gze','Негованка 40',4824,1,0,'arso@abv.bgf','Втори','Търговец','2016-12-04','Тестов ЦПО',NULL,0,NULL,NULL,'15151515','BG1511515','Янко Генов 2222','30.00');
+insert  into `users`(`id`,`username`,`password`,`address`,`city_id`,`type`,`active`,`email`,`first_name`,`last_name`,`paid_until`,`name`,`subscribed`,`last_updated`,`cat_id`,`bulstat`,`dds`,`mol`,`paid_amount`) values (1,'admin','$2y$13$YvET/L.tyx2AI5z8zKkQhO4022YYPyz/qFExz6fnHyegYSHU8JrrC','Баба Мота 6',5815,2,1,'test@test.bg','Шеф','Голем','0000-00-00',NULL,0,NULL,1,NULL,NULL,NULL,'30.00'),(2,'user','$2y$13$jNsGXbfIPCsM0wPfOQ/.geb6rws1GN1EfFiD.Wtdb/zOATmLIcIVK','',4824,0,0,'arso@abv.bg','Юзер','Прост','0000-00-00',NULL,1,'2016-11-11 17:26:13',1,NULL,NULL,NULL,'30.00'),(3,'some','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Негованка 40',4824,1,1,'some@some.bg','Първи','Търговец','2017-09-05','Тестова фирма',0,'2016-11-20 21:01:08',1,'15151515','BG1511515','Янко Генов','25.00'),(8,'some2','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,1,'2arso1@abv.bg','Трети','Търговец','2017-11-27','Тестова фирма 3',0,'2016-11-19 19:06:23',1,'1111111','BG1111111','Янко Генов 2222','24.00'),(11,'some3','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,0,'arso1@abv.bg','Трети','Търговец','2016-11-12','Тестова фирма 3',0,'2016-11-06 15:52:47',1,NULL,NULL,NULL,'30.00'),(13,'some4','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,0,'ars@abv.bg','Трети','Търговец','2016-11-12','Тестова фирма 3',0,'2016-11-05 20:52:47',1,NULL,NULL,NULL,'30.00'),(14,'some5','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,0,'arso2@abv.bg','Трети','Търговец','2016-11-12','Тестова фирма 3',0,NULL,1,NULL,NULL,NULL,'30.00'),(15,'some1','$2y$13$Fla7FSeFGXU1mfFjt5iBFeUr1og88SIW/AdaKYEXBBXelCdeIO15W','Някъде там',4824,1,1,'arso3@abv.bg','Трети','Търговец','2017-11-29','Тестова фирма 3',0,'2016-11-23 21:35:54',1,'15151515','BG1511515','Янко Генов','30.00'),(18,'some6','$2y$13$e.l5dMG9ybzXwnMQ7UqnWuDBBP/ntcdMEKFHoEjJpTB03kZbYVVje','Негованка 40',4824,1,1,'some6@some.bg','Първи','Търговец','2016-11-25','Тестова фирма',0,'2016-11-12 16:15:49',1,NULL,NULL,NULL,'30.00'),(19,'some11','$2y$13$PXyfh6/s3e83seUyjZ6kb.9It4yWnTJA9Xk.oQ6bkNzH/v1nzjPEe','Някъде там',4824,1,0,'arso@abv.bgs','Втори','Търговец','2016-11-23','Тестов ЦПО за имейла!',0,NULL,1,NULL,NULL,NULL,'30.00'),(20,'some112','$2y$13$ZHU/jL2kbTWVl3G8W4w/0u/ecgG3kL2eJndrhtAT85PWITQMW513O','Някъде там',4824,1,0,'arso@abv.xn--bgs-sgd','Втори','Търговец','2016-11-23','Тестов ЦПО за имейла!',0,NULL,1,NULL,NULL,NULL,'30.00'),(21,'some1123','$2y$13$8sQbkI2eypvszfNfqshvg.e5Ha0vF.liAjTOeJGH3HaJxDHRDdbYK','Някъде там',4824,1,0,'arso@abv.xn--x-1tb','Втори','Търговец','2016-11-23','Тестов ЦПО за имейла!',0,NULL,1,NULL,NULL,NULL,'30.00'),(22,'some13','$2y$13$2IkITtXJDw3fjf/ElumeHelJneQJfSf19xFfUiFybVQTMCiya3Gze','Негованка 40',4824,1,0,'arso@abv.bgf','Втори','Търговец','2016-12-04','Тестов ЦПО',0,NULL,NULL,'15151515','BG1511515','Янко Генов 2222','30.00');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

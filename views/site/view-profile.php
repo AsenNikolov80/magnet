@@ -3,7 +3,8 @@
         box-shadow: 0 2px 5px black;
         padding: 5px;
     }
-    .priceHolder{
+
+    .priceHolder {
         background-color: #ff5653;
         color: white;
         font-size: 1.3em;
@@ -16,29 +17,31 @@
  * Date: 28.10.2016 г.
  * Time: 19:53
  */
-/* @var $company \app\models\User */
+/* @var $place \app\models\Place */
+$file = new \app\components\FileComponent($place->getUser());
 ?>
 <div class="col-sm-12">
     <?php
     \app\components\Components::printFlashMessages();
-    if ($company) {
-        if (strlen($company->picture) > 0) {
-            $src = Yii::$app->homeUrl . 'profile_images/' . $company->picture;
+    if ($place) {
+        if (strlen($place->picture) > 0) {
+            $src = $file->imagesPathForPictures . $place->picture;
         } else {
             // default image
-            $src = Yii::$app->homeUrl . 'images/noimage.png';
+//            var_dump(explode(DIRECTORY_SEPARATOR,$file->imagesPathForPictures));
+            $src = $file->imagesPathForPictures . '../../images/noimage.png';
         }
         ?>
         <div class="col-sm-5">
             <a href="<?= $src ?>" target="_blank"><img src="<?= $src ?>"></a>
             <div>
                 <h4>
-                    <?= $company->getCityName() . ', ' . $company->address.', търговец: '.$company->name ?>
+                    <?= $place->getCity()->name . ', ' . $place->address . ', търговец: ' . $place->getUser()->name ?>
                 </h4>
             </div>
         </div>
         <div class="col-sm-7">
-            <h2>Обект име</h2>
+            <h2><?= $place->name ?></h2>
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col-sm-9 text-center">Продукт / услуга</div>
                 <div class="col-sm-1"></div>
@@ -50,7 +53,8 @@
                 <div class="row" style="margin: 10px 0">
                     <div class="ad-container col-sm-9 text-center"><strong><?= $ticket->text ?></strong></div>
                     <div class="col-sm-1"></div>
-                    <div class="ad-container col-sm-2 text-center priceHolder"><strong style="text-shadow: 0 2px 5px black"><?= $ticket->price ?> лв.</strong></div>
+                    <div class="ad-container col-sm-2 text-center priceHolder"><strong
+                            style="text-shadow: 0 2px 5px black"><?= $ticket->price ?> лв.</strong></div>
                 </div>
             <?php } ?>
             <div class="text-center">
@@ -67,7 +71,7 @@
         <div class="col-sm-12">
             <hr style="border-color: #ccc"/>
         </div>
-        <div class="col-sm-12 text-center" id="map-holder">
+        <div class="col-sm-12 text-center" id="map-holder" style="margin: 0 auto">
         </div>
         <?php
     }
@@ -75,11 +79,11 @@
 </div>
 <script>
     function renderMap() {
-        var mapLink = '<?=$company->map_link?>';
+        var mapLink = '<?=$place->map_link?>';
         if (mapLink.length > 0) {
             $('#map-holder').empty();
-            var wIndex = 0.75;
-            var hIndex = 0.45;
+            var wIndex = 0.65;
+            var hIndex = 0.35;
             if ($(window).width() < 769) {
                 wIndex = 1;
                 hIndex = 0.7;

@@ -9,11 +9,11 @@ use Yii;
  *
  * @property string $id
  * @property string $text
- * @property string $id_user
+ * @property string $id_place
  * @property string $price
  * @property string $type
  *
- * @property User $idUser
+ * @property Place $idPlace
  */
 class Ticket extends \yii\db\ActiveRecord
 {
@@ -34,10 +34,10 @@ class Ticket extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['text', 'id_user'], 'required'],
-            [['id_user'], 'integer'],
+            [['text', 'id_place'], 'required'],
+            [['id_place'], 'integer'],
             [['text'], 'string', 'max' => 500],
-            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
+            [['id_place'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['id_place' => 'id']],
             [['price', 'type'], 'safe'],
         ];
     }
@@ -50,16 +50,16 @@ class Ticket extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'text' => 'Промоция',
-            'id_user' => 'Потребител',
+            'id_place' => 'Обект',
             'price' => 'Цена',
         ];
     }
 
     /**
-     * @return User
+     * @return Place
      */
-    public function getIdUser()
+    public function getIdPlace()
     {
-        return $this->hasOne(User::className(), ['id' => 'id_user'])->one();
+        return $this->hasOne(Place::className(), ['id' => 'id_place'])->one();
     }
 }

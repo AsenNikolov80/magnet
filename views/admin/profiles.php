@@ -54,6 +54,8 @@ $newUser = new User();
                 <td class="<?= $user->active == 1 ? 'green' : 'red' ?>"><?= $user->active == 1 ? 'да' : 'не' ?></td>
                 <td><?= Yii::$app->formatter->asDate($user->paid_until) ?></td>
                 <td>
+                    <a href="<?= Yii::$app->urlManager->createUrl(['admin/places', 'companyId' => $user->id]) ?>"
+                       class="fa fa-search fa-2x" data-id="<?= $user->id ?>"></a>
                     <i class="fa fa-edit fa-2x edit" data-id="<?= $user->id ?>"></i>
                     <i class="fa fa-close fa-2x remove" data-id="<?= $user->id ?>"></i>
                 </td>
@@ -123,20 +125,14 @@ $newUser = new User();
                 buttons: [{
                     text: 'Промени!',
                     click: function () {
-                        if ($('#user-map_link').val().length > 0) {
-                            $('#edit-user').submit();
-                            $(this).dialog("close");
-                        } else {
-                            $('#warn').remove();
-                            $('#user-map_link').parent().parent().css('border', '2px dashed lightcoral');
-                            $('#edit-user').append('<span id="warn" style="color: red;font-size: 1.5em">Линк към карта е задължителен</span>')
-                        }
-                    },
+                        $('#edit-user').submit();
+                        $(this).dialog("close");
+                    }
                 }, {
                     text: 'Отказ',
                     click: function () {
                         $(this).dialog("close");
-                    },
+                    }
                 }]
             });
 

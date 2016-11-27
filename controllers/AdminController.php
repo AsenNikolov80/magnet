@@ -7,6 +7,7 @@ use app\models\Category;
 use app\models\City;
 use app\models\Factura;
 use app\models\InvoiceData;
+use app\models\Place;
 use app\models\Proforma;
 use app\models\Settings;
 use app\models\Ticket;
@@ -46,6 +47,8 @@ class AdminController extends Controller
                             'preview-invoice',
                             'delete-invoice-modal',
                             'delete-invoice',
+                            'edit-place',
+                            'places',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -253,6 +256,30 @@ class AdminController extends Controller
             return $this->redirect(Yii::$app->urlManager->createUrl('admin/invoices'));
         }
         return false;
+    }
+
+    public function actionPlaces()
+    {
+        $companyId = intval(Yii::$app->request->get('companyId'));
+        $company = User::findOne($companyId);
+        if ($company) {
+            return $this->render('places', ['company' => $company]);
+        }
+        return $this->redirect(Yii::$app->urlManager->createUrl('admin/profiles'));
+    }
+
+    public function actionEditPlace()
+    {
+        $place = Place::findOne(intval(Yii::$app->request->get('id')));
+        $req = Yii::$app->request;
+        if ($place) {
+            if (!empty($req->post('Place'))) {
+                $place->setAttributes($req->post('Place'));
+                $place->save(false);
+            }
+            return $this->render('edit-place', ['place' => $place]);
+        }
+        return $this->redirect(Yii::$app->urlManager->createUrl('admin/profiles'));
     }
 
     private function getListOfRegionsCities()

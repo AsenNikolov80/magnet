@@ -16,6 +16,7 @@ use Yii;
  * @property string $phone
  * @property string $work_time
  * @property string $description
+ * @property string $map_link
  *
  * @property User $user
  * @property City $city
@@ -38,7 +39,7 @@ class Place extends \yii\db\ActiveRecord
         return [
             [['name', 'user_id', 'city_id'], 'required'],
             [['user_id', 'city_id'], 'integer'],
-            [['name', 'address', 'phone', 'work_time'], 'string', 'max' => 500],
+            [['name', 'address', 'phone', 'work_time', 'map_link'], 'string', 'max' => 500],
             [['picture'], 'string', 'max' => 550],
             [['description'], 'string', 'max' => 2000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -62,6 +63,7 @@ class Place extends \yii\db\ActiveRecord
             'phone' => 'Телефон',
             'work_time' => 'Работно време',
             'description' => 'Описание',
+            'map_link' => 'Линк към карта',
         ];
     }
 

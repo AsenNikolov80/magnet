@@ -295,9 +295,15 @@ class SiteController extends Controller
             $q->andWhere(['city_id' => $city]);
         }
         $companies = $q->all();
+        $places = [];
+        /* @var $company User */
+        foreach ($companies as $company) {
+            $placesPerCompany = $company->getPlaces();
+            $places = array_merge($places, $placesPerCompany);
+        }
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
         return $this->render('ads', [
-            'companies' => $companies,
+            'places' => $places,
             'regions' => $regions,
             'cities' => $cities,
             'communities' => $communities,
@@ -309,58 +315,76 @@ class SiteController extends Controller
 
     public function actionViewProfile()
     {
-        $companyId = intval($_GET['id']);
-        /* @var $company User */
-        $company = User::findOne($companyId);
-        if (!$company)
+        $placeId = intval($_GET['id']);
+        /* @var $place Place */
+        $place = Place::findOne($placeId);
+        if (!$place) {
             Yii::$app->session->setFlash('error', 'Няма такъв профил!');
-        list($tickets, $freeTextTickets) = $company->getTickets();
-        return $this->render('view-profile', ['company' => $company, 'tickets' => $tickets, 'freeTextTickets' => $freeTextTickets]);
+            return $this->redirect(Yii::$app->urlManager->createUrl('site/ads'));
+        }
+        $company = $place->getUser();
+        list($tickets, $freeTextTickets) = $company->getTickets($place->id);
+        return $this->render('view-profile', ['place' => $place, 'tickets' => $tickets, 'freeTextTickets' => $freeTextTickets]);
     }
 
     public function actionEditAds()
     {
         $user = $this->getCurrentUser();
         if (!empty($_POST['text'])) {
-            $texts = array_filter(Yii::$app->request->post('text'));
-            $texts['free'] = array_filter($texts['free']);
-            $prices = array_filter(Yii::$app->request->post('price'));
-            $updatedKeys = [];
-            foreach ($texts as $i => $text) {
-                if ($i === 'free') {
-                    // free text ads
-                    foreach ($text as $key => $item) {
-                        $ticket = Ticket::find()->where(['id' => $key])->andWhere(['type' => Ticket::TYPE_FREE])->one();
+            $placeId = Yii::$app->request->post('placeId');
+            if ($this->isUserOwnedPlace(Place::findOne($placeId))) {
+                $texts = array_filter(Yii::$app->request->post('text'));
+                $texts['free'] = array_filter($texts['free']);
+                $prices = array_filter(Yii::$app->request->post('price'));
+                $updatedKeys = [];
+                foreach ($texts as $i => $text) {
+                    if ($i === 'free') {
+                        // free text ads
+                        foreach ($text as $key => $place) {
+                            $ticket = Ticket::find()->where(['id' => $key])->andWhere(['type' => Ticket::TYPE_FREE])->one();
+                            if (!$ticket) $ticket = new Ticket();
+                            $ticket->id_place = $placeId;
+                            $ticket->text = $place;
+                            $ticket->type = Ticket::TYPE_FREE;
+                            $ticket->save();
+                            $updatedKeys[] = $ticket->id;
+                        }
+                    } else {
+                        $ticket = Ticket::find()->where(['id' => $i])->andWhere(['type' => Ticket::TYPE_PRICE])->one();
                         if (!$ticket) $ticket = new Ticket();
-                        $ticket->id_user = Yii::$app->user->id;
-                        $ticket->text = $item;
-                        $ticket->type = Ticket::TYPE_FREE;
+                        $ticket->id_place = $placeId;
+                        $ticket->price = $prices[$i];
+                        $ticket->text = $text;
+                        $ticket->type = Ticket::TYPE_PRICE;
                         $ticket->save();
                         $updatedKeys[] = $ticket->id;
                     }
+                }
+                if (empty($updatedKeys)) {
+                    Ticket::deleteAll(['id_place' => $placeId]);
                 } else {
-                    $ticket = Ticket::find()->where(['id' => $i])->andWhere(['type' => Ticket::TYPE_PRICE])->one();
-                    if (!$ticket) $ticket = new Ticket();
-                    $ticket->id_user = Yii::$app->user->id;
-                    $ticket->price = $prices[$i];
-                    $ticket->text = $text;
-                    $ticket->type = Ticket::TYPE_PRICE;
-                    $ticket->save();
-                    $updatedKeys[] = $ticket->id;
+                    $toBeDeleted = Ticket::find()->where(['NOT IN', 'id', $updatedKeys])->andWhere(['id_place' => $placeId])->all();
+                    foreach ($toBeDeleted as $place) {
+                        $place->delete();
+                    }
                 }
+//                User::sendEmailToUsersByCompany($user, false);
             }
-            if (empty($updatedKeys)) {
-                Ticket::deleteAll(['id_user' => Yii::$app->user->id]);
-            } else {
-                $toBeDeleted = Ticket::find()->where(['NOT IN', 'id', $updatedKeys])->andWhere(['id_user' => Yii::$app->user->id])->all();
-                foreach ($toBeDeleted as $item) {
-                    $item->delete();
-                }
-            }
-            User::sendEmailToUsersByCompany($user, false);
         }
-        list($tickets, $freeTextTickets) = $user->getTickets();
-        return $this->render('edit-ads', ['tickets' => $tickets, 'freeTextTickets' => $freeTextTickets]);
+        $placesRaw = $user->getPlaces();
+        $places = [];
+        /* @var $place Place */
+        foreach ($placesRaw as $place) {
+            $places[$place->id] = $place->name;
+        }
+        $selectedPlaceId = Yii::$app->request->get('selectedPlace');
+        if (empty($selectedPlaceId)) {
+            $selectedPlace = $placesRaw[0];
+        } else {
+            $selectedPlace = Place::findOne($selectedPlaceId);
+        }
+        list($tickets, $freeTextTickets) = $user->getTickets($selectedPlaceId);
+        return $this->render('edit-ads', ['tickets' => $tickets, 'freeTextTickets' => $freeTextTickets, 'places' => $places, 'selectedPlace' => $selectedPlace]);
     }
 
     public function actionSelectedAds()
@@ -457,7 +481,34 @@ class SiteController extends Controller
     {
         $place = Place::findOne(Yii::$app->request->get('id'));
         if ($this->isUserOwnedPlace($place)) {
-            return $this->render('view-place', ['place' => $place]);
+            if (!empty($_POST['Place'])) {
+                $file = new FileComponent();
+                $oldPicture = $place->picture;
+                $place->setAttributes(Yii::$app->request->post('Place'));
+                if (empty($_FILES['Place']['name']['picture'])) {
+                    $place->picture = $oldPicture;
+                } else {
+                    if ($oldPicture)
+                        unlink($file->imagesPath . $oldPicture);
+                    $file->saveNewImage($file->imagesPath);
+                    $place->picture = $_FILES['Place']['name']['picture'];
+                }
+                $place->save();
+                $place = Place::findOne($place->id);
+            }
+            list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
+            /* @var $selectedCommunityId */
+            /* @var $selectedRegionId */
+            extract($this->getRegionCommunityByCityId($place->city_id));
+            return $this->render('view-place', [
+                'place' => $place,
+                'regions' => $regions,
+                'cities' => $cities,
+                'communities' => $communities,
+                'cityRelations' => $cityRelations,
+                'selectedCommunityId' => $selectedCommunityId,
+                'selectedRegionId' => $selectedRegionId
+            ]);
         }
     }
 
