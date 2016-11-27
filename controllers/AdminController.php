@@ -143,10 +143,11 @@ class AdminController extends Controller
 
     public function actionPreview()
     {
-        $file = new FileComponent();
+
         $proforma = Proforma::findOne(intval($_GET['id']));
         if ($proforma) {
             $user = $proforma->getUser();
+            $file = new FileComponent($user);
             $path = $file->filePathProforma . $user->username . DIRECTORY_SEPARATOR . Proforma::FILE_NAME;
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
@@ -174,7 +175,7 @@ class AdminController extends Controller
         $proforma = Proforma::findOne(intval($_GET['id']));
         if ($proforma) {
             $company = $proforma->getUser();
-            $file = new FileComponent();
+            $file = new FileComponent($company);
             $pdf = $file->preparePdfData();
             $model = new InvoiceData();
             $model->getRecipientData($company->id);
