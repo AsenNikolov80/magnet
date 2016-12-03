@@ -27,7 +27,7 @@
                     <td style="color: white;background-color: <?= $invoice->active == 1 ? 'green' : 'red' ?>">
                         <?= $invoice->active == 1 ? 'не' : 'да' ?>
                     </td>
-x                    <td><?=$invoice->getPlace()->name?></td>
+                    <td><?= $invoice->getPlace()->name ?></td>
                     <td><a target="_blank"
                            href="<?= Yii::$app->urlManager->createUrl(['site/preview-invoice', 'id' => $invoice->id]) ?>">Преглед</a>
                     </td>
