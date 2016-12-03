@@ -295,8 +295,8 @@ class SiteController extends Controller
         ];
 
         $q = Place::find()->alias('t')
-            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND u.paid_until>=:date', $params)
-            ->orderBy('t.last_updated DESC');
+            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND t.paid_until>=:date', $params)
+            ->orderBy('t.last_updated DESC')->where(['t.active' => 1]);
         if ($postName) {
             $q->andWhere(['LIKE', 't.name', $postName]);
         }
@@ -421,41 +421,44 @@ class SiteController extends Controller
 
     public function actionCreateInvoice()
     {
+        $place = Place::findOne(intval($_GET['id']));
         $currentUser = $this->getCurrentUser();
-        $model = new InvoiceData();
-        $model->getRecipientData();
-        $model->date = date('d.m.Y');
+        if ($place && $this->isUserOwnedPlace($place)) {
+            $model = new InvoiceData();
+            $model->getRecipientData();
+            $model->date = date('d.m.Y');
 
-        $items = [];
-        $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+7 days'));
-        $items[0]['price'] = number_format($currentUser->paid_amount / 1.2, 2);
-        $items[0]['q'] = 1;
+            $items = [];
+            $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+7 days'));
+            $items[0]['price'] = number_format($place->price / 1.2, 2);
+            $items[0]['q'] = 1;
 
-        $fileName = Proforma::FILE_NAME;
-        $fileHandler = new FileComponent();
-        $pdf = $fileHandler->preparePdfData();
-        $path = $fileHandler->filePathProforma;
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-        if (!file_exists($path . $fileName)) {
-            $file = fopen($path . $fileName, 'w');
-            fclose($file);
-        }
+            $fileName = Proforma::FILE_NAME . '_' . $place->id . '.pdf';
+            $fileHandler = new FileComponent();
+            $pdf = $fileHandler->preparePdfData();
+            $path = $fileHandler->filePathProforma;
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            if (!file_exists($path . $fileName)) {
+                $file = fopen($path . $fileName, 'w');
+                fclose($file);
+            }
 
-        $proforma = Proforma::findOne(['date' => date('Y-m-d'), 'user_id' => $currentUser->id]);
-        if (!$proforma) {
-            $proforma = new Proforma();
-            $proforma->user_id = $currentUser->id;
-            $proforma->date = date('Y-m-d');
-            $proforma->paid = 0;
-            $proforma->save();
-        }
-        $model->number = $proforma->id;
-        $pdf->writeHTML($this->renderPartial('_proforma', ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_PROFORMA]));
+            $proforma = Proforma::findOne(['date' => date('Y-m-d'), 'place_id' => $place->id]);
+            if (!$proforma) {
+                $proforma = new Proforma();
+                $proforma->place_id = $place->id;
+                $proforma->date = date('Y-m-d');
+                $proforma->paid = 0;
+                $proforma->save();
+            }
+            $model->number = $proforma->id;
+            $pdf->writeHTML($this->renderPartial('_proforma', ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_PROFORMA]));
 //        $pdf->lastPage();
-        $pdf->Output($path . $fileName, 'F');
-        $pdf->get();
+            $pdf->Output($path . $fileName, 'F');
+            $pdf->get();
+        }
     }
 
     public function actionPlaces()

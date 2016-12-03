@@ -254,7 +254,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                 }
                 $to = $targetUser->email;
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
-                mail($to, $subject, $msg, $headers);
+//                mail($to, $subject, $msg, $headers);
             }
         }
     }
@@ -276,7 +276,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     . '</strong> току-що се регистрира в системата! Може да разгледате профила от
                     <a href="' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) . '"><strong>тук</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
-                mail($to, $subject, $msg, $headers);
+//                mail($to, $subject, $msg, $headers);
             }
         }
     }

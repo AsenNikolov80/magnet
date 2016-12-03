@@ -143,12 +143,12 @@ class AdminController extends Controller
 
     public function actionPreview()
     {
-
         $proforma = Proforma::findOne(intval($_GET['id']));
         if ($proforma) {
+
             $user = $proforma->getUser();
             $file = new FileComponent($user);
-            $path = $file->filePathProforma . Proforma::FILE_NAME;
+            $path = $file->filePathProforma . Proforma::FILE_NAME . '_' . $proforma->place_id . '.pdf';
             $pdf = file_get_contents($path);
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
@@ -184,13 +184,15 @@ class AdminController extends Controller
             $model->date = $timestamp;
             $model->date = date('d.m.Y', $model->date);
 
+            $place = Place::findOne($proforma->place_id);
+
             $items = [];
             $items[0]['name'] = 'Абонамент за ползване на сайт до ' . date('d.m.Y', strtotime('+1 years,+7 days', $timestamp));
-            $items[0]['price'] = number_format($company->paid_amount / 1.2, 2);
+            $items[0]['price'] = number_format($place->price / 1.2, 2);
             $items[0]['q'] = 1;
 
             $path = $file->filePathFactura;
-            $fileName = 'factura_' . date('Y-m-d') . '.pdf';
+            $fileName = 'factura-' . $place->id . '_' . date('Y-m-d') . '.pdf';
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
             }
@@ -221,6 +223,11 @@ class AdminController extends Controller
             $company->save();
             $proforma->paid = 1;
             $proforma->save();
+
+
+            $place->active = 1;
+            $place->paid_until = $newPaidDate;
+            $place->save();
         }
     }
 

@@ -32,8 +32,12 @@ $this->params['breadcrumbs'][] = 'Преглед обект';
 ?>
 <div class="row">
     <div class="col-sm-12">
-        <a class="btn btn-default" href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">Назад към списък
-            обекти</a>
+        <a class="btn btn-default" href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
+            Назад към списък обекти</a>
+        <a target="_blank" class="btn btn-info"
+           href="<?= Yii::$app->urlManager->createUrl(['site/create-invoice', 'id' => $place->id]) ?>">
+            Създай проформа фактура за плащане
+        </a>
     </div>
     <br/>
     <br/>

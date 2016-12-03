@@ -27,6 +27,8 @@ use yii\widgets\ActiveForm;
         </div>
 
         <?php
+        echo $form->field($place, 'price');
+        echo $form->field($place, 'paid_until');
         echo $form->field($place, 'address');
         echo $form->field($place, 'map_link');
         ?>

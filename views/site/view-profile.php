@@ -41,6 +41,9 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
                     <?= $place->getCity()->name . ', ' . $place->address . ', търговец: ' . $place->getUser()->name ?>
                 </h4>
             </div>
+            <div style="font-size: 1.1em;">
+                <em><?=$place->description?></em>
+            </div>
         </div>
         <div class="col-sm-7">
             <h2><?= $place->name ?></h2>

@@ -59,12 +59,6 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
             </a>
             <br/>
             <br/>
-            <a target="_blank" class="btn btn-info"
-               href="<?= Yii::$app->urlManager->createUrl('site/create-invoice') ?>">
-                Създай проформа фактура за плащане
-            </a>
-            <br/>
-            <br/>
             <a class="btn btn-info"
                href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
                 Обекти

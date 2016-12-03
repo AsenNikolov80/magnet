@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "proformi".
  *
  * @property integer $id
- * @property integer $user_id
+ * @property integer $place_id
  * @property string $date
  * @property integer $paid
  *
@@ -17,7 +17,7 @@ use Yii;
 class Proforma extends \yii\db\ActiveRecord
 {
 
-    const FILE_NAME = 'proforma.pdf';
+    const FILE_NAME = 'proforma';
 
     /**
      * @inheritdoc
@@ -33,9 +33,9 @@ class Proforma extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'date'], 'required'],
-            [['user_id', 'paid'], 'integer'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['place_id', 'date'], 'required'],
+            [['place_id', 'paid'], 'integer'],
+            [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id']],
         ];
     }
 
@@ -46,7 +46,7 @@ class Proforma extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
+            'place_id' => 'Place ID',
         ];
     }
 
@@ -55,6 +55,8 @@ class Proforma extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id'])->one();
+        /* @var $place Place*/
+        $place = $this->hasOne(Place::className(), ['id' => 'place_id'])->one();
+        return $place->getUser();
     }
 }

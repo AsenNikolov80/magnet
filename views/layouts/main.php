@@ -43,6 +43,7 @@ AppAsset::register($this);
                 ['label' => 'За нас', 'url' => ['/site/about']] : '',
             !Yii::$app->user->isUserAdmin() ?
                 ['label' => 'Контакти', 'url' => ['/site/contact']] : '',
+            ['label' => 'Цени', 'url' => ['/site/prices']],
             Yii::$app->user->isGuest ? (
             ['label' => 'Регистрация', 'url' => ['/site/register']]
 
@@ -70,7 +71,7 @@ AppAsset::register($this);
             !Yii::$app->user->isGuest && Yii::$app->user->isUser() ? (
             ['label' => 'Избрани обяви', 'url' => ['/site/selected-ads']]
             ) : '',
-            ['label' => 'Цени', 'url' => ['/site/prices']],
+
             Yii::$app->user->isGuest ? (
             ['label' => 'Вход', 'url' => ['/site/login']]
             ) : (
