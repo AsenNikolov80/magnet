@@ -63,6 +63,12 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
                href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
                 Обекти
             </a>
+            <br/>
+            <br/>
+            <a class="btn btn-info"
+               href="<?= Yii::$app->urlManager->createUrl('site/invoices') ?>">
+                Фактури
+            </a>
         <?php } ?>
     </div>
     <div class="col-sm-10">

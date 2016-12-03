@@ -205,6 +205,7 @@ class AdminController extends Controller
             $factura->user_id = $company->id;
             $factura->date = date('Y-m-d');
             $factura->path = $fileName;
+            $factura->place_id = $place->id;
             $factura->save();
 
             $model->number = $factura->id;

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\FileComponent;
 use app\models\City;
+use app\models\Factura;
 use app\models\InvoiceData;
 use app\models\Place;
 use app\models\Proforma;
@@ -51,6 +52,8 @@ class SiteController extends Controller
                             'delete-place',
                             'prices',
                             'delete-place-confirmed',
+                            'invoices',
+                            'preview-invoice',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -555,6 +558,28 @@ class SiteController extends Controller
     public function actionPrices()
     {
         return $this->render('prices');
+    }
+
+    public function actionInvoices()
+    {
+        $user = $this->getCurrentUser();
+        $invoices = $user->getInvoices();
+        return $this->render('invoices', ['invoices' => $invoices]);
+    }
+
+    public function actionPreviewInvoice()
+    {
+
+        $factura = Factura::findOne(intval($_GET['id']));
+        if ($factura) {
+            $user = $factura->getUser();
+            $file = new FileComponent($user);
+            $path = $file->filePathFactura . $factura->path;
+            $pdf = file_get_contents($path);
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
+            echo $pdf;
+        }
     }
 
     private function getListOfRegionsCities()

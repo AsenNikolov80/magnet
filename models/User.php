@@ -212,8 +212,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                 $freeTextTickets = Ticket::find()->where(['in', 'id_place', $placedIds])->andWhere(['type' => Ticket::TYPE_FREE])->all();
                 return [$tickets, $freeTextTickets];
             } else {
-                $tickets = Ticket::find()->where(['id_place'=> $selectedPlaceId])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
-                $freeTextTickets = Ticket::find()->where(['id_place'=> $selectedPlaceId])->andWhere(['type' => Ticket::TYPE_FREE])->all();
+                $tickets = Ticket::find()->where(['id_place' => $selectedPlaceId])->andWhere(['type' => Ticket::TYPE_PRICE])->all();
+                $freeTextTickets = Ticket::find()->where(['id_place' => $selectedPlaceId])->andWhere(['type' => Ticket::TYPE_FREE])->all();
                 return [$tickets, $freeTextTickets];
             }
         }
@@ -254,7 +254,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                 }
                 $to = $targetUser->email;
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
-//                mail($to, $subject, $msg, $headers);
+                mail($to, $subject, $msg, $headers);
             }
         }
     }
@@ -276,7 +276,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     . '</strong> току-що се регистрира в системата! Може да разгледате профила от
                     <a href="' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) . '"><strong>тук</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
-//                mail($to, $subject, $msg, $headers);
+                mail($to, $subject, $msg, $headers);
             }
         }
     }
@@ -289,5 +289,10 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function getPlacesIds()
     {
         return (new Query())->select('id')->from(Place::tableName())->where(['user_id' => $this->id])->column();
+    }
+
+    public function getInvoices()
+    {
+        return Factura::findAll(['user_id' => $this->id]);
     }
 }

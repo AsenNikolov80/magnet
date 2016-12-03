@@ -80,14 +80,17 @@ CREATE TABLE `facturi` (
   `path` varchar(500) NOT NULL,
   `date` date DEFAULT NULL,
   `active` tinyint(1) unsigned DEFAULT '1',
+  `place_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `facturi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=90016 DEFAULT CHARSET=utf8;
+  KEY `place_id` (`place_id`),
+  CONSTRAINT `facturi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `facturi_ibfk_2` FOREIGN KEY (`place_id`) REFERENCES `places` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=90019 DEFAULT CHARSET=utf8;
 
 /*Data for the table `facturi` */
 
-insert  into `facturi`(`id`,`user_id`,`path`,`date`,`active`) values (90014,15,'factura-27_2016-12-03.pdf','2016-12-03',0),(90015,15,'factura-26_2016-12-03.pdf','2016-12-03',1);
+insert  into `facturi`(`id`,`user_id`,`path`,`date`,`active`,`place_id`) values (90017,15,'factura-27_2016-12-03.pdf','2016-12-03',0,27),(90018,15,'factura-26_2016-12-03.pdf','2016-12-03',1,26);
 
 /*Table structure for table `places` */
 
@@ -117,7 +120,7 @@ CREATE TABLE `places` (
 
 /*Data for the table `places` */
 
-insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`,`map_link`,`last_updated`,`active`,`price`,`paid_until`) values (26,'тест',15,5093,'Милин камък 4','1415118876_3_559x-.jpg','09999999','09:00-22:00','тестово описание 12121','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D','2016-11-27 20:57:44',1,'24.00','2017-05-12'),(27,'Нова база',15,4824,'Някой адрес','1392Manitou.JPG','08888888','08:00-20:00','тестово описание','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D','2016-11-27 20:40:40',1,'20.00','2017-12-10'),(30,'Нова база',8,4824,'','1415118876_3_559x-.jpg','','','',NULL,'2016-11-27 20:55:43',0,'20.00',NULL),(53,'тест',19,4824,'','fifi1.jpg','','','',NULL,'2016-11-27 21:28:45',0,'20.00',NULL);
+insert  into `places`(`id`,`name`,`user_id`,`city_id`,`address`,`picture`,`phone`,`work_time`,`description`,`map_link`,`last_updated`,`active`,`price`,`paid_until`) values (26,'тест',15,5093,'Милин камък 4','1415118876_3_559x-.jpg','09999999','09:00-22:00','тестово описание 12121','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D','2016-11-27 20:57:44',1,'24.00','2017-12-10'),(27,'Нова база',15,4824,'Някой адрес','1392Manitou.JPG','08888888','08:00-20:00','тестово описание','http://www.bgmaps.com/link/map/9E7A9845B9B3A8501426F4FDECB8DE4D','2016-11-27 20:40:40',1,'20.00','2017-12-10'),(30,'Нова база',8,4824,'','1415118876_3_559x-.jpg','','','',NULL,'2016-11-27 20:55:43',0,'20.00',NULL),(53,'тест',19,4824,'','fifi1.jpg','','','',NULL,'2016-11-27 21:28:45',0,'20.00',NULL);
 
 /*Table structure for table `proformi` */
 
@@ -131,11 +134,11 @@ CREATE TABLE `proformi` (
   PRIMARY KEY (`id`),
   KEY `proformi_ibfk_1` (`place_id`),
   CONSTRAINT `proformi_ibfk_1` FOREIGN KEY (`place_id`) REFERENCES `places` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10009 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10012 DEFAULT CHARSET=utf8;
 
 /*Data for the table `proformi` */
 
-insert  into `proformi`(`id`,`place_id`,`date`,`paid`) values (10007,27,'2016-12-03',1),(10008,26,'2016-12-03',1);
+insert  into `proformi`(`id`,`place_id`,`date`,`paid`) values (10010,27,'2016-12-03',1),(10011,26,'2016-12-03',1);
 
 /*Table structure for table `regions` */
 

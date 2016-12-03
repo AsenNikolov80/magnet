@@ -12,6 +12,7 @@ use Yii;
  * @property string $path
  * @property string $date
  * @property integer $active
+ * @property integer $place_id
  *
  * @property User $user
  */
@@ -32,9 +33,10 @@ class Factura extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'path'], 'required'],
-            [['user_id', 'active'], 'integer'],
+            [['user_id', 'active', 'place_id'], 'integer'],
             [['path', 'date'], 'string', 'max' => 500],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id']],
         ];
     }
 
@@ -56,5 +58,13 @@ class Factura extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id'])->one();
+    }
+
+    /**
+     * @return Place
+     */
+    public function getPlace()
+    {
+        return $this->hasOne(Place::className(), ['id' => 'place_id'])->one();
     }
 }
