@@ -62,6 +62,14 @@ use yii\helpers\Html;
         }
         echo $form->field($user, 'type')->hiddenInput()->label(false);
         ?>
+        <div class="form-group required col-sm-12" style="padding: 0">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10" style="padding-left: 20px;padding-right: 0">
+                <?= HTML::checkbox('conditions', false, ['id' => 'conditions', 'style' => 'width:15px;height:15px', 'required' => true]) ?>
+                <label for="conditions">Съгласявам се и приемам </label>
+                <a target="_blank" href="<?= Yii::$app->urlManager->createUrl('site/conditions') ?>">общите условия</a>
+            </div>
+        </div>
         <div class="form-group row">
             <div class="col-sm-10 pull-right">
                 <?= \yii\bootstrap\Html::submitButton('Регистрирай ме!', ['class' => 'btn btn-primary', 'name' => 'create-button']) ?>
@@ -110,7 +118,8 @@ use yii\helpers\Html;
                     <li>Индивидуален профил за публикуване на промо оферти.</li>
                     <li>Възможност да рекламирате Вашият бизнес.</li>
                     <li>От един профил, може да публикувате неограничен брой търговски обекти/обекти за услуги
-                        собственост на  Вашата фирма.</li>
+                        собственост на Вашата фирма.
+                    </li>
                     <li>Възможност за клиентите да Ви открият по-лесно в търсачки като Google и Yahoo.</li>
                 </ul>
                 <a class="btn btn-primary"

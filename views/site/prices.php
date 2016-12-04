@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = 'Цени';
     <div class="col-sm-12">
         <h2>
             Цени за поддържане на профил в promobox-bg.com<br/>
-            <span style="font-size: 0.45em">/само за предлагащи услуги, потребителските профили са безплатни/:</span>
+            <span style="font-size: 0.45em">/Само за Търговци, потребителските профили са безплатни/:</span>
         </h2>
         <table class="table table-bordered">
             <tr>

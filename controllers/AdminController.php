@@ -285,7 +285,8 @@ class AdminController extends Controller
         if ($place) {
             if (!empty($req->post('Place'))) {
                 $place->setAttributes($req->post('Place'));
-                $place->save(false);
+                $place->save();
+                Yii::$app->session->setFlash('success','Промените са записани!');
             }
             return $this->render('edit-place', ['place' => $place]);
         }

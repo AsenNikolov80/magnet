@@ -38,7 +38,7 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Начало', 'url' => ['/site/index']],
             !Yii::$app->user->isUserAdmin() ?
-                ['label' => 'Обяви', 'url' => ['/site/ads']] : '',
+                ['label' => 'Обекти с промоции', 'url' => ['/site/ads']] : '',
             !Yii::$app->user->isUserAdmin() ?
                 ['label' => 'За нас', 'url' => ['/site/about']] : '',
             !Yii::$app->user->isUserAdmin() ?
@@ -71,7 +71,7 @@ AppAsset::register($this);
             !Yii::$app->user->isGuest && Yii::$app->user->isUser() ? (
             ['label' => 'Избрани обяви', 'url' => ['/site/selected-ads']]
             ) : '',
-
+            ['label' => 'Условия', 'url' => ['/site/conditions']],
             Yii::$app->user->isGuest ? (
             ['label' => 'Вход', 'url' => ['/site/login']]
             ) : (

@@ -29,6 +29,7 @@ use yii\helpers\Html;
  * @property string $dds
  * @property string $mol
  * @property string $paid_amount
+ * @property integer $conditions
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -65,8 +66,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['address', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
-            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'cat_id', 'bulstat', 'dds', 'mol'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
-            [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
+            [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'cat_id', 'bulstat', 'dds', 'mol', 'conditions'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
+            [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name', 'conditions'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
             [
                 [
                     'email',
@@ -86,6 +87,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     'dds',
                     'mol',
                     'paid_amount',
+                    'conditions',
                 ], 'safe'
             ]
         ];
@@ -111,6 +113,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'dds' => 'ИН по ЗДДС',
             'mol' => 'МОЛ',
             'paid_amount' => 'Сума за плащане',
+            'conditions' => 'Общи условия',
         ];
     }
 

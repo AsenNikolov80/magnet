@@ -54,6 +54,7 @@ class SiteController extends Controller
                             'delete-place-confirmed',
                             'invoices',
                             'preview-invoice',
+                            'conditions',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -77,6 +78,7 @@ class SiteController extends Controller
                             'view-profile',
                             'pds',
                             'prices',
+                            'conditions',
                         ],
                         'roles' => ['?'],
                         'allow' => true,
@@ -191,9 +193,15 @@ class SiteController extends Controller
                 $user->paid_until = date('Y-m-d', time() + 1209600);
             }
             try {
+                if($user->conditions==0){
+                    $user->addError('conditions','Трябва да приемете общите условия, за да ползвате сайта като регистриран потребител!');
+                    Yii::$app->session->setFlash('errorAttribute', 'Трябва да приемете общите условия, за да ползвате сайта като регистриран потребител!');
+                    throw new \Exception('conditions not accepted!', Logger::LEVEL_ERROR);
+                }
                 $emailExists = User::findOne(['email' => $user->email]);
                 if (!empty($emailExists)) {
                     $user->addError('email', 'Имейлът вече съществува!');
+                    Yii::$app->session->setFlash('errorAttribute', 'Имейлът вече съществува!');
                     throw new \Exception('email already exists', Logger::LEVEL_ERROR);
                 }
                 $user->save();
@@ -580,6 +588,11 @@ class SiteController extends Controller
             header('Content-Disposition: inline; filename="' . Proforma::FILE_NAME . '"');
             echo $pdf;
         }
+    }
+
+    public function actionConditions()
+    {
+        return $this->render('conditions');
     }
 
     private function getListOfRegionsCities()

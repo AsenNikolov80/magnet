@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
         if (Yii::$app->user->isUserCompany()) { ?>
             <a title="Оттук може да управлявате обявите си"
                href="<?= Yii::$app->urlManager->createUrl('site/edit-ads') ?>" class="btn btn-primary">
-                Въведи / промени обяви
+                Въведи / промени промоции
             </a>
             <br/>
             <br/>
