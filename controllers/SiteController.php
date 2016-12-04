@@ -8,10 +8,13 @@ use app\models\Factura;
 use app\models\InvoiceData;
 use app\models\Place;
 use app\models\Proforma;
+use app\models\RecoverPassword;
 use app\models\Ticket;
 use app\models\User;
 use Yii;
+use yii\db\Connection;
 use yii\db\Query;
+use yii\db\Transaction;
 use yii\filters\AccessControl;
 use yii\log\Logger;
 use yii\web\Controller;
@@ -79,6 +82,9 @@ class SiteController extends Controller
                             'pds',
                             'prices',
                             'conditions',
+                            'lost-password',
+                            'recover',
+                            'change-password',
                         ],
                         'roles' => ['?'],
                         'allow' => true,
@@ -193,8 +199,8 @@ class SiteController extends Controller
                 $user->paid_until = date('Y-m-d', time() + 1209600);
             }
             try {
-                if($user->conditions==0){
-                    $user->addError('conditions','Трябва да приемете общите условия, за да ползвате сайта като регистриран потребител!');
+                if ($user->conditions == 0) {
+                    $user->addError('conditions', 'Трябва да приемете общите условия, за да ползвате сайта като регистриран потребител!');
                     Yii::$app->session->setFlash('errorAttribute', 'Трябва да приемете общите условия, за да ползвате сайта като регистриран потребител!');
                     throw new \Exception('conditions not accepted!', Logger::LEVEL_ERROR);
                 }
@@ -494,6 +500,7 @@ class SiteController extends Controller
                 $place->picture = $_FILES['Place']['name']['picture'];
                 $place->save();
                 Yii::$app->session->setFlash('success', 'Успешно добавихте обекта ' . $place->name);
+                User::sendEmailToAdminByPlace($place);
             }
         }
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
@@ -593,6 +600,82 @@ class SiteController extends Controller
     public function actionConditions()
     {
         return $this->render('conditions');
+    }
+
+    public function actionLostPassword()
+    {
+        $req = Yii::$app->request;
+        if (!empty($req->post('email')) && $req->post('forgotPass') == 'Изпрати') {
+            $trans = Yii::$app->db->beginTransaction();
+            $email = $req->post('email');
+            try {
+                $hash = md5($email . time() . mt_rand(1, 800000));
+                $recover = new RecoverPassword();
+                $recover->email = $email;
+                $recover->hash = $hash;
+                $recover->valid = date('Y-m-d H:i:s', time() + 3600);
+                $recover->save();
+                $trans->commit();
+                $to = $email;
+                $subject = 'Заявка за подновяване на парола!';
+                $headers = "Content-Type: text/html;\r\n charset=utf-8";
+                $msg = 'Заявихте нова парола за promobox-bg.com,<br/> моля кликнете
+                <a href="' . Yii::$app->urlManager->createUrl(['site/recover', 'email' => $email, 'hash' => $hash]) . '">ТУК</a>, за да въведете нова парола.';
+                mail($to, $subject, $msg, $headers);
+                Yii::$app->session->setFlash('success', 'На посочения от Вас имейл бяха изпратени инструкции за подновяване на паролата!');
+            } catch (\Exception $e) {
+                $trans->rollBack();
+                Yii::$app->session->setFlash('error', 'Проверете имейлът си, вероятно няма потребител с такъв имейл!');
+            }
+        }
+        return $this->render('lost-password');
+    }
+
+    public function actionRecover()
+    {
+        $email = Yii::$app->request->get('email');
+        $hash = Yii::$app->request->get('hash');
+        $recover = RecoverPassword::findOne(['hash' => $hash]);
+        if (empty($email)
+            || empty($hash)
+            || empty($recover)
+            || $recover->email != $email
+            || $recover->valid < date('Y-m-d H:i:s')
+        ) {
+            if ($recover) $recover->delete();
+            Yii::$app->session->setFlash('error', 'Грешен линк!');
+            return $this->redirect(Yii::$app->urlManager->createUrl('site/index'));
+        }
+        $user = $recover->getUser();
+        return $this->render('recover', ['user' => $user]);
+    }
+
+    public function actionChangePassword()
+    {
+        if (Yii::$app->request->isPost
+            && !empty(Yii::$app->request->post('User'))
+            && !empty(Yii::$app->request->post('changePass'))
+        ) {
+            $req = Yii::$app->request;
+            $postedUser = new User();
+            $postedUser->setAttributes($req->post('User'));
+            $postedUser->id = $req->post('User')['id'];
+            $user = User::findOne($postedUser->id);
+            $user->setScenario(User::SCENARIO_PASSWORD_CHANGE);
+            if ($user
+                && $user->email == $postedUser->email
+                && $user->username == $postedUser->username
+            ) {
+                $user->password = Yii::$app->security->generatePasswordHash($postedUser->password);
+                $user->save();
+                Yii::$app->session->setFlash('success', 'Успешно променихте паролата си!');
+                $recovers = RecoverPassword::findAll(['email' => $user->email]);
+                foreach ($recovers as $recover) {
+                    $recover->delete();
+                }
+                $this->redirect(Yii::$app->urlManager->createUrl('site/login'));
+            }
+        }
     }
 
     private function getListOfRegionsCities()

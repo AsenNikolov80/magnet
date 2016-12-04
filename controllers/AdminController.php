@@ -225,8 +225,10 @@ class AdminController extends Controller
             $proforma->paid = 1;
             $proforma->save();
 
-
+            $oldActive = $place->active;
             $place->active = 1;
+            if ($place->active != $oldActive)
+                User::sendEmailToUsersByPlace($place);
             $place->paid_until = $newPaidDate;
             $place->save();
         }
@@ -285,8 +287,11 @@ class AdminController extends Controller
         if ($place) {
             if (!empty($req->post('Place'))) {
                 $place->setAttributes($req->post('Place'));
-                $place->save();
-                Yii::$app->session->setFlash('success','Промените са записани!');
+                if ($place->save()) {
+                    if ($place->active)
+                        User::sendEmailToUsersByPlace($place);
+                    Yii::$app->session->setFlash('success', 'Промените са записани!');
+                }
             }
             return $this->render('edit-place', ['place' => $place]);
         }

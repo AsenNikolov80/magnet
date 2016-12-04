@@ -36,6 +36,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     const SCENARIO_LOGIN = 'login';
     const SCENARIO_REGISTER_USER = 'register_user';
     const SCENARIO_REGISTER_COMPANY = 'register_company';
+    const SCENARIO_PASSWORD_CHANGE = 'change_password';
 
     const TYPE_USER = 0;
     const TYPE_COMPANY = 1;
@@ -66,6 +67,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['address', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
+            [['username', 'email', 'password', 'id'], 'required', 'on' => self::SCENARIO_PASSWORD_CHANGE],
             [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'cat_id', 'bulstat', 'dds', 'mol', 'conditions'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name', 'conditions'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
             [
@@ -246,14 +248,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             $msg = '';
             foreach ($targetUsers as $targetUser) {
                 /* @var $targetUser User */
-                $link = '<a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $company->id]) . '">от тук!</a>';
+                $link = ' <a href = "' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $company->id]) . '" > от тук!</a> ';
                 if ($register === true) {
                     $subject = 'Уведомление за новорегистрирана и интересна за Вас компания';
-                    $msg = 'Уважаеми/а г-н/г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br/> Нова компания "' . $company->name . '" от предпочитаното от Вас населено място <strong>'
-                        . $company->getCityName() . '</strong> беше регистрирана при нас! Може да разгледате профила ' . $link;
+                    $msg = 'Уважаеми/а г-н / г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br /> Нова компания "' . $company->name . '" от предпочитаното от Вас населено място < strong>'
+                        . $company->getCityName() . ' </strong > беше регистрирана при нас!Може да разгледате профила ' . $link;
                 } else {
                     $subject = 'Уведомление за промяна в списък на промоционални оферти на интересна за Вас компания';
-                    $msg = 'Уважаеми/а г-н/г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br/>  от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
+                    $msg = 'Уважаеми/а г-н / г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br />  от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
                 }
                 $to = $targetUser->email;
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
@@ -265,19 +267,58 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     /**
      * @param $company User
      */
-    public static function sendEmailToAdminByCompany($company)
+    public static function sendEmailToAdminByCompany(User $company)
     {
-        $to = '';
         $subject = 'Нова компания се регистрира в сайта';
-        $msg = '';
         $admins = User::findAll(['type' => self::TYPE_ADMIN]);
         /* @var $admin User */
         foreach ($admins as $admin) {
             $to = $admin->email;
             if ($to) {
-                $msg = 'Нова компания <strong>' . $company->name . '</strong> от населено място <strong>' . $company->getCityName()
-                    . '</strong> току-що се регистрира в системата! Може да разгледате профила от
-                    <a href="' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) . '"><strong>тук</strong></a>';
+                $msg = 'Нова компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $company->getCityName()
+                    . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
+    <a href = "' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $company->id]) . '" ><strong> тук</strong></a>';
+                $headers = "Content-Type: text/html;\r\n charset=utf-8";
+                mail($to, $subject, $msg, $headers);
+            }
+        }
+    }
+
+    /**
+     * @param Place $place
+     */
+    public static function sendEmailToAdminByPlace(Place $place)
+    {
+        $company = $place->getUser();
+        $subject = 'Нов обект се регистрира в сайта на фирма: ' . $company->name;
+        $admins = User::findAll(['type' => self::TYPE_ADMIN]);
+        /* @var $admin User */
+        foreach ($admins as $admin) {
+            $to = $admin->email;
+            if ($to) {
+                $msg = 'Нов обект с име: ' . $place->name . ' на компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $company->getCityName()
+                    . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
+    <a href = "' . Yii::$app->urlManager->createUrl(['admin/places', 'companyId' => $company->id]) . '" ><strong> тук</strong></a>';
+                $headers = "Content-Type: text/html;\r\n charset=utf-8";
+                mail($to, $subject, $msg, $headers);
+            }
+        }
+    }
+
+    public static function sendEmailToUsersByPlace(Place $place)
+    {
+        $company = $place->getUser();
+        $subject = 'Нов обект се регистрира в сайта на фирма: ' . $company->name;
+        $users = User::find()->where(['city_id' => $place->city_id])
+            ->andWhere(['type' => User::TYPE_USER])
+            ->andWhere(['subscribed' => 1])->all();
+        /* @var $user User */
+        foreach ($users as $user) {
+            $to = $user->email;
+            if ($to) {
+                $msg = 'Нов обект с име: ' . $place->name . ' на компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $place->getCity()->name
+                    . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
+    <a href = "' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $place->id]) . '" ><strong>ТУК</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
                 mail($to, $subject, $msg, $headers);
             }

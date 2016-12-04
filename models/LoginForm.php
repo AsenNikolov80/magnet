@@ -19,6 +19,13 @@ class LoginForm extends Model
 
     private $_user = false;
 
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Потребителско име',
+            'password' => 'Парола',
+        ];
+    }
 
     /**
      * @return array the validation rules.
