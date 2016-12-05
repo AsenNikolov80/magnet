@@ -65,8 +65,7 @@ use yii\helpers\Html;
         <div class="form-group required col-sm-12" style="padding: 0">
             <div class="col-sm-2"></div>
             <div class="col-sm-10" style="padding-left: 20px;padding-right: 0">
-                <?= HTML::checkbox('conditions', false, ['id' => 'conditions', 'style' => 'width:15px;height:15px', 'required' => true]) ?>
-                <label for="conditions">Съгласявам се и приемам </label>
+                <?= $form->field($user, 'conditions')->checkbox(['style' => 'width:15px;height:15px', 'required' => true])->label('Съгласявам се и приемам'); ?>
                 <a target="_blank" href="<?= Yii::$app->urlManager->createUrl('site/conditions') ?>">общите условия</a>
             </div>
         </div>
