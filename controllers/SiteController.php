@@ -257,25 +257,25 @@ class SiteController extends Controller
         if (Yii::$app->user->isUser())
             $user->setScenario(User::SCENARIO_REGISTER_USER);
         if (!empty(Yii::$app->request->post('User'))) {
-            $oldPicture = $user->picture;
+//            $oldPicture = $user->picture;
             $user->setAttributes(Yii::$app->request->post('User'));
-            if (!empty($_FILES['User']['tmp_name']['picture'])) {
-                $fileInfo = getimagesize($_FILES['User']['tmp_name']['picture']);
-                if ($fileInfo[2] == IMAGETYPE_BMP
-                    || $fileInfo[2] == IMAGETYPE_GIF
-                    || $fileInfo[2] == IMAGETYPE_JPEG
-                    || $fileInfo[2] == IMAGETYPE_PNG
-                ) {
-                    if ($oldPicture) {
-                        $path = Yii::$app->basePath . '/web/profile_images/' . $oldPicture;
-                        if (file_exists($path))
-                            unlink($path);
-                    }
-                    $t = move_uploaded_file($_FILES['User']['tmp_name']['picture'], 'profile_images/' . $_FILES['User']['name']['picture']);
-                    $user->picture = $_FILES['User']['name']['picture'];
-                } else $user->picture = $oldPicture;
-            } else
-                $user->picture = $oldPicture;
+//            if (!empty($_FILES['User']['tmp_name']['picture'])) {
+//                $fileInfo = getimagesize($_FILES['User']['tmp_name']['picture']);
+//                if ($fileInfo[2] == IMAGETYPE_BMP
+//                    || $fileInfo[2] == IMAGETYPE_GIF
+//                    || $fileInfo[2] == IMAGETYPE_JPEG
+//                    || $fileInfo[2] == IMAGETYPE_PNG
+//                ) {
+//                    if ($oldPicture) {
+//                        $path = Yii::$app->basePath . '/web/profile_images/' . $oldPicture;
+//                        if (file_exists($path))
+//                            unlink($path);
+//                    }
+//                    $t = move_uploaded_file($_FILES['User']['tmp_name']['picture'], 'profile_images/' . $_FILES['User']['name']['picture']);
+//                    $user->picture = $_FILES['User']['name']['picture'];
+//                } else $user->picture = $oldPicture;
+//            } else
+//                $user->picture = $oldPicture;
             $user->last_updated = date('Y-m-d H:i:s');
             $user->save();
         }
