@@ -315,8 +315,8 @@ class SiteController extends Controller
             ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND (t.paid_until>=:date OR t.paid_until IS NULL)', $params)
             ->orderBy('t.last_updated DESC')
             ->where(['t.active' => 1])
-            ->orWhere('t.paid_until >="' . date('Y-m-d').'"')
-            ->orWhere('t.paid_until IS NULL AND u.paid_until >= "' . $params[':date'].'"');
+            ->orWhere('t.paid_until >="' . date('Y-m-d') . '"')
+            ->orWhere('t.paid_until IS NULL AND u.paid_until >= "' . $params[':date'] . '"');
         if ($postName) {
             $q->andWhere(['LIKE', 't.name', $postName]);
         }
@@ -425,17 +425,19 @@ class SiteController extends Controller
     public function actionSelectedAds()
     {
         $user = $this->getCurrentUser();
-        $users = [];
-        $usersIds = (new Query())->select('u.id')
-            ->from(Ticket::tableName() . ' t')
-            ->innerJoin(User::tableName() . ' u', 't.id_user=u.id')
-            ->where(['u.city_id' => $user->city_id])
-            ->andWhere(['u.active' => 1])
-            ->column();
-        $users[] = User::find()->where(['IN', 'id', $usersIds])->all();
-        $users = $users[0];
-        $cityName = $user->getCityName();
-        return $this->render('selected-ads', ['users' => $users, 'cityName' => $cityName]);
+//        $users = [];
+//        $usersIds = (new Query())->select('u.id')
+//            ->from(Ticket::tableName() . ' t')
+//            ->innerJoin(User::tableName() . ' u', 't.id_user=u.id')
+//            ->where(['u.city_id' => $user->city_id])
+//            ->andWhere(['u.active' => 1])
+//            ->column();
+//        $users[] = User::find()->where(['IN', 'id', $usersIds])->all();
+//        $users = $users[0];
+        $places = Place::find()->where(['active' => 1])
+            ->andWhere('paid_until>="' . date('Y-m-d') . '"')
+            ->andWhere(['city_id' => $user->city_id])->all();
+        return $this->render('selected-ads', ['places' => $places, 'cityName' => $user->getCityName()]);
     }
 
 
