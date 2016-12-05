@@ -563,16 +563,14 @@ class SiteController extends Controller
 
     public function actionDeletePlaceConfirmed()
     {
-        if (Yii::$app->request->isAjax) {
-            $place = Place::findOne(Yii::$app->request->post('placeId'));
-            if ($this->isUserOwnedPlace($place)) {
-                $file = new FileComponent();
-                if ($place->picture)
-                    unlink($file->imagesPath . $place->picture);
-                $place->delete();
-            }
-            return $this->redirect(Yii::$app->urlManager->createUrl('site/places'));
+        $place = Place::findOne(Yii::$app->request->post('placeId'));
+        if ($this->isUserOwnedPlace($place)) {
+            $file = new FileComponent();
+            if ($place->picture)
+                unlink($file->imagesPath . $place->picture);
+            $place->delete();
         }
+        return $this->redirect(Yii::$app->urlManager->createUrl('site/places'));
     }
 
     public function actionPrices()
