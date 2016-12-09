@@ -59,6 +59,7 @@ use yii\helpers\Html;
             echo $form->field($user, 'bulstat');
             echo $form->field($user, 'dds');
             echo $form->field($user, 'mol');
+            echo $form->field($user, 'cat_id')->dropDownList($categories);
         }
         echo $form->field($user, 'type')->hiddenInput()->label(false);
         ?>

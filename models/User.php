@@ -116,6 +116,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'mol' => 'МОЛ',
             'paid_amount' => 'Сума за плащане',
             'conditions' => 'Общи условия',
+            'cat_id' => 'Категория'
         ];
     }
 
@@ -338,5 +339,13 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function getInvoices()
     {
         return Factura::findAll(['user_id' => $this->id]);
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory()
+    {
+        return Category::findOne($this->cat_id);
     }
 }
