@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\FileComponent;
+use app\models\Category;
 use app\models\City;
 use app\models\Factura;
 use app\models\InvoiceData;
@@ -225,11 +226,12 @@ class SiteController extends Controller
                 Yii::$app->session->setFlash('error', 'Нещо се обърка, опитайте отново!');
             }
         }
-
+        $categories = Category::getCategoriesForDropdown();
         return $this->render('register', [
             'user' => $user,
             'regions' => $regions,
             'cities' => $cities,
+            'categories' => $categories,
             'communities' => $communities,
             'cityRelations' => $cityRelations
         ]);
@@ -277,7 +279,14 @@ class SiteController extends Controller
 //            } else
 //                $user->picture = $oldPicture;
             $user->last_updated = date('Y-m-d H:i:s');
-            $user->save();
+            try {
+                $user->save();
+                Yii::$app->session->setFlash('success', 'Успешно обновихте профила си!');
+            } catch (\Exception $e) {
+                Yii::$app->session->setFlash('error', 'Нещо се обърка, вероятно имейлът вече е регистриран!');
+                Yii::error($e->getMessage());
+                $user = $this->getCurrentUser();
+            }
         }
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
         /* @var $selectedCommunityId */
@@ -289,10 +298,13 @@ class SiteController extends Controller
             if ($user->paid_until < date('Y-m-d'))
                 Yii::$app->session->setFlash('errorAttribute', 'Не сте извършили плащане, за да може да ползвате нашите услуги');
         }
+
+        $categories = Category::getCategoriesForDropdown();
         return $this->render('profile', [
             'user' => $user,
             'regions' => $regions,
             'cities' => $cities,
+            'categories' => $categories,
             'communities' => $communities,
             'cityRelations' => $cityRelations,
             'selectedRegionId' => $selectedRegionId,

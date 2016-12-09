@@ -78,8 +78,9 @@ $this->params['breadcrumbs'][] = 'Обекти';
                 $company = $place->getUser();
                 $file = new \app\components\FileComponent($company);
                 $profileUrl = Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $place->id]);
+                $filename = $file->imagesPathForPictures . $place->picture;
                 if (strlen($place->picture) > 0) {
-                    $src = $file->imagesPathForPictures . $place->picture;
+                    $src = $filename;
                 } else {
                     // default image
                     $src = Yii::$app->homeUrl . 'images/noimage.png';
@@ -87,11 +88,11 @@ $this->params['breadcrumbs'][] = 'Обекти';
                 ?>
                 <div class="col-md-4 col-sm-6">
                     <div class="item">
-                        <div class="col-xs-6">
+                        <div class="col-xs-5">
                             <a href="<?= $profileUrl ?>" title="виж профил"><img src="<?= $src ?>"
                                                                                  style="margin-top: 15px"></a>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-7">
                             <div style="margin-top: -10px">
                                 <h3>
                                     <a href="<?= $profileUrl ?>" title="виж профил">
@@ -99,10 +100,11 @@ $this->params['breadcrumbs'][] = 'Обекти';
                                     </a>
                                 </h3>
                             </div>
-                            <div>Телефон: <?= $place->phone ?></div>
-                            <div>Раб. време: <?= $place->work_time ?></div>
-                            <div>Адрес: <?= $place->address ?></div>
-                            <div>Нас. място: <?= $place->getCity()->name ?></div>
+                            <div><em>Телефон:</em> <?= $place->phone ?></div>
+                            <div><em>Раб. време: </em><?= $place->work_time ?></div>
+                            <div><em>Адрес: </em><?= $place->address ?></div>
+                            <div><em>Нас. място:</em> <?= $place->getCity()->name ?></div>
+                            <div><em>Категория:</em> <?= $company->getCategoryName() ?></div>
                         </div>
                     </div>
                 </div>

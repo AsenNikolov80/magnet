@@ -50,4 +50,16 @@ class Category extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Users::className(), ['cat_id' => 'id']);
     }
+
+    public static function getCategoriesForDropdown()
+    {
+        $categoriesRaw = Category::find()->all();
+        $categories = [];
+        /* @var $item Category */
+        foreach ($categoriesRaw as $item) {
+            $categories[$item->id] = $item->name;
+        }
+
+        return $categories;
+    }
 }

@@ -82,7 +82,8 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
             echo $form->field($user, 'name')->textInput();
             echo $form->field($user, 'bulstat')->textInput();
             echo $form->field($user, 'dds')->textInput();
-            echo $form->field($user, 'mol')->textInput();?>
+            echo $form->field($user, 'mol')->textInput();
+            echo $form->field($user, 'cat_id')->dropDownList($categories);?>
         <?php } ?>
 
         <div class="form-group row" style="margin: 10px 0">

@@ -19,15 +19,16 @@
  */
 /* @var $place \app\models\Place */
 $file = new \app\components\FileComponent($place->getUser());
-$this->params['breadcrumbs'][] = ['label'=>'Обекти','url'=>Yii::$app->urlManager->createUrl('site/ads')];
+$this->params['breadcrumbs'][] = ['label' => 'Обекти', 'url' => Yii::$app->urlManager->createUrl('site/ads')];
 $this->params['breadcrumbs'][] = 'Преглед на обект';
 ?>
 <div class="col-sm-12">
     <?php
     \app\components\Components::printFlashMessages();
     if ($place) {
+        $filename = $file->imagesPathForPictures . $place->picture;
         if (strlen($place->picture) > 0) {
-            $src = $file->imagesPathForPictures . $place->picture;
+            $src = $filename;
         } else {
             // default image
 //            var_dump(explode(DIRECTORY_SEPARATOR,$file->imagesPathForPictures));
@@ -42,7 +43,7 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
                 </h4>
             </div>
             <div style="font-size: 1.1em;">
-                <em><?=$place->description?></em>
+                <em><?= $place->description ?></em>
             </div>
         </div>
         <div class="col-sm-7">

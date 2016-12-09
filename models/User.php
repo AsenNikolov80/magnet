@@ -344,8 +344,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     /**
      * @return Category
      */
-    public function getCategory()
-    {
-        return Category::findOne($this->cat_id);
-    }
+//    public function getCategory()
+//    {
+//        return Category::findOne($this->cat_id);
+//    }
 }
