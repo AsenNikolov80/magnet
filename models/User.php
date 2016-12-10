@@ -278,7 +278,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             if ($to) {
                 $msg = 'Нова компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $company->getCityName()
                     . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
-    <a href = "' . Yii::$app->urlManager->createUrl(['admin/profiles']) . '" ><strong> тук</strong></a>';
+    <a href = "' . Yii::$app->urlManager->createAbsoluteUrl(['admin/profiles']) . '" ><strong> тук</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
                 mail($to, $subject, $msg, $headers);
             }
@@ -299,7 +299,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             if ($to) {
                 $msg = 'Нов обект с име: ' . $place->name . ' на компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $company->getCityName()
                     . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
-    <a href = "' . Yii::$app->urlManager->createUrl(['admin/places', 'companyId' => $company->id]) . '" ><strong> тук</strong></a>';
+    <a href = "' . Yii::$app->urlManager->createAbsoluteUrl(['admin/places', 'companyId' => $company->id]) . '" ><strong> тук</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
                 mail($to, $subject, $msg, $headers);
             }
@@ -319,7 +319,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             if ($to) {
                 $msg = 'Нов обект с име: ' . $place->name . ' на компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $place->getCity()->name
                     . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
-    <a href = "' . Yii::$app->urlManager->createUrl(['site/view-profile', 'id' => $place->id]) . '" ><strong>ТУК</strong></a>';
+    <a href = "' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $place->id]) . '" ><strong>ТУК</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
                 mail($to, $subject, $msg, $headers);
             }
