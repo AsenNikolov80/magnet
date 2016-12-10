@@ -7,6 +7,7 @@
         border-radius: 10px;
         padding: 5px;
         background-color: #eee;
+        background-color: #f5f9fb;
     }
 
     .col-sm-4 > a {
@@ -30,29 +31,37 @@ $this->params['breadcrumbs'][] = 'Обекти';
     \app\components\Components::printFlashMessages();
     ?>
     <div class="col-xs-12 row">
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <h3>Покажи обекти по име:</h3>
             <?= Html::beginForm();
-            echo Html::textInput('name', '', ['class' => 'form-control', 'style' => 'width:30%', 'required' => true]) . '<br/>';
+            echo Html::textInput('name', '', ['class' => 'form-control', 'style' => 'width:90%', 'required' => true]) . '<br/>';
             echo Html::submitButton('Търси', ['class' => 'btn btn-info']);
             echo Html::endForm(); ?>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <h3>Покажи обекти по населено място:</h3>
             <?= Html::beginForm(); ?>
-            <div class="col-sm-4">
-                <?= Html::dropDownList('region', '', $regions, ['id' => 'region', 'class' => 'form-control']) ?>
+            <div class="col-md-4">
+                <label>Област
+                    <?= Html::dropDownList('region', '', $regions, ['id' => 'region', 'class' => 'form-control']) ?>
+                </label>
             </div>
-            <div class="col-sm-4">
-                <?= Html::dropDownList('community', '', $communities, ['id' => 'community', 'class' => 'form-control']) ?>
+            <div class="col-md-4">
+                <label>Община
+                    <?= Html::dropDownList('community', '', $communities, ['id' => 'community', 'class' => 'form-control']) ?>
+                </label>
             </div>
-            <div class="col-sm-4">
-                <?= Html::dropDownList('city', '', $cities, ['id' => 'city', 'class' => 'form-control']) ?>
+            <div class="col-md-4">
+                <label>Населено място
+                    <?= Html::dropDownList('city', '', $cities, ['id' => 'city', 'class' => 'form-control']) ?>
+                </label>
             </div>
             <br/>
             <br/>
             <br/>
-            <?= Html::submitButton('Търси', ['class' => 'btn btn-info']); ?>
+            <div class="col-md-4">
+                <?= Html::submitButton('Търси', ['class' => 'btn btn-info']); ?>
+            </div>
             <?= Html::endForm(); ?>
         </div>
     </div>

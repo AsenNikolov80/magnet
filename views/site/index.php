@@ -6,10 +6,10 @@
         box-shadow: 2px 2px 10px black;
     }
 
-    nav.navbar-inverse {
-        background-color: #494949;
-        background: linear-gradient(#555, #1a1a1a);
-    }
+    /*nav.navbar-inverse {*/
+        /*background-color: #494949;*/
+        /*background: linear-gradient(#555, #1a1a1a);*/
+    /*}*/
 
     .navbar-inverse .navbar-nav > li {
         /*border: 0;*/
@@ -23,10 +23,10 @@
         color: white;
     }
 
-    .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
-        background-color: floralwhite;
-        color: black;
-    }
+    /*.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {*/
+        /*background-color: floralwhite;*/
+        /*color: black;*/
+    /*}*/
 </style>
 <?php
 
