@@ -40,6 +40,13 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
 ?>
 <div class="row-fluid">
     <?php \app\components\Components::printFlashMessages() ?>
+    <?php
+    if ($user->active == 0) { ?>
+        <div class="alert-warning" style="padding: 10px;margin-bottom: 20px">
+            Моля, имайте предвид, че вашите обяви и обекти ще могат да бъдат управлявани от Вас веднага,
+            но се изисква одобрение на администратор, за да бъдат видими за Вашите клиенти!
+        </div>
+    <?php } ?>
     <?php $form = ActiveForm::begin([
         'id' => 'create-form',
         'action' => Yii::$app->urlManager->createUrl('site/profile'),
@@ -83,7 +90,7 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
             echo $form->field($user, 'bulstat')->textInput();
             echo $form->field($user, 'dds')->textInput();
             echo $form->field($user, 'mol')->textInput();
-            echo $form->field($user, 'cat_id')->dropDownList($categories);?>
+            echo $form->field($user, 'cat_id')->dropDownList($categories); ?>
         <?php } ?>
 
         <div class="form-group row" style="margin: 10px 0">

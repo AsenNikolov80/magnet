@@ -59,7 +59,12 @@ use yii\helpers\Html;
             echo $form->field($user, 'bulstat');
             echo $form->field($user, 'dds');
             echo $form->field($user, 'mol');
-            echo $form->field($user, 'cat_id')->dropDownList($categories);
+            echo $form->field($user, 'cat_id')->dropDownList($categories); ?>
+            <div class="alert-warning" style="padding: 10px">
+                Моля, имайте предвид, че вашите обяви и обекти ще могат да бъдат управлявани от Вас веднага,
+                но се изисква одобрение на администратор, за да бъдат видими за Вашите клиенти!
+            </div>
+        <?php
         }
         echo $form->field($user, 'type')->hiddenInput()->label(false);
         ?>

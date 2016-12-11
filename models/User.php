@@ -111,7 +111,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             'last_name' => 'Фамилия',
             'subscribed' => '',
             'last_updated' => 'Последна промяна',
-            'bulstat' => 'Булстат',
+            'bulstat' => 'ЕИК',
             'dds' => 'ИН по ЗДДС',
             'mol' => 'МОЛ',
             'paid_amount' => 'Сума за плащане',

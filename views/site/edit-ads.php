@@ -85,7 +85,7 @@ $newTicket = new Ticket();
 
             <div id="content" class="row">
                 <div class="col-sm-6">
-                    <h4>Ценови промоции</h4>
+                    <h4>Ценови промоции от вида продукт/услуга - цена</h4>
                     <?php
                     if (!empty($tickets)) {
                         /* @var $ticket \app\models\Ticket */
@@ -106,7 +106,7 @@ $newTicket = new Ticket();
                     <?php } ?>
                 </div>
                 <div class="col-sm-6" style="border-left: 1px solid #ccc">
-                    <h4>Друг вид промоции</h4>
+                    <h4>Друг вид промоции (обяви в свободен текст)</h4>
                     <?php
                     foreach ($freeTextTickets as $freeTextTicket) { ?>
                         <div class="adsListFree">

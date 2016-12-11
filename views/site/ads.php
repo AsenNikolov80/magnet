@@ -153,8 +153,8 @@ $this->params['breadcrumbs'][] = 'Обекти';
         $('.item').height(h);
     }
     $(function () {
-        resetHeight();
-        $(window).resize(resetHeight);
+//        resetHeight();
+//        $(window).resize(resetHeight);
 
         $('#region').trigger('change');
         $('#community').trigger('change');

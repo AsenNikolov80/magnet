@@ -296,7 +296,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isUserActive()) {
             if ($user->active == 0)
                 Yii::$app->session->setFlash('errorAttribute', 'Профилът Ви не е одобрен от администратор');
-            if ($user->paid_until < date('Y-m-d'))
+            elseif ($user->paid_until < date('Y-m-d'))
                 Yii::$app->session->setFlash('errorAttribute', 'Не сте извършили плащане, за да може да ползвате нашите услуги');
         }
 

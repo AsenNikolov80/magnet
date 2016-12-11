@@ -9,6 +9,29 @@
         color: white;
         font-size: 1.3em;
     }
+
+    dl > dt {
+        width: 40% !important;
+    }
+
+    dl > dd {
+        margin-left: 43% !important;
+    }
+
+    @media all and (max-width: 768px) {
+        dl > dd {
+            margin-left: 10% !important;
+        }
+
+        dl > dt {
+            text-align: right;
+        }
+        dl * {
+            display: inline-block;
+        }
+    }
+
+
 </style>
 <?php
 /**
@@ -37,12 +60,7 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
         ?>
         <div class="col-sm-5">
             <a href="<?= $src ?>" target="_blank"><img src="<?= $src ?>"></a>
-            <div>
-                <h4>
-                    <?= $place->getCity()->name . ', ' . $place->address . ', търговец: ' . $place->getUser()->name ?>
-                </h4>
-            </div>
-            <div style="font-size: 1.1em;">
+            <div style="font-size: 1.1em;margin-top: 10px">
                 <em><?= $place->description ?></em>
             </div>
         </div>
@@ -77,7 +95,24 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
         <div class="col-sm-12">
             <hr style="border-color: #ccc"/>
         </div>
-        <div class="col-sm-12 text-center" id="map-holder" style="margin: 0 auto">
+        <div class="col-sm-4">
+            <h3 class="text-center">Контактна информация:</h3>
+            <dl class="dl-horizontal">
+                <dt>Нас. място:</dt>
+                <dd><?= $place->getCity()->name ?></dd>
+                <dt>Адрес:</dt>
+                <dd><?= $place->address ?></dd>
+                <dt>Раб. време:</dt>
+                <dd><?= $place->work_time ?></dd>
+                <dt>Телефон:</dt>
+                <dd><?= $place->phone ?></dd>
+                <dt>Имейл:</dt>
+                <dd><?= $place->getUser()->email ?></dd>
+                <dt>Търговец:</dt>
+                <dd><?= $place->getUser()->name ?></dd>
+            </dl>
+        </div>
+        <div class="col-sm-8 text-center" id="map-holder" style="margin: 0 auto">
         </div>
         <?php
     }
@@ -88,8 +123,8 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
         var mapLink = '<?=$place->map_link?>';
         if (mapLink.length > 0) {
             $('#map-holder').empty();
-            var wIndex = 0.65;
-            var hIndex = 0.35;
+            var wIndex = 0.75;
+            var hIndex = 0.5;
             if ($(window).width() < 769) {
                 wIndex = 1;
                 hIndex = 0.7;
