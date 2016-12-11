@@ -198,6 +198,7 @@ class SiteController extends Controller
             $user->setAttributes(Yii::$app->request->post('User'));
             if ($user->scenario == User::SCENARIO_REGISTER_COMPANY) {
                 $user->paid_until = date('Y-m-d', time() + 1209600);
+                $user->paid_until = date('Y-m-d', time() - 86400);
             }
             try {
                 if ($user->conditions == 0) {
@@ -324,11 +325,9 @@ class SiteController extends Controller
         ];
 
         $q = Place::find()->alias('t')
-            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND (t.paid_until>=:date OR t.paid_until IS NULL)', $params)
+            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND t.paid_until>=:date', $params)
             ->orderBy('t.last_updated DESC')
-            ->where(['t.active' => 1])
-            ->orWhere('t.paid_until >="' . date('Y-m-d') . '"')
-            ->orWhere('t.paid_until IS NULL AND u.paid_until >= "' . $params[':date'] . '"');
+            ->where(['t.active' => 1]);
         if ($postName) {
             $q->andWhere(['LIKE', 't.name', $postName]);
         }
