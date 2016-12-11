@@ -78,7 +78,7 @@ AppAsset::register($this);
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post', ['class' => 'navbar-form'])
                 . Html::submitButton(
-                    'Изход (' . Yii::$app->user->identity->username . ')',
+                    'Изход',
                     ['class' => 'btn btn-link']
                 )
                 . Html::endForm()
