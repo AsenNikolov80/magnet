@@ -1,14 +1,27 @@
 <style>
     .item {
-        padding: 0;
-        display: inline-block;
+        padding: 5px 30px;
+        display: table-cell;
         border: 1px solid #aaaaaa;
-        box-shadow: 2px 2px 10px black;
+        box-shadow: 0 0 5px black;
+        width: 48%;
+        vertical-align: top;
+        border-radius: 20px;
+    }
+
+    img {
+        width: 95%;
+        margin: 30px 0;
+        box-shadow: 10px 10px 25px black;
+    }
+
+    .col-sm-6 {
+        display: table-cell;
     }
 
     /*nav.navbar-inverse {*/
-        /*background-color: #494949;*/
-        /*background: linear-gradient(#555, #1a1a1a);*/
+    /*background-color: #494949;*/
+    /*background: linear-gradient(#555, #1a1a1a);*/
     /*}*/
 
     .navbar-inverse .navbar-nav > li {
@@ -23,9 +36,30 @@
         color: white;
     }
 
+    div.row div {
+        font-size: 1.2em;
+    }
+
+    @media all and (max-width: 1024px) {
+        img {
+            width: 85%;
+            margin: 30px 0;
+
+        }
+
+        .item {
+            display: block;
+            width: 100%;
+        }
+    }
+    h1{
+        margin-bottom: 20px;
+        margin-top: 5px;
+    }
+
     /*.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {*/
-        /*background-color: floralwhite;*/
-        /*color: black;*/
+    /*background-color: floralwhite;*/
+    /*color: black;*/
     /*}*/
 </style>
 <?php
@@ -35,30 +69,54 @@
 $this->title = 'БГ ПРОМО';
 $this->params['breadcrumbs'][] = '';
 ?>
-<div class="row">
-
+<div class="row" style="display: table-row">
     <div class="col-sm-12">
         <?php
         \app\components\Components::printFlashMessages();
         ?>
         <h1 class="text-center">Добре дошли!</h1>
     </div>
-    <div class="col-sm-6 text-justify">
-        <h4>ВИЕ УВАЖАЕМИ ПОТРЕБИТЕЛИ:</h4>
-        Ако се интересувате от промоциите на малките търговски обекти/обекти за услуги във Вашето или друго населеното място,
-        можете да проверите тук има ли публикувани такива. А ако имате регистрация в promobox-bg.com
-        ще получавате своевременно e-mail при публикуване на промо оферта, както и при всяко обновяване на информацията
-        в профила на търговеца.
-
+    <div id="first" style="display: table-row;">
+        <div class=" text-justify item">
+            <h2 class="text-center">ВИЕ, УВАЖАЕМИ ПОТРЕБИТЕЛИ:</h2>
+            Ако се интересувате от промоциите на малките търговски обекти/обекти за услуги/ във Вашето или друго
+            населено място,
+            можете да проверите тук има ли публикувани такива. А ако имате регистрация в promobox-bg.com
+            ще получавате своевременно e-mail при публикуване на промо оферта, както и при всяко обновяване на
+            информацията в профила на търговеца.
+        </div>
+        <div class="item text-center" style="box-shadow: none;border: 0">
+            <img src="<?= Yii::$app->getHomeUrl() ?>/images/p1.jpg"/>
+        </div>
     </div>
-    <div class="col-sm-6 text-justify">
-        <h4>ВИЕ УВАЖАЕМИ ТЪРГОВЦИ:</h4>
-        За да публикувате промо оферти на сайта трябва да имате регистрация като търговец на promobox-bg.com .
-        Може да качвате неограничен брой промо оферти по всяко време от профила си,
-        които след преглед от администратор ще бъдат активирани и рекламирани на сайта.
-        В профила си по всяко време може да публикувате промо оферти и да обновявате информацията,
-        при което всички регистрирани потребители, които са заявили,
-        че се интересуват от промоциите от района на Вашият търговски обект/обект за услуги, ще получат своевременно e-mail.
-        Така може да сте сигурни, че Вашите обяви ще достигнат до правилните клиенти в точното време!
+    <div id="second" style="display: table-row">
+        <div id="move" class="item text-center" style="margin-top: 20px;box-shadow: none;border: 0">
+            <img src="<?= Yii::$app->getHomeUrl() ?>/images/p3.jpg"/>
+        </div>
+        <div class=" text-justify item" style="margin-top: 20px">
+            <h2 class="text-center">ВИЕ, УВАЖАЕМИ ТЪРГОВЦИ:</h2>
+            За да публикувате промо оферти на сайта, трябва да имате регистрация като търговец на <strong><a
+                href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 1]) ?>">promobox-bg.com</a></strong>.
+            Може да качвате неограничен брой промо оферти по всяко време от профила си,
+            които след преглед от администратор ще бъдат активирани и рекламирани на сайта, и да обновявате информацията,
+            при което всички регистрирани потребители, които са заявили
+            че се интересуват от промоциите от района на Вашият търговски обект/обект за услуги/, ще получат своевременно
+            e-mail с информация за Вашата нова обява.
+            Така може да сте сигурни, че Вашите обяви ще достигнат до правилните клиенти в точното време!
+        </div>
     </div>
 </div>
+<script>
+    function checkPosition() {
+        var div = $('#move');
+        if ($(window).width() <= 1024) {
+            div.appendTo($('#second'));
+        } else {
+            div.prependTo($('#second'));
+        }
+    }
+    $(function () {
+        checkPosition();
+        $(window).resize(checkPosition);
+    })
+</script>

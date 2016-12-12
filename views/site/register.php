@@ -7,6 +7,27 @@
     .container .main ul > li {
         margin: 8px 0;
     }
+
+    .shadow-box a {
+        left: 35%;
+        position: absolute;
+        bottom: 5px;
+        font-size: 1.2em;
+    }
+
+    @media all and (min-width: 1024px) {
+        .shadow-box a {
+            left: 40%;
+        }
+    }
+
+    @media all and (max-width: 768px) {
+        img {
+            width: 30%;
+            margin-left: 35%;
+        }
+
+    }
 </style>
 <?php
 /**
@@ -28,7 +49,7 @@ use yii\helpers\Html;
             'id' => 'create-user-form',
             'options' => ['class' => 'form-horizontal'],
             'fieldConfig' => [
-                'template' => "{label}\n<div class=\"col-sm-10\">{input}</div>\n<div class=\"col-sm-12\">{error}</div>",
+                'template' => "{label}\n<div class=\"col-sm-6\">{input}</div>\n<div class=\"col-sm-12\">{error}</div>",
                 'labelOptions' => ['class' => 'col-sm-2 control-label', 'style' => 'color: black !important'],
             ]
         ]);
@@ -64,7 +85,7 @@ use yii\helpers\Html;
                 Моля, имайте предвид, че вашите обяви и обекти ще могат да бъдат управлявани от Вас веднага,
                 но се изисква одобрение на администратор, за да бъдат видими за Вашите клиенти!
             </div>
-        <?php
+            <?php
         }
         echo $form->field($user, 'type')->hiddenInput()->label(false);
         ?>
@@ -84,8 +105,8 @@ use yii\helpers\Html;
         ActiveForm::end();
     } else {
         ?>
-        <div class="col-sm-6 text-justify shadow-box">
-            <h2 class="col-sm-12">Регистрация като <strong>потребител</strong></h2>
+        <div style="position: relative" class="col-sm-6 text-justify shadow-box">
+            <h2 class="col-sm-12 text-center">Регистрация като <strong>потребител</strong></h2>
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
                 <img src="../images/Couple.png"/>
@@ -103,12 +124,12 @@ use yii\helpers\Html;
                         отговарящи на Вашите критерии.
                     </li>
                 </ul>
-                <a class="btn btn-primary"
-                   href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 0]) ?>">Регистрация</a>
             </div>
+            <a class="btn btn-primary"
+               href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 0]) ?>">Регистрация</a>
         </div>
-        <div class="col-sm-6 text-justify shadow-box">
-            <h2 class="col-sm-12">Регистрация като <strong>търговец</strong></h2>
+        <div class="col-sm-6 text-justify shadow-box" style="position: relative">
+            <h2 class="col-sm-12 text-center">Регистрация като <strong>търговец</strong></h2>
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
                 <img src="../images/businessman.png"/>
@@ -127,9 +148,9 @@ use yii\helpers\Html;
                     </li>
                     <li>Възможност за клиентите да Ви открият по-лесно в търсачки като Google и Yahoo.</li>
                 </ul>
-                <a class="btn btn-primary"
-                   href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 1]) ?>">Регистрация</a>
             </div>
+            <a class="btn btn-primary"
+               href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 1]) ?>">Регистрация</a>
         </div>
         <?php
     }

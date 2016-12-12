@@ -1,6 +1,7 @@
 html,
 body {
     height: 100%;
+    font-family: Cambria;
 }
 
 .wrap {
@@ -125,7 +126,23 @@ img {
 .shadow-box {
     box-shadow: 0 5px 20px black;
     padding: 15px;
-    /*background-color: #dddddd;*/
+    min-height: 600px;
+    width: 48%;
+    margin: 0 5px;
+    font-size: 1.1em;
+}
+@media all and (max-width: 1024px){
+    .shadow-box{
+        min-height: 710px;
+    }
+}
+
+@media all and (max-width: 768px){
+    .shadow-box{
+        min-height: 600px;
+        width: 100%;
+        font-size: 1em;
+    }
 }
 
 .container {
@@ -152,9 +169,14 @@ ul.navbar-nav.navbar-right.nav li > a {
     padding: 15px 8px;
 }
 
-nav div.container form.navbar-form{
+nav div.container form.navbar-form {
     padding: 0;
 }
-div.navbar-header a.navbar-brand{
+
+div.navbar-header a.navbar-brand {
     padding-right: 2px;
+}
+
+div.container > ul.breadcrumb {
+    margin-bottom: 10px;
 }
