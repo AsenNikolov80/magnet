@@ -52,7 +52,8 @@
             width: 100%;
         }
     }
-    h1{
+
+    h1 {
         margin-bottom: 20px;
         margin-top: 5px;
     }
@@ -86,21 +87,23 @@ $this->params['breadcrumbs'][] = '';
             информацията в профила на търговеца.
         </div>
         <div class="item text-center" style="box-shadow: none;border: 0">
-            <img src="<?= Yii::$app->getHomeUrl() ?>/images/p1.jpg"/>
+            <img src="<?= Yii::$app->getHomeUrl() . 'images' . DIRECTORY_SEPARATOR . 'p1.jpg' ?>"/>
         </div>
     </div>
     <div id="second" style="display: table-row">
         <div id="move" class="item text-center" style="margin-top: 20px;box-shadow: none;border: 0">
-            <img src="<?= Yii::$app->getHomeUrl() ?>/images/p3.jpg"/>
+            <img src="<?= Yii::$app->getHomeUrl() . 'images' . DIRECTORY_SEPARATOR . 'p3.jpg' ?>"/>
         </div>
         <div class=" text-justify item" style="margin-top: 20px">
             <h2 class="text-center">ВИЕ, УВАЖАЕМИ ТЪРГОВЦИ:</h2>
             За да публикувате промо оферти на сайта, трябва да имате регистрация като търговец на <strong><a
-                href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 1]) ?>">promobox-bg.com</a></strong>.
+                    href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 1]) ?>">promobox-bg.com</a></strong>.
             Може да качвате неограничен брой промо оферти по всяко време от профила си,
-            които след преглед от администратор ще бъдат активирани и рекламирани на сайта, и да обновявате информацията,
+            които след преглед от администратор ще бъдат активирани и рекламирани на сайта, и да обновявате
+            информацията,
             при което всички регистрирани потребители, които са заявили
-            че се интересуват от промоциите от района на Вашият търговски обект/обект за услуги/, ще получат своевременно
+            че се интересуват от промоциите от района на Вашият търговски обект/обект за услуги/, ще получат
+            своевременно
             e-mail с информация за Вашата нова обява.
             Така може да сте сигурни, че Вашите обяви ще достигнат до правилните клиенти в точното време!
         </div>
