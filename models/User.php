@@ -30,6 +30,7 @@ use yii\helpers\Html;
  * @property string $mol
  * @property string $paid_amount
  * @property integer $conditions
+ * @property integer $addedPlace
  */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -67,6 +68,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['address', 'email', 'first_name', 'last_name', 'paid_until', 'name'], 'string', 'max' => 250, 'on' => self::SCENARIO_DEFAULT],
             [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
+            [['conditions', 'addedPlace', 'cat_id', 'subscribed', 'active'], 'integer'],
             [['username', 'email', 'password', 'id'], 'required', 'on' => self::SCENARIO_PASSWORD_CHANGE],
             [['username', 'email', 'password', 'city_id', 'address', 'type', 'name', 'first_name', 'last_name', 'cat_id', 'bulstat', 'dds', 'mol', 'conditions'], 'required', 'on' => self::SCENARIO_REGISTER_COMPANY],
             [['username', 'email', 'password', 'city_id', 'type', 'first_name', 'last_name', 'conditions'], 'required', 'on' => self::SCENARIO_REGISTER_USER],
@@ -90,6 +92,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                     'mol',
                     'paid_amount',
                     'conditions',
+                    'addedPlace',
                 ], 'safe'
             ]
         ];
@@ -241,8 +244,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public static function sendEmailToUsersByCompany($company, $register = true)
     {
         if ($company->active == 1) {
-            $targetUsers = User::find()->where(['city_id' => $company->city_id])
+            $targetUsers = User::find()->alias('u')->leftJoin(UserCity::tableName() . ' uc', 'u.id=uc.user_id')
                 ->andWhere(['type' => User::TYPE_USER])
+                ->andWhere(['uc.city_id' => $company->city_id])
                 ->andWhere(['subscribed' => 1])->all();
             $to = '';
             $subject = '';
@@ -310,8 +314,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     {
         $company = $place->getUser();
         $subject = 'Нов обект се регистрира в сайта на фирма: ' . $company->name;
-        $users = User::find()->where(['city_id' => $place->city_id])
+        $users = User::find()->alias('u')->leftJoin(UserCity::tableName() . ' uc', 'u.id=uc.user_id')
             ->andWhere(['type' => User::TYPE_USER])
+            ->andWhere(['uc.city_id' => $place->city_id])
             ->andWhere(['subscribed' => 1])->all();
         /* @var $user User */
         foreach ($users as $user) {
@@ -339,6 +344,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function getInvoices()
     {
         return Factura::findAll(['user_id' => $this->id]);
+    }
+
+    public function getSelectedCities()
+    {
+        $additionalCityId = (new Query())->select('city_id')
+            ->from(UserCity::tableName())
+            ->where(['user_id' => $this->id])->scalar();
+        return [$additionalCityId, $this->city_id];
     }
 
     /**

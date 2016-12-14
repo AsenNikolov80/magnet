@@ -4,10 +4,10 @@
     }
 
     input.checkboxInput {
-        vertical-align: top;
         margin-right: 5px;
-        width: 15px;
-        height: 15px;
+        width: 17px;
+        height: 17px;
+        vertical-align: sub;
     }
 
     input[type="file"] {
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
 <div class="row-fluid">
     <?php \app\components\Components::printFlashMessages() ?>
     <?php
-    if ($user->active == 0) { ?>
+    if ($user->active == 0 && Yii::$app->user->isUserCompany()) { ?>
         <div class="alert-warning" style="padding: 10px;margin-bottom: 20px">
             Моля, имайте предвид, че вашите обяви и обекти ще могат да бъдат управлявани от Вас веднага,
             но се изисква одобрение на администратор, за да бъдат видими за Вашите клиенти!
@@ -99,9 +99,12 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
                 <?php
                 if (Yii::$app->user->isUser()) { ?>
                     <em>Предпочитано населено място *</em>
-                    <hr style="margin-top: 0"/>
+                    <hr style="margin: 0"/>
                 <?php } ?>
             </div>
+        </div>
+
+        <div class="form-group row" style="margin: 10px 0">
             <label class="col-sm-4 control-label"> Област</label>
             <div class="col-sm-8">
                 <?= Html::dropDownList('regionId', $selectedRegionId, $regions, ['class' => 'form-control', 'id' => 'region']) ?>
@@ -113,15 +116,46 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
                 <?= Html::dropDownList('communityId', $selectedCommunityId, $communities, ['class' => 'form-control', 'id' => 'community']) ?>
             </div>
         </div>
-        <?= $form->field($user, 'city_id')->dropDownList($cities, ['id' => 'city']) ?>
+
         <?php
+        if (!Yii::$app->user->isUser()) {
+            echo $form->field($user, 'city_id')->dropDownList($cities, ['id' => 'city']);
+        } else {
+            ?>
+            <div class="form-group row" style="margin: 10px 0">
+                <label class="col-sm-4 control-label"> Населено място </label>
+                <div class="col-sm-8">
+                    <?= Html::dropDownList('User[city_id]', $user->city_id, $cities, ['class' => 'form-control', 'id' => 'community']) ?>
+                </div>
+            </div>
+            <div class="form-group row" style="margin: 10px 0">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8">
+                    <?php
+                    if (Yii::$app->user->isUser()) { ?>
+                        <label>
+                            <?= Html::checkbox('additionalCity', $user->addedPlace, ['class' => 'checkboxInput']) ?>
+                            <em>Допълнително населено място *</em>
+                        </label>
+                        <hr style="margin: 0"/>
+                    <?php } ?>
+                </div>
+            </div>
+            <div class="form-group row" style="margin: 10px 0">
+                <label class="col-sm-4 control-label"> Населено място </label>
+                <div class="col-sm-8">
+                    <?= Html::dropDownList('additionalCityId', $user->city_id, $additionalCities, ['class' => 'form-control cityHolder', 'id' => 'community']) ?>
+                </div>
+            </div>
+        <?php }
+
         if (Yii::$app->user->isUser()) {
             ?>
             <div class="form-group row">
                 <div class="col-sm-8 pull-right">
                     <label>
                         <?= Html::activeCheckbox($user, 'subscribed', ['class' => 'checkboxInput']) ?>
-                        * Абонирам се за имейл бюлетин, така ще получавам най-новите обяви от населеното място, което
+                        * Абонирам се за имейл бюлетин, така ще получавам най-новите обяви от населените места, които
                         предпочитам
                     </label>
                 </div>
@@ -146,6 +180,14 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
     var companyCommunityId = '<?=$selectedCommunityId?>';
     var companyRegionId = '<?=$selectedRegionId?>';
 
+    function changeSecondCity() {
+        if ($('input[name="additionalCity"]').is(':checked')) {
+            $('.cityHolder').prop('disabled', false);
+        } else {
+            $('.cityHolder').prop('disabled', true);
+        }
+    }
+
     $(function () {
         $('#region option[value="' + companyRegionId + '"]').prop('selected', true);
         $('#region').trigger('change');
@@ -158,6 +200,8 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
 
         $('#fileChoose').click(function () {
             $('input[type="file"]').trigger('click');
-        })
+        });
+        $('input[name="additionalCity"]').change(changeSecondCity);
+        changeSecondCity();
     });
 </script>

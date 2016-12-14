@@ -12,6 +12,7 @@ use app\models\Proforma;
 use app\models\RecoverPassword;
 use app\models\Ticket;
 use app\models\User;
+use app\models\UserCity;
 use Yii;
 use yii\db\Connection;
 use yii\db\Query;
@@ -281,6 +282,22 @@ class SiteController extends Controller
 //                $user->picture = $oldPicture;
             $user->last_updated = date('Y-m-d H:i:s');
             try {
+                $additionalCityId = Yii::$app->request->post('additionalCityId');
+                $flag = Yii::$app->request->post('additionalCity', 0);
+                $user->addedPlace = $flag;
+                $userCity = UserCity::findOne(['user_id' => $user->id]);
+                if (!empty($additionalCityId) && $flag == 1) {
+                    // set additional city
+                    if (!$userCity) {
+                        $userCity = new UserCity();
+                        $userCity->user_id = $user->id;
+                    }
+                    $userCity->city_id = $additionalCityId;
+                    $userCity->save();
+                } else {
+                    // delete additional city
+                    if ($userCity) $userCity->delete();
+                }
                 $user->save();
                 Yii::$app->session->setFlash('success', 'Успешно обновихте профила си!');
             } catch (\Exception $e) {
@@ -301,6 +318,16 @@ class SiteController extends Controller
         }
 
         $categories = Category::getCategoriesForDropdown();
+        $additionalCities = [];
+        foreach ($cityRelations as $regId => $region) {
+            foreach ($region as $commId => $community) {
+                foreach ($community as $cityId) {
+                    $additionalCities[$cityId] = $regions[$regId] . ', ' . $communities[$commId] . ', ' . $cities[$cityId];
+                }
+            }
+        }
+//        echo '<pre>' . print_r($additionalCities, true) . '</pre>';
+//        die;
         return $this->render('profile', [
             'user' => $user,
             'regions' => $regions,
@@ -310,6 +337,7 @@ class SiteController extends Controller
             'cityRelations' => $cityRelations,
             'selectedRegionId' => $selectedRegionId,
             'selectedCommunityId' => $selectedCommunityId,
+            'additionalCities' => $additionalCities,
         ]);
     }
 
@@ -447,7 +475,7 @@ class SiteController extends Controller
 //        $users = $users[0];
         $places = Place::find()->where(['active' => 1])
             ->andWhere('paid_until>="' . date('Y-m-d') . '"')
-            ->andWhere(['city_id' => $user->city_id])->all();
+            ->andWhere(['IN', 'city_id', $user->getSelectedCities()])->all();
         return $this->render('selected-ads', ['places' => $places, 'cityName' => $user->getCityName()]);
     }
 

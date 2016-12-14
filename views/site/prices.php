@@ -18,21 +18,15 @@ $this->params['breadcrumbs'][] = 'Цени';
                 <td>Период</td>
                 <td>1 год</td>
                 <td>1 год</td>
-                <td>1 год</td>
-                <td>1 год</td>
             </tr>
             <tr>
-                <td>Брой Т.О./О.У.</td>
+                <td>Брой обекти</td>
                 <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4 и повече</td>
+                <td>2 и повече</td>
             </tr>
             <tr>
                 <td>Цена с ДДС</td>
                 <td>30лв</td>
-                <td>50лв</td>
-                <td>60лв</td>
                 <td>По договаряне</td>
             </tr>
         </table>
