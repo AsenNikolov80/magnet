@@ -251,17 +251,17 @@
     <tr style="line-height: 25px">
         <td colspan="13" class="noBorder"></td>
         <td colspan="5" class="noBorder" style="border-left: 1px solid black"> Банка:</td>
-        <td colspan="22" class="noBorder"></td>
+        <td colspan="22" class="noBorder">Уникредит Булбанк АД</td>
     </tr>
     <tr style="line-height: 25px">
         <td colspan="13" class="noBorder"></td>
         <td colspan="5" class="noBorder" style="border-left: 1px solid black"> BIC:</td>
-        <td colspan="22" class="noBorder"></td>
+        <td colspan="22" class="noBorder">UNCRBGSF</td>
     </tr>
     <tr style="line-height: 25px">
         <td colspan="13" class="noBorder"></td>
         <td colspan="5" class="noBorder" style="border-left: 1px solid black"> IBAN:</td>
-        <td colspan="22" class="noBorder"></td>
+        <td colspan="22" class="noBorder">BG24UNCR70001521008817</td>
     </tr>
     <tr style="line-height: 25px">
         <td colspan="13" class="noBorder"><strong>Дата на данъчно събитие:</strong></td>
