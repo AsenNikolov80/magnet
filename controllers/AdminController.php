@@ -287,6 +287,7 @@ class AdminController extends Controller
         if ($place) {
             if (!empty($req->post('Place'))) {
                 $place->setAttributes($req->post('Place'));
+                $place->checked = 1;
                 if ($place->save()) {
                     if ($place->active)
                         User::sendEmailToUsersByPlace($place);

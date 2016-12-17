@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = 'Списък обекти';
                 <th><?= $newPlace->getAttributeLabel('address') ?></th>
                 <th><?= $newPlace->getAttributeLabel('phone') ?></th>
                 <th><?= $newPlace->getAttributeLabel('work_time') ?></th>
+                <th><?= $newPlace->getAttributeLabel('active') ?></th>
                 <th></th>
             </tr>
             </thead>
@@ -43,6 +44,7 @@ $this->params['breadcrumbs'][] = 'Списък обекти';
                     <td><?= $place->address ?></td>
                     <td><?= $place->phone ?></td>
                     <td><?= $place->work_time ?></td>
+                    <td style="color: white;font-size: 1.1em" class="text-center <?= $place->active == 1 ? 'green' : 'red' ?>"><?= $place->active == 1 ? 'да' : 'не' ?></td>
                     <td>
                         <a title="Преглед на обекта"
                            href="<?= Yii::$app->urlManager->createUrl(['site/view-place', 'id' => $place->id]) ?>"

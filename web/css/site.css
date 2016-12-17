@@ -132,14 +132,15 @@ img {
     margin: 0 5px;
     font-size: 1.1em;
 }
-@media all and (max-width: 1024px){
-    .shadow-box{
+
+@media all and (max-width: 1024px) {
+    .shadow-box {
         min-height: 710px;
     }
 }
 
-@media all and (max-width: 768px){
-    .shadow-box{
+@media all and (max-width: 768px) {
+    .shadow-box {
         min-height: 600px;
         width: 100%;
         font-size: 1em;
@@ -180,4 +181,12 @@ div.navbar-header a.navbar-brand {
 
 div.container > ul.breadcrumb {
     margin-bottom: 10px;
+}
+
+.green {
+    background-color: green;
+}
+
+.red {
+    background-color: red;
 }

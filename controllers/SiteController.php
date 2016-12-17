@@ -484,6 +484,10 @@ class SiteController extends Controller
     {
         $place = Place::findOne(intval($_GET['id']));
         $currentUser = $this->getCurrentUser();
+        if ($place->checked == 0) {
+            Yii::$app->session->setFlash('error', 'Нямате право на тази операция');
+            return $this->redirect('site/index');
+        }
         if ($place && $this->isUserOwnedPlace($place)) {
             $model = new InvoiceData();
             $model->getRecipientData();

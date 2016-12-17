@@ -34,10 +34,17 @@ $this->params['breadcrumbs'][] = 'Преглед обект';
     <div class="col-sm-12">
         <a class="btn btn-default" href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
             Назад към списък обекти</a>
-        <a target="_blank" class="btn btn-info"
-           href="<?= Yii::$app->urlManager->createUrl(['site/create-invoice', 'id' => $place->id]) ?>">
+        <a <?= $place->checked ? 'target="_blank"' : '' ?>
+            class="btn btn-info" <?= $place->checked == 0 ? 'disabled' : '' ?>
+            href="<?= $place->checked ? Yii::$app->urlManager->createUrl(['site/create-invoice', 'id' => $place->id]) : '#' ?>">
             Създай проформа фактура за плащане
         </a>
+        <?php
+        if ($place->checked == 0) { ?>
+            <div class="alert-info text-center" style="margin: 10px;padding: 10px;font-size: 1.2em">
+                Не можете да получите проформа фактура, докато обекта не бъде одобрен от администратор!
+            </div>
+        <?php } ?>
     </div>
     <br/>
     <br/>
@@ -55,7 +62,7 @@ $this->params['breadcrumbs'][] = 'Преглед обект';
         <?= $form->field($place, 'address') ?>
         <?= $form->field($place, 'phone') ?>
         <?= $form->field($place, 'work_time') ?>
-        <?= $form->field($place, 'description')->textarea(['style'=>'min-height:100px']) ?>
+        <?= $form->field($place, 'description')->textarea(['style' => 'min-height:100px']) ?>
         <div style="position: relative;margin-bottom: 20px;display: none" class="form-group row">
             <label class="col-sm-3"> </label>
             <div class="col-sm-9">
