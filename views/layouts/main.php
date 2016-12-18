@@ -22,6 +22,9 @@ AppAsset::register($this);
     <?php $this->head() ?>
 </head>
 <body>
+<?php
+include_once ('../google.php');
+?>
 <?php $this->beginBody() ?>
 
 <div class="wrap">
