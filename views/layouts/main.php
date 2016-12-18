@@ -23,7 +23,7 @@ AppAsset::register($this);
 </head>
 <body>
 <?php
-include_once ('../google.php');
+include_once(Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . 'google.php');
 ?>
 <?php $this->beginBody() ?>
 

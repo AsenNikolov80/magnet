@@ -25,7 +25,7 @@
         margin: 5px;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="number"] {
         max-width: 60px;
     }
 </style>
@@ -68,7 +68,7 @@ $newTicket = new Ticket();
 </div>
 <div class="row">
     <?php
-    if(!empty($places)) {
+    if (!empty($places)) {
         $form = ActiveForm::begin([
             'id' => 'ads-form',
             'options' => ['class' => 'form-horizontal'],
@@ -95,7 +95,8 @@ $newTicket = new Ticket();
                                     <?= Html::textarea('text[' . $ticket->id . ']', $ticket->text) ?>
                                 </label>
                                 <label><?= $newTicket->getAttributeLabel('price') ?>
-                                    <?= Html::textInput('price[' . $ticket->id . ']', $ticket->price, ['required' => true]) ?>
+                                    <?= Html::textInput('price[' . $ticket->id . ']', $ticket->price,
+                                        ['required' => true, 'type' => 'number', 'step' => '0.01']) ?>
                                 </label>
                                 <label><i class="fa fa-minus removeRow"></i></label>
                             </div>
@@ -124,9 +125,9 @@ $newTicket = new Ticket();
             </div>
         </div>
         <?php ActiveForm::end();
-    }else{
+    } else {
         echo '<h3>Нямате въведени обекти, трябва първо да създадете поне един обект, преди да обявите промоции за него!</h3>';
-    }?>
+    } ?>
 </div>
 <script>
     'use strict';
