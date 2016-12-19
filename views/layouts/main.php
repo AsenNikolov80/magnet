@@ -1,3 +1,18 @@
+<style>
+    .navbar-brand img, footer.footer img {
+        width: 50px;
+        margin: 0;
+        margin-top: -14px;
+        box-shadow: none;
+    }
+    footer.footer img{
+        width: 60px;
+        margin-top: -20px;
+        margin-right: 10px;
+    }
+    div.navbar-header a.navbar-brand{
+    }
+</style>
 <?php
 
 /* @var $this \yii\web\View */
@@ -10,6 +25,7 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
+$this->title = 'Promobox';
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -30,7 +46,7 @@ include_once(Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . 'google.php');
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'БГ ПРОМО',
+        'brandLabel' => '<img src="' . Yii::$app->getHomeUrl() . 'images/logo.jpg">',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -102,10 +118,12 @@ include_once(Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . 'google.php');
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; БГ ПРОМО <?= date('Y') ?></p>
+        <p class="pull-left">&copy; Промобокс <?= date('Y') ?>
+
+        </p>
 
         <p class="pull-right">
-            <? //= Yii::powered() ?>
+            <img src="<?= Yii::$app->getHomeUrl() ?>images/logo-text.jpg">
             Изработка: Асен Николов
         </p>
     </div>
