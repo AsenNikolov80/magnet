@@ -164,7 +164,22 @@ class SiteController extends Controller
      */
     public function actionContact()
     {
-        return $this->render('contact', []);
+        $contactForm = Yii::$app->request->post('ContactForm');
+        $contact = new ContactForm();
+        if (!empty($contactForm) && $contact->checkCode($contactForm['verifyCode'])) {
+            $contact->setAttributes($contactForm);
+            $admins = User::findAll(['type' => USER::TYPE_ADMIN]);
+            /* @var $admin User */
+            foreach ($admins as $admin) {
+                $to = $admin->email;
+                if ($to) {
+                    $contact->contact($to);
+                }
+            }
+        }
+        $contact = new ContactForm();
+        $contact->generateCode();
+        return $this->render('contact', ['contact' => $contact]);
     }
 
     /**

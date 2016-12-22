@@ -24,11 +24,12 @@ class ContactForm extends Model
     {
         return [
             // name, email, subject and body are required
-            [['name', 'email', 'subject', 'body'], 'required'],
+            [['name', 'email', 'subject', 'body', 'verifyCode'], 'required'],
             // email has to be a valid email address
             ['email', 'email'],
             // verifyCode needs to be entered correctly
-            ['verifyCode', 'captcha'],
+//            ['verifyCode', 'captcha'],
+            ['verifyCode', 'integer'],
         ];
     }
 
@@ -38,7 +39,11 @@ class ContactForm extends Model
     public function attributeLabels()
     {
         return [
-            'verifyCode' => 'Verification Code',
+            'verifyCode' => 'Код за потвърждение',
+            'name' => 'Име',
+            'email' => 'Имейл',
+            'subject' => 'Относно',
+            'body' => 'Съобщение',
         ];
     }
 
@@ -60,5 +65,17 @@ class ContactForm extends Model
             return true;
         }
         return false;
+    }
+
+    public function generateCode()
+    {
+        $rand = mt_rand(1000, 9999);
+        Yii::$app->session->set('verifyCode', $rand);
+        $this->verifyCode = $rand;
+    }
+
+    public function checkCode($code)
+    {
+        return intval($code) == Yii::$app->session->get('verifyCode');
     }
 }
