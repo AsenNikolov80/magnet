@@ -1,4 +1,10 @@
 RewriteEngine on
+
+RewriteCond %{HTTP_USER_AGENT} libwww-perl.*
+RewriteRule .* ? [F,L]
+
+RewriteCond %{HTTP_HOST} ^www\.promobox-bg\.com$
+RewriteRule ^/?$ "http\:\/\/promobox-bg\.com\/" [R=301,L]
 # If a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

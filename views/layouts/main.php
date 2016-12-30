@@ -32,6 +32,8 @@ $this->title = 'Promobox';
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="description" content="Promo ads from Bulgaria,Промо обяви от България,обяви на малки обекти,текущи промоции, малки обяви от България, рекламиране на малкия и среден бизнес">
+    <meta name="keywords" content="promobox,promo box,malki obqvi,обяви,малки обяви,промо,промобокс,промо обяви,обекти,обекти с обяви,промо обекти,промо оферти,промоции,promocii,promo oferti">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
