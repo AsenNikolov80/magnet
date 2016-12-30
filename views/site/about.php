@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-about">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p style="text-align: justify">
+    <p style="text-align: justify;font-size: 1.25em">
         <strong>promobox-bg.com</strong> е мястото, което свързва потребителите с реалните търговски обекти/обекти за услуги в населените
         места, от които се интересуват.
         <br/>

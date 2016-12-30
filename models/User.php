@@ -102,7 +102,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             'id' => 'ID',
-            'email' => 'Имейл',
+            'email' => 'Email',
             'password' => 'Парола',
             'city_id' => 'Населено място',
             'paid_until' => 'Платено до',

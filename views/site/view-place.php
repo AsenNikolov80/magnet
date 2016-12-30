@@ -17,6 +17,7 @@
 <?php
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use dosamigos\ckeditor\CKEditor;
 
 /**
  * Created by PhpStorm.
@@ -62,7 +63,10 @@ $this->params['breadcrumbs'][] = 'Преглед обект';
         <?= $form->field($place, 'address') ?>
         <?= $form->field($place, 'phone') ?>
         <?= $form->field($place, 'work_time') ?>
-        <?= $form->field($place, 'description')->textarea(['style' => 'min-height:100px']) ?>
+        <?= $form->field($place, 'description')->textarea(['style' => 'min-height:100px'])
+            ->widget(CKEditor::className(), [
+                'preset' => 'basic', //разработанны стандартные настройки basic, standard, full данную возможность не обязательно использовать
+            ]) ?>
         <div style="position: relative;margin-bottom: 20px;display: none" class="form-group row">
             <label class="col-sm-3"> </label>
             <div class="col-sm-9">

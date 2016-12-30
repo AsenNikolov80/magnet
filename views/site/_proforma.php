@@ -244,9 +244,18 @@
         <td></td>
         <td class="noBorder" colspan="15"> неначисляване на ДДС</td>
     </tr>
-    <tr style="line-height: 30px">
-        <td class="noBorder" colspan="13"><strong>Начин на плащане:</strong></td>
-        <td class="noBorder" colspan="27">По банков път</td>
+    <tr>
+        <td class="noBorder" colspan="40"></td>
+    </tr>
+    <tr style="line-height: 13px">
+        <td class="noBorder" colspan="12"><strong>Начин на плащане:</strong></td>
+        <td></td>
+        <td class="noBorder" colspan="13">В брой</td>
+        <td></td>
+        <td class="noBorder" colspan="13">По банков път</td>
+    </tr>
+    <tr>
+        <td class="noBorder" colspan="40"></td>
     </tr>
     <tr style="line-height: 25px">
         <td colspan="13" class="noBorder"></td>
@@ -291,10 +300,10 @@
     <tr style="line-height: 28px">
         <td colspan="4" class="noBorder"></td>
     </tr>
-    <tr>
-        <td colspan="4" style="text-align: center;font-size: 0.85em" class="noBorder">
-            Съгласно чл.6, ал.1 от Закона за счетоводството, чл.114 от ЗДДС и чл.78 от ППЗДДС печатът
-            не е задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри
-        </td>
-    </tr>
+<!--    <tr>-->
+<!--        <td colspan="4" style="text-align: center;font-size: 0.85em" class="noBorder">-->
+<!--            Съгласно чл.6, ал.1 от Закона за счетоводството, чл.114 от ЗДДС и чл.78 от ППЗДДС печатът-->
+<!--            не е задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри-->
+<!--        </td>-->
+<!--    </tr>-->
 </table>

@@ -18,7 +18,8 @@
         "yiisoft/yii2": ">=2.0.5",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "drivesoftz/yii2-tcpdf": "~1.0"
+        "drivesoftz/yii2-tcpdf": "~1.0",
+        "2amigos/yii2-ckeditor-widget" : "2.0"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
