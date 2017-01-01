@@ -60,6 +60,7 @@ class SiteController extends Controller
                             'invoices',
                             'preview-invoice',
                             'conditions',
+                            'cookies',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -87,6 +88,7 @@ class SiteController extends Controller
                             'lost-password',
                             'recover',
                             'change-password',
+                            'cookies'
                         ],
                         'roles' => ['?'],
                         'allow' => true,
@@ -737,6 +739,10 @@ class SiteController extends Controller
                 $this->redirect(Yii::$app->urlManager->createUrl('site/login'));
             }
         }
+    }
+
+    public function actionCookies(){
+        return $this->render('cookies');
     }
 
     private function getListOfRegionsCities()

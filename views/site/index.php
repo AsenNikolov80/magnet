@@ -58,6 +58,15 @@
         margin-top: 5px;
     }
 
+    #cookie {
+        display: none;
+        font-size: 0.9em;
+        background-color: #1a1a1a;
+        color: white;
+        padding: 8px 12px;
+        position: relative;
+    }
+
     /*.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {*/
     /*background-color: floralwhite;*/
     /*color: black;*/
@@ -72,6 +81,12 @@ $this->params['breadcrumbs'][] = '';
 ?>
 <div class="row" style="display: table-row">
     <div class="col-sm-12">
+        <div id="cookie">Този сайт
+            използва бисквитки, които улесняват ползването на сайта от Ваша страна.
+            Чрез навигиране в сайта и/или използването му, вие се съгласявате да събираме информация чрез бисквитки,
+            за повече информация <a href="<?= Yii::$app->urlManager->createUrl('site/cookies') ?>">ТУК!</a>
+            <i class="fa fa-close" style="color: white;position: absolute;right: 2px;top:2px;cursor: pointer"></i>
+        </div>
         <?php
         \app\components\Components::printFlashMessages();
         ?>
@@ -79,7 +94,7 @@ $this->params['breadcrumbs'][] = '';
     </div>
     <div id="first" style="display: table-row;">
         <div class=" text-justify item">
-            <h2 class="text-center">ВИЕ, УВАЖАЕМИ ПОТРЕБИТЕЛИ:</h2>
+            <h2 class="text-center">Вие, Уважаеми потребители:</h2>
             Ако се интересувате от промоциите на малките търговски обекти/обекти за услуги/ във Вашето или друго
             населено място,
             можете да проверите тук има ли публикувани такива. А ако имате регистрация в promobox-bg.com
@@ -95,7 +110,7 @@ $this->params['breadcrumbs'][] = '';
             <img src="<?= Yii::$app->getHomeUrl() . 'images' . DIRECTORY_SEPARATOR . 'p3.jpg' ?>"/>
         </div>
         <div class=" text-justify item" style="margin-top: 20px">
-            <h2 class="text-center">ВИЕ, УВАЖАЕМИ ТЪРГОВЦИ:</h2>
+            <h2 class="text-center">Вие, Уважаеми търговци:</h2>
             За да публикувате промо оферти на сайта, трябва да имате регистрация като търговец на <strong><a
                     href="<?= Yii::$app->urlManager->createUrl(['site/register', 'type' => 1]) ?>">promobox-bg.com</a></strong>.
             Може да качвате неограничен брой промо оферти по всяко време от профила си,
@@ -118,8 +133,18 @@ $this->params['breadcrumbs'][] = '';
             div.prependTo($('#second'));
         }
     }
+    function checkForCookies() {
+        var ls = localStorage.getItem('cookiePolicyForPromobox');
+        if (!ls) $('#cookie').show();
+        else $('#cookie').hide();
+    }
     $(function () {
         checkPosition();
         $(window).resize(checkPosition);
+        checkForCookies();
+        $(document).on('click', '#cookie .fa-close', function () {
+            localStorage.setItem('cookiePolicyForPromobox', 'accepted');
+            checkForCookies();
+        })
     })
 </script>
