@@ -21,6 +21,7 @@ $places = $company->getPlaces();
 
     .green {
         color: green;
+        background-color: transparent;
     }
 </style>
 <div class="row">

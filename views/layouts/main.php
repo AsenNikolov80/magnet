@@ -74,6 +74,10 @@ include_once(Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . 'google.php');
 
             ) : '',
             Yii::$app->user->isUserAdmin() ? (
+            ['label' => 'Преглед потребители', 'url' => ['/admin/profiles-users']]
+
+            ) : '',
+            Yii::$app->user->isUserAdmin() ? (
             ['label' => 'Преглед фактури', 'url' => ['/admin/invoices']]
 
             ) : '',
@@ -120,9 +124,7 @@ include_once(Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . 'google.php');
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; Промобокс <?= date('Y') ?>
-
-        </p>
+        <p class="pull-left">&copy; Promobox-bg 2017</p>
 
         <p class="pull-right">
             <img src="<?= Yii::$app->getHomeUrl() ?>images/logo-text.jpg">

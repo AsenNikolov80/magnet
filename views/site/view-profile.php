@@ -26,6 +26,7 @@
         dl > dt {
             text-align: right;
         }
+
         dl * {
             display: inline-block;
         }
@@ -69,7 +70,7 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col-sm-9 text-center">Продукт / услуга</div>
                 <div class="col-sm-1"></div>
-                <div class="col-sm-2 text-center">Цена</div>
+                <div class="col-sm-2 text-center">Цена с ДДС</div>
             </div>
             <?php
             /* @var $ticket \app\models\Ticket */
@@ -91,6 +92,9 @@ $this->params['breadcrumbs'][] = 'Преглед на обект';
                     <div class="col-sm-12"><strong><?= $ticket->text ?></strong></div>
                 </div>
             <?php } ?>
+            <div class="green row ad-container text-center" style="margin-top: 10px;color: white;padding: 15px;">
+                Моля, при посещение в нашият обект да споменете, че сте видели промоцията в promobox-bg.com
+            </div>
         </div>
         <div class="col-sm-12">
             <hr style="border-color: #ccc"/>

@@ -49,6 +49,7 @@ class AdminController extends Controller
                             'delete-invoice',
                             'edit-place',
                             'places',
+                            'profiles-users'
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -158,7 +159,6 @@ class AdminController extends Controller
 
     public function actionPreviewInvoice()
     {
-
         $factura = Factura::findOne(intval($_GET['id']));
         if ($factura) {
             $user = $factura->getUser();
@@ -297,6 +297,13 @@ class AdminController extends Controller
             return $this->render('edit-place', ['place' => $place]);
         }
         return $this->redirect(Yii::$app->urlManager->createUrl('admin/profiles'));
+    }
+
+    public function actionProfilesUsers()
+    {
+        // get all users
+        $users = User::findAll(['type' => User::TYPE_USER]);
+        return $this->render('list-users', ['users' => $users]);
     }
 
     private function getListOfRegionsCities()

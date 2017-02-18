@@ -37,7 +37,7 @@ class InvoiceData extends Model
             $user = User::findOne(\Yii::$app->user->id);
         else $user = User::findOne($userId);
         $this->rec_name = $user->name;
-        $this->rec_address = $user->address;
+        $this->rec_address = $user->getCityName() . ', ' . $user->address;
         $this->rec_bulstat = $user->bulstat;
         $this->rec_country = "България";
         $this->rec_dds = $user->dds;
