@@ -35,13 +35,25 @@ use yii\widgets\ActiveForm;
         echo $form->field($place, 'description');
         echo $form->field($place, 'paid_until');
         echo $form->field($place, 'address');
-        echo $form->field($place, 'map_link');
+        echo $form->field($place, 'map_link'); ?>
+        <div class="form-group field-place-date_created">
+            <label class="col-sm-4 control-label"
+                   style="color: black !important"><?= $place->getAttributeLabel('date_created') ?>
+            </label>
+            <div class="col-sm-8"><?= $place->date_created ?></div>
+        </div>
+        <?php
         echo $form->field($place, 'active')->radioList(['не', 'да']);
         ?>
         <div class="form-group">
             <div class="col-sm-4"></div>
             <div class="col-sm-8">
                 <input type="submit" value="Запази" class="btn btn-success">
+                <a <?= $place->checked ? 'target="_blank"' : '' ?>
+                    class="btn btn-info"<?= $place->checked == 0 ? 'disabled' : '' ?>
+                    href="<?= $place->checked ? Yii::$app->urlManager->createUrl(['site/create-invoice', 'id' => $place->id]) : '#' ?>">
+                    Създай проформа фактура за плащане
+                </a>
             </div>
         </div>
         <?php

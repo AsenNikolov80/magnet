@@ -1,3 +1,6 @@
+<?php
+use dosamigos\ckeditor\CKEditor;
+?>
 <style>
     #fileChoose {
         background-color: green;
@@ -45,7 +48,10 @@
         <?= $form->field($place, 'address') ?>
         <?= $form->field($place, 'phone') ?>
         <?= $form->field($place, 'work_time') ?>
-        <?= $form->field($place, 'description') ?>
+        <?= $form->field($place, 'description')->textarea(['style' => 'min-height:100px'])
+            ->widget(CKEditor::className(), [
+                'preset' => 'basic', //разработанны стандартные настройки basic, standard, full данную возможность не обязательно использовать
+            ]) ?>
         <div class="form-group row" style="margin: 10px 0">
             <label class="col-sm-3 control-label" style="padding-right: 23px"> Област</label>
             <div class="col-sm-9">

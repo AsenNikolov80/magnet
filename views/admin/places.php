@@ -13,6 +13,7 @@ $places = $company->getPlaces();
     .red, .green {
         font-size: 1.2em;
         font-weight: bold;
+        background-color: transparent;
     }
 
     .red {
@@ -21,7 +22,6 @@ $places = $company->getPlaces();
 
     .green {
         color: green;
-        background-color: transparent;
     }
 </style>
 <div class="row">

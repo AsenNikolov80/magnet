@@ -26,7 +26,7 @@
     }
 
     input[type="text"], input[type="number"] {
-        max-width: 60px;
+        max-width: 85px;
     }
 </style>
 <?php

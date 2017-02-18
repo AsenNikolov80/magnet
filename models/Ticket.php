@@ -51,7 +51,7 @@ class Ticket extends \yii\db\ActiveRecord
             'id' => 'ID',
             'text' => 'Промоция',
             'id_place' => 'Обект',
-            'price' => 'Цена',
+            'price' => 'Цена с ДДС',
         ];
     }
 

@@ -35,11 +35,6 @@ $this->params['breadcrumbs'][] = 'Преглед обект';
     <div class="col-sm-12">
         <a class="btn btn-default" href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
             Назад към списък обекти</a>
-        <a <?= $place->checked ? 'target="_blank"' : '' ?>
-            class="btn btn-info" <?= $place->checked == 0 ? 'disabled' : '' ?>
-            href="<?= $place->checked ? Yii::$app->urlManager->createUrl(['site/create-invoice', 'id' => $place->id]) : '#' ?>">
-            Създай проформа фактура за плащане
-        </a>
         <?php
         if ($place->checked == 0) { ?>
             <div class="alert-info text-center" style="margin: 10px;padding: 10px;font-size: 1.2em">

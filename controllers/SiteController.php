@@ -65,12 +65,18 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
+                            $allow = true;
                             if (($action->id == 'edit-ads' && !Yii::$app->user->isUserCompany())
                                 || $action->id == 'selected-ads' && !Yii::$app->user->isUser()
                             ) {
-                                return $this->redirect(Yii::$app->urlManager->createAbsoluteUrl(['site/index']));
+                                $allow = false;
+                                $this->redirect(Yii::$app->urlManager->createUrl(['site/index']));
                             }
-                            return true;
+                            if ($action->id == 'create-invoice' && !Yii::$app->user->isUserAdmin()) {
+                                $allow = false;
+                                $this->redirect(Yii::$app->urlManager->createUrl(['site/index']));
+                            }
+                            return $allow;
                         }
                     ],
                     [
@@ -140,7 +146,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(Yii::$app->urlManager->createUrl('site/welcome'));
+            return $this->redirect(Yii::$app->urlManager->createUrl('site/profile'));
         }
         return $this->render('login', [
             'model' => $model,
@@ -327,12 +333,12 @@ class SiteController extends Controller
         /* @var $selectedCommunityId */
         /* @var $selectedRegionId */
         extract($this->getRegionCommunityByCityId($user->city_id));
-        if (!Yii::$app->user->isUserActive()) {
-            if ($user->active == 0)
-                Yii::$app->session->setFlash('errorAttribute', 'Профилът Ви не е одобрен от администратор');
-            elseif ($user->paid_until < date('Y-m-d'))
-                Yii::$app->session->setFlash('errorAttribute', 'Не сте извършили плащане, за да може да ползвате нашите услуги');
-        }
+//        if (!Yii::$app->user->isUserActive()) {
+//            if ($user->active == 0)
+//                Yii::$app->session->setFlash('errorAttribute', 'Профилът Ви не е одобрен от администратор');
+//            elseif ($user->paid_until < date('Y-m-d'))
+//                Yii::$app->session->setFlash('errorAttribute', 'Не сте извършили плащане, за да може да ползвате нашите услуги');
+//        }
 
         $categories = Category::getCategoriesForDropdown();
         $additionalCities = [];
@@ -364,13 +370,14 @@ class SiteController extends Controller
         $page = $req->get('page', 1);
         $postName = Yii::$app->request->post('name');
         $city = Yii::$app->request->post('city');
+        $category = Yii::$app->request->post('category');
         $params = [
             ':type' => User::TYPE_COMPANY,
             ':date' => date('Y-m-d')
         ];
-
+        // AND u.active=1
         $q = Place::find()->alias('t')
-            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.active=1 AND u.type=:type AND t.paid_until>=:date', $params)
+            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.type=:type AND t.paid_until>=:date', $params)
             ->orderBy('t.last_updated DESC')
             ->where(['t.active' => 1]);
         if ($postName) {
@@ -379,12 +386,17 @@ class SiteController extends Controller
         if ($city) {
             $q->andWhere(['t.city_id' => $city]);
         }
+        if ($category) {
+            $q->andWhere(['u.cat_id' => $category]);
+        }
         $places = $q->limit(self::PAGE_SIZE)->offset(($page - 1) * self::PAGE_SIZE)->all();
-        list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
+        list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities(true);
+
+        // ->where(['u.active' => 1])
         $maxPages = (int)(new Query())->select('COUNT(p.id)')
             ->from(User::tableName() . ' u')
             ->innerJoin(Place::tableName() . ' p', 'p.user_id=u.id')
-            ->where(['u.active' => 1])->andWhere(['u.type' => User::TYPE_COMPANY])->scalar();
+            ->andWhere(['u.type' => User::TYPE_COMPANY])->scalar();
         $maxPages = ceil($maxPages / self::PAGE_SIZE);
         return $this->render('ads', [
             'places' => $places,
@@ -396,6 +408,8 @@ class SiteController extends Controller
             'postName' => $postName,
             'page' => $page,
             'maxPages' => $maxPages,
+            'selectedCategory' => $category ? $category : '',
+            'categoryList' => Category::getCategoriesForDropdown(),
         ]);
     }
 
@@ -557,15 +571,21 @@ class SiteController extends Controller
             $place->setAttributes(Yii::$app->request->post('Place'));
             $user = User::getUser(Yii::$app->user->id);
             $place->user_id = $user->id;
+            $place->active = 1;
+            $place->date_created = date('Y-m-d');
+            $place->paid_until = date('Y-m-d', strtotime('+7 days'));
             if ($place->save()) {
                 $file = new FileComponent();
                 $path = $file->imagesPath;
-                move_uploaded_file($_FILES['Place']['tmp_name']['picture'],
-                    $path . $_FILES['Place']['name']['picture']);
-                $place->picture = $_FILES['Place']['name']['picture'];
-                $place->save();
-                Yii::$app->session->setFlash('success', 'Успешно добавихте обекта ' . $place->name);
-                User::sendEmailToAdminByPlace($place);
+                if (!empty($_FILES['Place'])) {
+                    move_uploaded_file($_FILES['Place']['tmp_name']['picture'],
+                        $path . $_FILES['Place']['name']['picture']);
+                    $place->picture = $_FILES['Place']['name']['picture'];
+                    $place->save();
+                }
+                Yii::$app->session->setFlash('success', 'Успешно добавихте обекта "' . $place->name
+                    . '"<br/>Обектът и обявите към него ще се виждат 7 дни, за да продължите да ползвате услугата, моля извършете плащане на проформа фактура, която ще получите по email!');
+//                User::sendEmailToAdminByPlace($place);
             }
         }
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
@@ -741,16 +761,23 @@ class SiteController extends Controller
         }
     }
 
-    public function actionCookies(){
+    public function actionCookies()
+    {
         return $this->render('cookies');
     }
 
-    private function getListOfRegionsCities()
+    private function getListOfRegionsCities($emptyFirst = false)
     {
         $regions = [];
         $communities = [];
         $cities = [];
         $cityRelations = [];
+        if ($emptyFirst) {
+            $regions[0] = 'област...';
+            $communities[0] = 'община...';
+            $cities[0] = 'населено място...';
+            $cityRelations[0][0][] = '0';
+        }
         $citiesArray = (new Query())->select('c.id AS c_id, c.name as c_name, com.id AS com_id, com.name as com_name, r.id AS reg_id, r.name as reg_name')
             ->from(City::tableName() . ' c')
             ->innerJoin('communities com', 'c.community_id=com.id')

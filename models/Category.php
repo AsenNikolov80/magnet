@@ -10,7 +10,7 @@ use Yii;
  * @property integer $id
  * @property string $name
  *
- * @property Users[] $users
+ * @property User[] $users
  */
 class Category extends \yii\db\ActiveRecord
 {
@@ -48,14 +48,17 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        return $this->hasMany(Users::className(), ['cat_id' => 'id']);
+        return $this->hasMany(User::className(), ['cat_id' => 'id']);
     }
 
-    public static function getCategoriesForDropdown()
+    public static function getCategoriesForDropdown($withEmptyFirst = true)
     {
         $categoriesRaw = Category::find()->all();
         $categories = [];
         /* @var $item Category */
+        if ($withEmptyFirst) {
+            $categories[0] = 'Изберете категория...';
+        }
         foreach ($categoriesRaw as $item) {
             $categories[$item->id] = $item->name;
         }

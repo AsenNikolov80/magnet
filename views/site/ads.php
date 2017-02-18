@@ -31,16 +31,21 @@ $this->params['breadcrumbs'][] = 'Обекти';
     \app\components\Components::printFlashMessages();
     ?>
     <div class="col-xs-12 row">
-        <div class="col-sm-5">
-            <h3>Покажи обекти по име:</h3>
-            <?= Html::beginForm();
-            echo Html::textInput('name', '', ['class' => 'form-control', 'style' => 'width:90%', 'required' => true]) . '<br/>';
-            echo Html::submitButton('Търси', ['class' => 'btn btn-info']);
-            echo Html::endForm(); ?>
+        <div class="col-sm-6">
+            <div class="col-sm-6">
+                <h3>Търси по име:</h3>
+                <?= Html::beginForm();
+                echo Html::textInput('name', '', ['class' => 'form-control', 'style' => 'width:90%']) . '<br/>';
+                echo Html::submitButton('Търси', ['class' => 'btn btn-info']);
+                ?>
+            </div>
+            <div class="col-sm-6">
+                <h3>Търси по категория</h3>
+                <?= Html::dropDownList('category', $selectedCategory, $categoryList, ['class' => 'form-control']) ?>
+            </div>
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-6">
             <h3>Покажи обекти по населено място:</h3>
-            <?= Html::beginForm(); ?>
             <div class="col-md-4">
                 <label>Област
                     <?= Html::dropDownList('region', '', $regions, ['id' => 'region', 'class' => 'form-control']) ?>
@@ -55,12 +60,6 @@ $this->params['breadcrumbs'][] = 'Обекти';
                 <label>Населено място
                     <?= Html::dropDownList('city', '', $cities, ['id' => 'city', 'class' => 'form-control']) ?>
                 </label>
-            </div>
-            <br/>
-            <br/>
-            <br/>
-            <div class="col-md-4">
-                <?= Html::submitButton('Търси', ['class' => 'btn btn-info']); ?>
             </div>
             <?= Html::endForm(); ?>
         </div>
@@ -153,7 +152,7 @@ $this->params['breadcrumbs'][] = 'Обекти';
         $('.item').height(h);
     }
     $(function () {
-//        resetHeight();
+        resetHeight();
 //        $(window).resize(resetHeight);
 
         $('#region').trigger('change');

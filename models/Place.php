@@ -22,6 +22,7 @@ use Yii;
  * @property string $price
  * @property string $paid_until
  * @property integer $checked
+ * @property string $date_created
  *
  * @property User $user
  * @property City $city
@@ -44,7 +45,7 @@ class Place extends \yii\db\ActiveRecord
         return [
             [['name', 'user_id', 'city_id'], 'required'],
             [['user_id', 'city_id', 'active', 'checked'], 'integer'],
-            [['name', 'address', 'phone', 'work_time', 'map_link', 'last_updated', 'price', 'paid_until'], 'string', 'max' => 500],
+            [['name', 'address', 'phone', 'work_time', 'map_link', 'last_updated', 'price', 'paid_until', 'date_created'], 'string', 'max' => 500],
             [['picture'], 'string', 'max' => 550],
             [['description'], 'string', 'max' => 2000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -73,6 +74,7 @@ class Place extends \yii\db\ActiveRecord
             'paid_until' => 'Платено до',
             'price' => 'Сума за плащане',
             'active' => 'Активен',
+            'date_created' => 'Дата на създаване',
         ];
     }
 

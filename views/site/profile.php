@@ -40,13 +40,13 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
 ?>
 <div class="row-fluid">
     <?php \app\components\Components::printFlashMessages() ?>
-    <?php
-    if ($user->active == 0 && Yii::$app->user->isUserCompany()) { ?>
-        <div class="alert-warning" style="padding: 10px;margin-bottom: 20px">
-            Моля, имайте предвид, че вашите обяви и обекти ще могат да бъдат управлявани от Вас веднага,
-            но се изисква одобрение на администратор, за да бъдат видими за Вашите клиенти!
-        </div>
-    <?php } ?>
+<!--    --><?php
+//    if ($user->active == 0 && Yii::$app->user->isUserCompany()) { ?>
+<!--        <div class="alert-warning" style="padding: 10px;margin-bottom: 20px">-->
+<!--            Моля, имайте предвид, че вашите обяви и обекти ще могат да бъдат управлявани от Вас веднага,-->
+<!--            но се изисква одобрение на администратор, за да бъдат видими за Вашите клиенти!-->
+<!--        </div>-->
+<!--    --><?php //} ?>
     <?php $form = ActiveForm::begin([
         'id' => 'create-form',
         'action' => Yii::$app->urlManager->createUrl('site/profile'),
