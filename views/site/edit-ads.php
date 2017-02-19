@@ -79,7 +79,7 @@ $newTicket = new Ticket();
         ]); ?>
         <div class="col-sm-12">
             <div>
-                <?= Html::dropDownList('placeId', $selectedPlace->id, $places) ?>
+<!--                --><?php //echo Html::dropDownList('placeId', $selectedPlace->id, $places) ?>
                 <h3>Списък промоции за обект: <?= $selectedPlace->name ?></h3>
             </div>
 
@@ -164,8 +164,8 @@ $newTicket = new Ticket();
         $(document).on('click', '.removeRow', removeRow);
         $(document).on('click', '.addRowFree', addRowFree);
         $(document).on('click', '.removeRowFree', removeRowFree);
-        $('select[name="placeId"]').change(function () {
-            window.location.replace('<?=Yii::$app->urlManager->createUrl('site/edit-ads')?>' + '?selectedPlace=' + $(this).val());
-        });
+//        $('select[name="placeId"]').change(function () {
+//            window.location.replace('<?//=Yii::$app->urlManager->createUrl('site/edit-ads')?>//' + '?selectedPlace=' + $(this).val());
+//        });
     });
 </script>

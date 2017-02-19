@@ -33,14 +33,17 @@ $this->params['breadcrumbs'][] = 'Преглед обект';
 ?>
 <div class="row">
     <div class="col-sm-12">
-        <a class="btn btn-default" href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
+        <a class="btn btn-info" href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
             Назад към списък обекти</a>
-        <?php
-        if ($place->checked == 0) { ?>
-            <div class="alert-info text-center" style="margin: 10px;padding: 10px;font-size: 1.2em">
-                Не можете да получите проформа фактура, докато обекта не бъде одобрен от администратор!
-            </div>
-        <?php } ?>
+        <a class="btn btn-info"
+           href="<?= Yii::$app->urlManager->createUrl(['site/edit-ads', 'selectedPlace' => $place->id]) ?>">
+            Редактирай обяви към обекта</a>
+        <!--        --><?php
+        //        if ($place->checked == 0) { ?>
+        <!--            <div class="alert-info text-center" style="margin: 10px;padding: 10px;font-size: 1.2em">-->
+        <!--                Не можете да получите проформа фактура, докато обекта не бъде одобрен от администратор!-->
+        <!--            </div>-->
+        <!--        --><?php //} ?>
     </div>
     <br/>
     <br/>

@@ -430,8 +430,11 @@ class SiteController extends Controller
     public function actionEditAds()
     {
         $user = $this->getCurrentUser();
+        $selectedPlaceId = Yii::$app->request->get('selectedPlace');
+        $this->isUserOwnedPlace(Place::findOne($selectedPlaceId));
+        $placeId = $selectedPlaceId;
         if (!empty($_POST['text'])) {
-            $placeId = Yii::$app->request->post('placeId');
+//            $placeId = Yii::$app->request->post('placeId');
             $targetPlace = Place::findOne($placeId);
             if ($this->isUserOwnedPlace($targetPlace)) {
                 $texts = array_filter(Yii::$app->request->post('text'));
@@ -480,7 +483,7 @@ class SiteController extends Controller
         foreach ($placesRaw as $place) {
             $places[$place->id] = $place->name;
         }
-        $selectedPlaceId = Yii::$app->request->get('selectedPlace');
+
         if (empty($selectedPlaceId)) {
             if (!empty($placesRaw[0]))
                 $selectedPlace = $placesRaw[0];

@@ -60,12 +60,12 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
         <h3>Профилна информация</h3>
         <?php
         if (Yii::$app->user->isUserCompany()) { ?>
-            <a title="Оттук може да управлявате обявите си"
-               href="<?= Yii::$app->urlManager->createUrl('site/edit-ads') ?>" class="btn btn-primary">
-                Въведи / промени промоции
-            </a>
-            <br/>
-            <br/>
+<!--            <a title="Оттук може да управлявате обявите си"-->
+<!--               href="--><?php //echo Yii::$app->urlManager->createUrl('site/edit-ads') ?><!--" class="btn btn-primary">-->
+<!--                Въведи / промени промоции-->
+<!--            </a>-->
+<!--            <br/>-->
+<!--            <br/>-->
             <a class="btn btn-info"
                href="<?= Yii::$app->urlManager->createUrl('site/places') ?>">
                 Обекти
