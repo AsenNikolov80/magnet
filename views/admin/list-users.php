@@ -19,6 +19,7 @@ $user = new \app\models\User();
                 <th class="text-center"><?= $user->getAttributeLabel('address') ?></th>
                 <th class="text-center"><?= $user->getAttributeLabel('city_id') ?></th>
                 <th class="text-center"><?= $user->getAttributeLabel('subscribed') ?></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -33,6 +34,7 @@ $user = new \app\models\User();
                     <td class="text-center"><?= $user->address ?></td>
                     <td class="text-center"><?= $user->getCityName() ?></td>
                     <td class="text-center"><?= $user->subscribed ? 'да' : 'не' ?></td>
+                    <td><i class="fa fa-close fa-2x" style="color: red"></i></td>
                 </tr>
             <?php } ?>
             </tbody>
