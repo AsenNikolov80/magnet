@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
             <div class="form-group row" style="margin: 10px 0">
                 <label class="col-sm-4 control-label"> Населено място </label>
                 <div class="col-sm-8">
-                    <?= Html::dropDownList('additionalCityId', $user->city_id, $additionalCities, ['class' => 'form-control cityHolder', 'id' => 'community']) ?>
+                    <?= Html::dropDownList('additionalCityId', $user->getAdditionalCity(), $additionalCities, ['class' => 'form-control cityHolder', 'id' => 'community']) ?>
                 </div>
             </div>
         <?php }
@@ -155,7 +155,7 @@ $this->params['breadcrumbs'][] = 'Преглед профил';
                 <div class="col-sm-8 pull-right">
                     <label>
                         <?= Html::activeCheckbox($user, 'subscribed', ['class' => 'checkboxInput']) ?>
-                        * Абонирам се за имейл бюлетин, така ще получавам най-новите обяви от населените места, които
+                        * Абонирам се за имейл бюлетин, така ще получавам най-новите обяви и актуализации от населените места, които
                         предпочитам
                     </label>
                 </div>

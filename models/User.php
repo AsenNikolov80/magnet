@@ -354,6 +354,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return [$additionalCityId, $this->city_id];
     }
 
+    public function getAdditionalCity()
+    {
+        if ($this->addedPlace == 1 && Yii::$app->user->isUser()) {
+            return (new Query())->select('city_id')->from(UserCity::tableName())->where(['user_id' => $this->id])->scalar();
+        }
+        return null;
+    }
+
     /**
      * @return Category
      */
