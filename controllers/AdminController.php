@@ -209,11 +209,15 @@ class AdminController extends Controller
             $factura->save();
 
             $model->number = $factura->id;
+
+            $sum = round($items[0]['q'] * $items[0]['price'], 2);
+            $sumWord = $this->getSumWord(round($sum * 1.2, 2));
+
             $pdf->writeHTML($this->renderPartial('_factura',
-                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_ORIGINAL]));
+                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_ORIGINAL, 'sumWord' => $sumWord, 'sum' => $sum]));
             $pdf->AddPage();
             $pdf->writeHTML($this->renderPartial('_factura',
-                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE]));
+                ['model' => $model, 'items' => $items, 'type' => FileComponent::TYPE_FACTURA, 'origin' => FileComponent::TYPE_DUBLICATE, 'sumWord' => $sumWord, 'sum' => $sum]));
 
             $pdf->Output($path . $fileName, 'F');
             $pdf->get();
@@ -232,6 +236,217 @@ class AdminController extends Controller
             $place->paid_until = $newPaidDate;
             $place->save();
         }
+    }
+
+    private function getSumWord($sum)
+    {
+        $sum *= 100;
+        $sum = intval(round($sum));
+        $lastDigitStot = $sum % 10;
+        $sum /= 10;
+        $firstDigitStot = $sum % 10;
+        $sum /= 10;
+        $lastDigitLev = $sum % 10;
+        $sum /= 10;
+        $firstDigitLev = $sum % 10;
+        $stotString = '';
+        $levString = '';
+        switch ($firstDigitStot) {
+            case 1:
+                switch ($lastDigitStot) {
+                    case 1:
+                        $stotString = 'единадесет';
+                        break;
+                    case 2:
+                        $stotString = 'дванадесет';
+                        break;
+                    case 3:
+                        $stotString = 'тринадесет';
+                        break;
+                    case 4:
+                        $stotString = 'четиринадесет';
+                        break;
+                    case 5:
+                        $stotString = 'петнадесет';
+                        break;
+                    case 6:
+                        $stotString = 'шестнадесет';
+                        break;
+                    case 7:
+                        $stotString = 'седемнадесет';
+                        break;
+                    case 8:
+                        $stotString = 'осемнадесет';
+                        break;
+                    case 9:
+                        $stotString = 'деветнадесет';
+                        break;
+                    case 0:
+                        $stotString = 'десет';
+                        break;
+                }
+                break;
+            case 2:
+                $stotString = 'двадесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 3:
+                $stotString = 'тридесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 4:
+                $stotString = 'четиридесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 5:
+                $stotString = 'петдесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 6:
+                $stotString = 'шестдесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 7:
+                $stotString = 'седемдесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 8:
+                $stotString = 'осемдесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 9:
+                $stotString = 'деветдесет';
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+            case 0:
+                $stotString = $this->handleMoney($stotString, $lastDigitStot);
+                break;
+        }
+        switch ($firstDigitLev) {
+            case 1:
+                switch ($lastDigitLev) {
+                    case 1:
+                        $levString = 'единадесет';
+                        break;
+                    case 2:
+                        $levString = 'дванадесет';
+                        break;
+                    case 3:
+                        $levString = 'тринадесет';
+                        break;
+                    case 4:
+                        $levString = 'четиринадесет';
+                        break;
+                    case 5:
+                        $levString = 'петнадесет';
+                        break;
+                    case 6:
+                        $levString = 'шестнадесет';
+                        break;
+                    case 7:
+                        $levString = 'седемнадесет';
+                        break;
+                    case 8:
+                        $levString = 'осемнадесет';
+                        break;
+                    case 9:
+                        $levString = 'деветнадесет';
+                        break;
+                    case 0:
+                        $levString = 'десет';
+                        break;
+                }
+                break;
+            case 2:
+                $levString = 'двадесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 3:
+                $levString = 'тридесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 4:
+                $levString = 'четиридесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 5:
+                $levString = 'петдесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 6:
+                $levString = 'шестдесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 7:
+                $levString = 'седемдесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 8:
+                $levString = 'осемдесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 9:
+                $levString = 'деветдесет';
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+            case 0:
+                $levString = $this->handleMoney($levString, $lastDigitLev, 'lev');
+                break;
+        }
+        $stotString .= ' стотинки';
+        $levString .= ' лева';
+        return $levString . ', ' . $stotString;
+    }
+
+    private function handleMoney($stotString, $digit, $type = 'stot')
+    {
+        switch ($digit) {
+            case 1:
+                if ($type == 'lev') {
+                    $stotString .= ' и един';
+                } else {
+                    $stotString .= ' и една';
+                }
+                break;
+            case 2:
+                if ($type == 'lev') {
+                    $stotString .= ' и два';
+                } else {
+                    $stotString .= ' и две';
+                }
+                break;
+            case 3:
+                $stotString .= ' и три';
+                break;
+            case 4:
+                $stotString .= ' и четири';
+                break;
+            case 5:
+                $stotString .= ' и пет';
+                break;
+            case 6:
+                $stotString .= ' и шест';
+                break;
+            case 7:
+                $stotString .= ' и седем';
+                break;
+            case 8:
+                $stotString .= ' и осем';
+                break;
+            case 9:
+                $stotString .= ' и девет';
+                break;
+            case 0:
+                if ($stotString == '') {
+                    if ($type == 'lev') {
+                        $stotString .= 'нула';
+                    } else {
+                        $stotString .= ' и нула';
+                    }
+                }
+                break;
+        }
+        return $stotString;
     }
 
     public function actionCategories()

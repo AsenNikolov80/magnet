@@ -201,9 +201,10 @@
         <td colspan="6"> Стойност лв.</td>
     </tr>
     <?php $i = 1;
-    $sum = 0;
+//    $sum = 0;
     foreach ($items as $item) {
-        $sum += round($item['q'] * $item['price'], 2); ?>
+//        $sum += round($item['q'] * $item['price'], 2);
+        ?>
         <tr>
             <td colspan="2"> <?= $i ?></td>
             <td colspan="18"> <?= $item['name'] ?></td>
@@ -235,7 +236,7 @@
 </table>
 <table style="font-size: 0.8em;line-height: 22px;">
     <tr>
-        <td colspan="40" class="noBorder"><strong>Сума за плащане (словом): </strong> тридесет лева</td>
+        <td colspan="40" class="noBorder"><strong>Сума за плащане (словом): </strong> <?=$sumWord?></td>
     </tr>
     <tr style="line-height: 12px">
         <td colspan="11" class="noBorder"><strong>Основание за: </strong></td>
