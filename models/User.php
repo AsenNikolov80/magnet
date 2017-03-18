@@ -257,7 +257,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
                 if ($register === true) {
                     $subject = 'Уведомление за новорегистрирана и интересна за Вас компания';
                     $msg = 'Уважаеми/а г-н / г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br /> Нова компания "' . $company->name . '" от предпочитаното от Вас населено място < strong>'
-                        . $company->getCityName() . ' </strong > беше регистрирана при нас!Може да разгледате профила ' . $link;
+                        . $company->getCityName() . ' </strong > беше регистрирана при нас! Може да разгледате профила ' . $link;
                 } else {
                     $subject = 'Уведомление за промяна в списък на промоционални оферти на интересна за Вас компания';
                     $msg = 'Уважаеми/а г-н / г-жа ' . $targetUser->first_name . ' ' . $targetUser->last_name . ',<br />  от населено място: ' . $company->getCityName() . ' обнови промоциите, които предлага, може да разгледате профила ' . $link;
@@ -324,6 +324,30 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             if ($to) {
                 $msg = 'Нов обект с име: ' . $place->name . ' на компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $place->getCity()->name
                     . ' </strong> току - що се регистрира в системата! Може да разгледате профила от
+    <a href = "' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $place->id]) . '" ><strong>ТУК</strong></a>';
+                $headers = "Content-Type: text/html;\r\n charset=utf-8";
+                mail($to, $subject, $msg, $headers);
+            }
+        }
+    }
+
+    /**
+     * @param Place $place
+     */
+    public static function sendEmailToUsersByPlaceChange(Place $place)
+    {
+        $company = $place->getUser();
+        $subject = 'Интересен за Вас обект обнови своите обяви в promobox-bg.com на фирма: ' . $company->name;
+        $users = User::find()->alias('u')->leftJoin(UserCity::tableName() . ' uc', 'u.id=uc.user_id')
+            ->andWhere(['type' => User::TYPE_USER])
+            ->andWhere(['uc.city_id' => $place->city_id])
+            ->andWhere(['subscribed' => 1])->all();
+        /* @var $user User */
+        foreach ($users as $user) {
+            $to = $user->email;
+            if ($to) {
+                $msg = 'Интересен за Вас обект с име: ' . $place->name . ' на компания <strong>' . $company->name . ' </strong> от населено място <strong>' . $place->getCity()->name
+                    . ' </strong> току - обнови обявите си в системата! Може да разгледате профила от
     <a href = "' . Yii::$app->urlManager->createAbsoluteUrl(['site/view-profile', 'id' => $place->id]) . '" ><strong>ТУК</strong></a>';
                 $headers = "Content-Type: text/html;\r\n charset=utf-8";
                 mail($to, $subject, $msg, $headers);
