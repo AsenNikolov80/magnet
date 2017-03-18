@@ -807,7 +807,7 @@ class SiteController extends Controller
                 }
                 Yii::$app->session->setFlash('success', 'Успешно добавихте обекта "' . $place->name
                     . '"<br/>Обектът и обявите към него ще се виждат 7 дни, за да продължите да ползвате услугата, моля извършете плащане на проформа фактура, която ще получите по email!<br/><a href="' . Yii::$app->urlManager->createUrl(['site/view-place', 'id' => $place->id]) . '"><h3>Към обекта</h3></a>');
-//                User::sendEmailToAdminByPlace($place);
+                User::sendEmailToAdminByPlace($place);
             }
         }
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities();
