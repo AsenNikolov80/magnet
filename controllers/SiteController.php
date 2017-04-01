@@ -27,7 +27,7 @@ use TCPDF;
 
 class SiteController extends Controller
 {
-    const PAGE_SIZE = 1;
+    const PAGE_SIZE = 12;
 
     /**
      * @inheritdoc
