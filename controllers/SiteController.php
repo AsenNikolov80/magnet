@@ -27,7 +27,7 @@ use TCPDF;
 
 class SiteController extends Controller
 {
-    const PAGE_SIZE = 12;
+    const PAGE_SIZE = 1;
 
     /**
      * @inheritdoc
@@ -372,16 +372,19 @@ class SiteController extends Controller
     {
         $req = Yii::$app->request;
         $page = $req->get('page', 1);
-        $postName = Yii::$app->request->post('name');
-        $city = Yii::$app->request->post('city');
-        $category = Yii::$app->request->post('category');
+        $postName = $req->post('name');
+        if (!$postName && $req->isGet) $postName = $req->get('name');
+        $city = $req->post('city');
+        if (!$city && $req->isGet) $city = $req->get('city');
+        $category = $req->post('category');
+        if (!$category && $req->isGet) $category = $req->get('category');
         $params = [
             ':type' => User::TYPE_COMPANY,
             ':date' => date('Y-m-d')
         ];
         // AND u.active=1
         $q = Place::find()->alias('t')
-            ->innerJoin(User::tableName() . ' u', 'user_id=u.id AND u.type=:type AND t.paid_until>=:date', $params)
+            ->innerJoin(User::tableName() . ' u', 't.user_id=u.id AND u.type=:type AND t.paid_until>=:date', $params)
             ->orderBy('t.last_updated DESC')
             ->where(['t.active' => 1]);
         if ($postName) {
@@ -393,15 +396,22 @@ class SiteController extends Controller
         if ($category) {
             $q->andWhere(['u.cat_id' => $category]);
         }
-        $places = $q->limit(self::PAGE_SIZE)->offset(($page - 1) * self::PAGE_SIZE)->all();
         list($regions, $cities, $communities, $cityRelations) = $this->getListOfRegionsCities(true);
 
         // ->where(['u.active' => 1])
         $maxPages = (int)(new Query())->select('COUNT(p.id)')
             ->from(User::tableName() . ' u')
             ->innerJoin(Place::tableName() . ' p', 'p.user_id=u.id')
+            ->where(['p.active' => 1])
+            ->andWhere('p.paid_until >= :now', [':now' => date('Y-m-d')])
             ->andWhere(['u.type' => User::TYPE_COMPANY])->scalar();
+        $maxQ = clone $q;
+        $maxPages = $maxQ->count();
         $maxPages = ceil($maxPages / self::PAGE_SIZE);
+
+
+        $places = $q->limit(self::PAGE_SIZE)->offset(($page - 1) * self::PAGE_SIZE)->all();
+
         return $this->render('ads', [
             'places' => $places,
             'regions' => $regions,

@@ -128,8 +128,19 @@ $this->params['breadcrumbs'][] = 'Обекти';
     <div class="text-center">
         <ul class="pagination">
             <?php
+            $queryString = '';
+            if ($postName) {
+                $queryString .= '&name=' . $postName;
+            }
+            if ($selectedCategory) {
+                $queryString .= '&category=' . $selectedCategory;
+            }
+            if ($city) {
+                $queryString .= '&city=' . $city;
+            }
             for ($i = $start; $i <= $end; $i++) { ?>
-                <li class="<?= ($i == $page) ? 'active' : '' ?>"><a href="?page=<?= $i ?>"><?= $i ?></a></li>
+                <li class="<?= ($i == $page) ? 'active' : '' ?>"><a href="?page=<?= $i . $queryString ?>"><?= $i ?></a>
+                </li>
             <?php } ?>
         </ul>
     </div>
